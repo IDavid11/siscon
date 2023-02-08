@@ -2,9 +2,7 @@ import os
 import subprocess
 from datetime import datetime
 from bson.objectid import ObjectId
-from app.db import centros_collection, monitorizacion_collection
-from .utils.format import get_direccion_ip
-from .functions.ping import lan8x
+from app.db import centros_collection, monitorizacion_collection, avisos_collection
 
 pings = ["1", "7", "10"]
 FNULL = open(os.devnull, 'wb')
@@ -14,8 +12,10 @@ def comprobar_failed_ping(centro, item):
     with open(os.devnull, "wb") as limbo:
         res = subprocess.Popen(
             ["ping", "-n", "3", "-w", "200", item["ip"]], stdout=limbo, stderr=limbo).wait()
-        if res == 0:
+        if res == 0 and item["status"] == "up":
             return 0
+        elif res == 0 and item["status"] == "down":
+            cambiar_status(centro, item)
         else:
             filter = {"electronicaId": ObjectId(item["_id"]), "status": "open"}
             monitorizacion = monitorizacion_collection.find_one(filter)
@@ -31,7 +31,8 @@ def comprobar_failed_ping(centro, item):
                     "data": datetime.today(),
                     "status": "open"
                 })
-                cambiar_status(centro, item)
+                if item["status"] == "up":
+                    cambiar_status(centro, item)
                 return 1
 
 
@@ -69,3 +70,5 @@ def cambiar_status(centro, item):
     status = "down" if item["status"] == "up" else "up"
     centros_collection.update_one({"_id": ObjectId(centro["_id"]), "rede.electronica._id": ObjectId(
         item["_id"])}, {"$set": {"rede.electronica.$.status": status}})
+    avisos_collection.insert_one({"_id": ObjectId(), "centroId": ObjectId(
+        centro["_id"]), "electronicaId": ObjectId(item["_id"]), "data": datetime.today(), "status": status})

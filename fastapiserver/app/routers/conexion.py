@@ -23,19 +23,11 @@ def check_network_thread(index, q):
     centro = centros_collection.find_one(
         {'_id': ObjectId(index)})
 
-    # newList = centro["rede"]["electronica"].sort(
-    #    key=attrgetter('tipo'))
-
     resultados = []
 
     for item in centro["rede"]["electronica"]:
         item["status"] = network_ping(item["ip"])
-        tipo_electronica = tipo_electronica_collection.find_one(
-            {"id": item["tipo"]})
-        item["tipo"] = tipo_electronica["nome"]
         resultados.append(item)
-        # resultados.append(
-        #    {"_id": item["_id"], "nome": item["nome"], "ip": item["ip"], "tipo": item["tipo"], "ubicacion": item["ubicacion"], "status": resultado})
 
     centros_collection.find_one_and_update(
         {"_id": centro["_id"]}, {
@@ -57,6 +49,11 @@ def check_network(request_centro: BuscarCentro):
     thread.start()
 
     result = q.get()
+
+    for item in result:
+        tipo_electronica = tipo_electronica_collection.find_one(
+            {"id": item["tipo"]})
+        item["tipo"] = tipo_electronica["nome"]
 
     return json.loads(json_util.dumps(result))
 
