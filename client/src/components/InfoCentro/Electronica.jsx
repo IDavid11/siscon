@@ -33,7 +33,7 @@ const Electronica = ({ electronica, isLoading }) => {
 
   return (
     <ContainerWrap title={"Rede"} maxHeight={230}>
-      <div className="h-10 pt-4 fixed bg-white max-w-[462px]">
+      <div className="h-10 pt-4 fixed bg-white">
         <Nav>
           {nav.map((li) => {
             return (

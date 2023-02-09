@@ -16,7 +16,7 @@ const ContainerWrap = ({
   };
 
   return (
-    <div className="container-wrap rounded-xl bg-container-background w-full overflow-hidden shadow-lg relative">
+    <div className="container-wrap rounded-xl bg-container-background w-full h-full overflow-hidden shadow-lg relative">
       <div className="w-full" style={{ maxHeight: maxHeight }}>
         {title ? (
           <div className="text-center pl-5 h-10 flex justify-center items-center gap-x-2">

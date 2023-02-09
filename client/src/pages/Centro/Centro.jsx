@@ -10,6 +10,7 @@ import Avisos from "../../components/InfoCentro/Avisos";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import useLoading from "../../hooks/useLoading";
+import Planos from "../../components/InfoCentro/Planos";
 
 const Centro = () => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
@@ -99,7 +100,18 @@ const Centro = () => {
           isLoading={isLoading}
         />
       </div>
-      <div></div>
+      <div className="centro-right">
+        <ContainerWrap
+          title={"Estadísticas"}
+          img={"/assets/icons/graph.png"}
+        ></ContainerWrap>
+        <ContainerWrap
+          title={"Avisos"}
+          img={"/assets/icons/danger.png"}
+        ></ContainerWrap>
+        <ContainerWrap title={"Racks"}></ContainerWrap>
+        <Planos planos={centro.planos} />
+      </div>
     </div>
   );
 };

@@ -14,12 +14,27 @@ const Dashboard = () => {
   const [avisos, setAvisos] = useState([]);
   const [estadisticas, setEstadisticas] = useState([]);
 
+  const [search, setSearch] = useState([]);
+  const [showSearchInput, setShowSearchInput] = useState(false);
+
+  const handleSearch = (e) => {
+    if (e.target.value != "" || e.target.value != null) {
+      var centrosFiltrados = centros.filter((c) =>
+        c.centro.centro.toUpperCase().includes(e.target.value.toUpperCase())
+      );
+      setSearch(centrosFiltrados);
+    } else {
+      setSearch(centros);
+    }
+  };
+
   const getCentros = async () => {
     const res = await instance.get(apiUrls.urlGetCentros);
-    //setCentros(res.data.sort((a, b) => b.avarias.length - a.avarias.length));
-    setCentros(
-      res.data.sort((a, b) => a.centro.porcentaxe - b.centro.porcentaxe)
+    const data = res.data.sort(
+      (a, b) => a.centro.porcentaxe - b.centro.porcentaxe
     );
+    setCentros(data);
+    if (search.length < 1) setSearch(data);
   };
 
   const getAvisos = async () => {
@@ -67,17 +82,45 @@ const Dashboard = () => {
             <tr className="h-10 mt-8 bg-primary-color text-white w-full">
               <td className="text-left px-2 font-medium"></td>
               <td className="text-left px-2 font-medium">Concello</td>
-              <td className="text-left px-2 font-medium">Centro</td>
+              {!showSearchInput ? (
+                <td className="text-left px-2 font-medium">
+                  <div className="flex items-center justify-between">
+                    <div>Centro</div>
+                    <div className="mr-20">
+                      <button
+                        onClick={(e) => setShowSearchInput(true)}
+                        className="h-8 w-8 rounded-full bg-white flex items-center justify-center"
+                      >
+                        <img
+                          className="h-4 pr-px"
+                          src="/assets/icons/loupe-black.png"
+                          alt=""
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </td>
+              ) : (
+                <td className="text-left px-2 font-medium">
+                  <input
+                    type="text"
+                    onChange={handleSearch}
+                    className="w-96 outline-none pl-2 border-b border-solid border-white bg-transparent"
+                    placeholder="Centro"
+                    autoFocus={true}
+                  />
+                </td>
+              )}
               <td className="text-left px-2 font-medium">Avisos</td>
               <td className="text-left px-2 font-medium">Estadísticas</td>
-              <td></td>
+              <td className="text-left px-2 font-medium">%</td>
             </tr>
-            {centros.length < 1 ? (
+            {search.length < 1 ? (
               <ResultadosCargando />
             ) : (
               <>
-                {centros &&
-                  centros.map((centro, index) => {
+                {search &&
+                  search.map((centro, index) => {
                     var up = centro.centro.rede.electronica.filter(
                       (e) => e.status == "up"
                     );
