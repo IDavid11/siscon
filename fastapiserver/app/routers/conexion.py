@@ -1,4 +1,5 @@
 import json
+from fastapi import HTTPException, status
 from bson import json_util
 from fastapi import APIRouter
 from threading import Thread
@@ -11,6 +12,7 @@ from app.models.Conexion import IP
 from app.db import centros_collection, tipo_electronica_collection
 from app.functions.ping import network_ping
 from app.functions.monitorizar_ip import monitorizar_ip
+from starlette.responses import JSONResponse
 
 router = APIRouter(
     prefix="/conexion",
@@ -51,11 +53,9 @@ def check_network(request_centro: BuscarCentro):
     result = q.get()
 
     for item in result:
-        tipo_electronica = tipo_electronica_collection.find_one(
-            {"id": item["tipo"]})
-        item["tipo"] = tipo_electronica["nome"]
+        item["_id"] = str(item["_id"])
 
-    return json.loads(json_util.dumps(result))
+    return JSONResponse(status_code=status.HTTP_200_OK, content=result)
 
 
 @router.post("/buscar-ip")

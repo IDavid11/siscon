@@ -114,27 +114,7 @@ const InfoCentroAdmin = ({ centro, updatedCentro, setUpdatedCentro }) => {
               />
             </div>
           </div>
-          <div>
-            <div className="mt-8 w-full">
-              <div className="flex">
-                <div className="w-1/2 font-medium">LAN</div>
-                <div className="w-1/2 font-medium">DHCP</div>
-              </div>
-              <div>
-                {centro.rede.lans.map((lan) => {
-                  return (
-                    <div className="mt-2 flex">
-                      <div className="w-1/2">{lan.rango}</div>
-                      <div className="w-1/2">
-                        {lan.dhcp ? <span>Si</span> : <span>Non</span>}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-          <div className="mt-4">
+          <div className="mt-8">
             <div className="w-24 font-medium whitespace-nowrap">
               Información adicional
             </div>

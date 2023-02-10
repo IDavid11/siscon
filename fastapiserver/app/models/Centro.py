@@ -1,7 +1,5 @@
-from email.policy import default
-from typing import List
-from fastapi import Body, FastAPI
-from pydantic import BaseModel, Field
+from typing import List, Optional
+from pydantic import BaseModel
 
 
 class Lan(BaseModel):
@@ -43,9 +41,51 @@ class ActualizarCentro(BaseModel):
     contrasinais: List[str]
 
 
-class EngadirInfoRede(BaseModel):
-    centro: str
-    lans: list[Lan]
-    controladora: str
+class ActualizarLAN(BaseModel):
+    centroId: str
+    lanId: str
     rango: str
-    rango_principal: bool
+    rede: str
+    dhcp: bool
+
+
+class EngadirLAN(BaseModel):
+    centroId: str
+    rango: str
+    rede: str
+    dhcp: bool
+
+
+class LAN(BaseModel):
+    centroId: Optional[str]
+    lanId: Optional[str]
+    rango: Optional[str]
+    rede: Optional[str]
+    dhcp: Optional[bool]
+
+
+class Dispositivo(BaseModel):
+    centroId: Optional[str]
+    dispositivoId: Optional[str]
+    ip: Optional[str]
+    tipo: Optional[str]
+    modelo: Optional[str]
+    ubicacion: Optional[str]
+    nome: Optional[str]
+
+
+class Rack(BaseModel):
+    centroId: Optional[str]
+    rackId: Optional[str]
+    nome: Optional[str]
+    tipo: Optional[str]
+    ubicacion: Optional[str]
+
+
+class Plano(BaseModel):
+    centroId: Optional[str]
+    planoId: Optional[str]
+    edificioId: Optional[str]
+    nome: Optional[str]
+    tipo: Optional[str]
+    plano: Optional[str]

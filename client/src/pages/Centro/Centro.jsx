@@ -6,11 +6,13 @@ import InfoCentro from "../../components/InfoCentro/InfoCentro";
 import InfoCentroAdmin from "../../components/Admin/InfoCentroAdmin";
 import Electronica from "../../components/InfoCentro/Electronica";
 import LANs from "../../components/InfoCentro/LANs";
-import Avisos from "../../components/InfoCentro/Avisos";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import useLoading from "../../hooks/useLoading";
 import Planos from "../../components/InfoCentro/Planos";
+import Racks from "../../components/InfoCentro/Racks";
+import AvariasDetectadas from "../../components/InfoCentro/AvariasDetectadas";
+import Estadisticas from "../../components/InfoCentro/Estadisticas";
 
 const Centro = () => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
@@ -69,8 +71,8 @@ const Centro = () => {
   };
 
   useEffect(() => {
-    initCmd();
-  }, []);
+    if (!tabsInfo[selectedTab].centro.network_checked) initCmd();
+  }, [tabsInfo]);
 
   return (
     <div className="centro-container flex gap-x-20">
@@ -94,22 +96,19 @@ const Centro = () => {
       </div>
       <div className="centro-middle">
         <LANs lans={centro.rede.lans} />
-        <Avisos avisos={avarias} />
+        <AvariasDetectadas avarias={avarias} />
         <Electronica
           electronica={centro.rede.electronica}
           isLoading={isLoading}
         />
       </div>
       <div className="centro-right">
-        <ContainerWrap
-          title={"Estadísticas"}
-          img={"/assets/icons/graph.png"}
-        ></ContainerWrap>
+        <Estadisticas electronicaCentro={centro.rede.electronica} />
         <ContainerWrap
           title={"Avisos"}
           img={"/assets/icons/danger.png"}
         ></ContainerWrap>
-        <ContainerWrap title={"Racks"}></ContainerWrap>
+        <Racks racks={centro.rede.racks} />
         <Planos planos={centro.planos} />
       </div>
     </div>

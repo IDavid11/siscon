@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 from bson import json_util
 from fastapi import APIRouter, Request
 from app.db import centros_collection, monitorizacion_collection, tipo_electronica_collection
-from ..models.Centro import BuscarCentro, CrearCentro, EngadirInfoRede
+from ..models.Centro import BuscarCentro, CrearCentro, ActualizarLAN, EngadirLAN
 from starlette.responses import JSONResponse
 from fastapi import HTTPException, status
 
@@ -26,15 +26,16 @@ def centros():
         down = []
         del centro["contrasinais"]
         centro["_id"] = str(centro["_id"])
+        for lan in centro["rede"]["lans"]:
+            lan["_id"] = str(lan["_id"])
         for item in centro["rede"]["electronica"]:
+            item["_id"] = str(item["_id"])
             if item["status"] == "up":
                 up.append(item)
             if item["status"] == "down":
                 down.append(item)
-
-            tipo = tipo_electronica_collection.find_one({"id": item["tipo"]})
-            item["tipo"] = tipo["nome"]
-
+        for rack in centro["rede"]["racks"]:
+            rack["_id"] = str(rack["_id"])
         centro["porcentaxe"] = round(
             (len(up) / len(centro["rede"]["electronica"])) * 100)
 
@@ -114,21 +115,3 @@ async def actualizar_centro(request: Request):
         return JSONResponse(status_code=status.HTTP_200_OK, content="")
     except:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="")
-
-
-@router.post("/engadir-info-rede")
-async def engadir_info_rede(request: EngadirInfoRede):
-
-    centro = centros_collection.find_one(
-        {"centro": request.centro})
-
-    if centro:
-        raise HTTPException(status_code=400, detail="O centro xa existe")
-
-    info_rede = {
-        ""
-    }
-
-    centros_collection.update_one(centro, info_rede)
-
-    return "Done"

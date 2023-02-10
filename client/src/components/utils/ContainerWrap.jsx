@@ -3,6 +3,7 @@ import React from "react";
 const ContainerWrap = ({
   title,
   img,
+  span,
   editBtn,
   addBtn,
   edit,
@@ -17,13 +18,20 @@ const ContainerWrap = ({
 
   return (
     <div className="container-wrap rounded-xl bg-container-background w-full h-full overflow-hidden shadow-lg relative">
-      <div className="w-full" style={{ maxHeight: maxHeight }}>
+      <div className="w-full" style={{ height: "inherit" }}>
         {title ? (
           <div className="text-center pl-5 h-10 flex justify-center items-center gap-x-2">
             <div>
               <img className="h-6" src={img} alt="" />
             </div>
             <div className="tracking-wide font-medium text-lg">{title}</div>
+            {span ? (
+              <div className="w-8 h-8 rounded-full bg-red-200 flex items-center justify-center font-medium">
+                {span}
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         ) : (
           <></>
@@ -61,23 +69,10 @@ const ContainerWrap = ({
               ) : (
                 <></>
               )}
-              {addBtn ? (
-                <div>
-                  <button>
-                    <img
-                      className="h-6"
-                      src="/assets/icons/add-button-black.png"
-                      alt=""
-                    />
-                  </button>
-                </div>
-              ) : (
-                <></>
-              )}
             </>
           )}
         </div>
-        <div className="overflow-hidden overflow-y-scroll remove-scrollbar">
+        <div className="scroll-container overflow-hidden overflow-y-scroll remove-scrollbar">
           {children}
         </div>
       </div>

@@ -25,28 +25,28 @@ def estadisticas_centros():
         {"$collStats": {"rede.electronica": {"tipo": 1, "status": "up"}}}
     ]
 
-    filtro_routers_up = {"rede.electronica.tipo": 1,
+    filtro_routers_up = {"rede.electronica.tipo": "Router",
                          "rede.electronica.status": "up"}
     centros_up = centros_collection.count_documents(filtro_routers_up)
 
     centros_abalar = centros_collection.count_documents({"proxecto": "Abalar"})
     centros_abalar_up = centros_collection.count_documents(
         {
-            "proxecto": "Abalar", "rede.electronica.tipo": 1, "rede.electronica.status": "up"})
+            "proxecto": "Abalar", "rede.electronica.tipo": "SW_Abalar", "rede.electronica.status": "up"})
 
     sw_abalar_totais = centros_collection.count_documents(
         {"proxecto": "Abalar", "rede.electronica.tipo": 7})
     sw_abalar_up = centros_collection.count_documents({"proxecto": "Abalar",
-                                                       "rede.electronica.tipo": 7, "rede.electronica.status": "up"})
+                                                       "rede.electronica.tipo": "SW_Abalar", "rede.electronica.status": "up"})
 
     sw_siega_totais = centros_collection.count_documents(
-        {"rede.electronica.tipo": 2})
-    sw_siega_up = centros_collection.count_documents({"rede.electronica.tipo": 2,
+        {"rede.electronica.tipo": "SW_Siega"})
+    sw_siega_up = centros_collection.count_documents({"rede.electronica.tipo": "SW_Siega",
                                                       "rede.electronica.status": "up"})
 
     aps_edu_totais = centros_collection.count_documents(
-        {"rede.electronica.tipo": 4})
-    aps_edu_up = centros_collection.count_documents({"rede.electronica.tipo": 4,
+        {"rede.electronica.tipo": "AP_edu_xunta_gal"})
+    aps_edu_up = centros_collection.count_documents({"rede.electronica.tipo": "AP_edu_xunta_gal",
                                                      "rede.electronica.status": "up"})
 
     estadisticas.append({

@@ -34,10 +34,6 @@ def monitorizacions():
         for item in res:
             electronica.append(item["rede"]["electronica"])
 
-        tipo_electronica = tipo_electronica_collection.find_one(
-            {"id": electronica[0]["tipo"]})
-        electronica[0]["tipo"] = tipo_electronica["nome"]
-
         monitorizacion = {
             "_id": resultado["_id"],
             "data": resultado["data"],

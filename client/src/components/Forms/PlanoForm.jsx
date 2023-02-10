@@ -3,62 +3,62 @@ import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
 
-const RackForm = ({ rack, handleCloseModal }) => {
+const PlanoForm = ({ lan, handleCloseModal }) => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
-  const [updatedRack, setUpdatedRack] = useState({
-    _id: rack?._id || "",
-    nome: rack?.nome || "",
-    ubicacion: rack?.ubicacion || "Sen ubicar",
-    tipo: rack?.tipo || "Armario",
+  const [updatedLan, setUpdatedLan] = useState({
+    _id: lan?._id || "",
+    rango: lan?.rango || "",
+    rede: lan?.rede || "Rede principal",
+    dhcp: lan?.dhcp || false,
   });
 
   const handleInputChange = (e) => {
     if (e.target.value !== "") {
-      setUpdatedRack({ ...updatedRack, [e.target.name]: e.target.value });
+      setUpdatedLan({ ...updatedLan, [e.target.name]: e.target.value });
     } else {
-      setUpdatedRack({ ...updatedRack, [e.target.name]: "" });
+      setUpdatedLan({ ...updatedLan, [e.target.name]: "" });
     }
   };
 
-  const submitUpdateRack = async (e) => {
+  const submitUpdateLan = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlActualizarRack, {
+    const res = await instance.post(apiUrls.urlActualizarLan, {
       centroId: tabsInfo[selectedTab].centro._id,
-      rackId: updatedRack._id,
-      nome: updatedRack.nome,
-      tipo: updatedRack.tipo,
-      ubicacion: updatedRack.ubicacion,
+      lanId: updatedLan._id,
+      rango: updatedLan.rango,
+      rede: updatedLan.rede,
+      dhcp: updatedLan.dhcp,
     });
 
     const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.racks = res.data;
+    tabsInfoVar[selectedTab].centro.rede.lans = res.data;
     handleUpdateTabsInfo([...tabsInfoVar]);
     handleCloseModal();
   };
 
-  const submitEngadirRack = async (e) => {
+  const submitEngadirLan = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlEngadirRack, {
+    const res = await instance.post(apiUrls.urlEngadirLan, {
       centroId: tabsInfo[selectedTab].centro._id,
-      nome: updatedRack.nome,
-      tipo: updatedRack.tipo,
-      ubicacion: updatedRack.ubicacion,
+      rango: updatedLan.rango,
+      rede: updatedLan.rede,
+      dhcp: updatedLan.dhcp,
     });
     const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.racks.push(res.data);
+    tabsInfoVar[selectedTab].centro.rede.lans.push(res.data);
     handleUpdateTabsInfo([...tabsInfoVar]);
     handleCloseModal();
   };
 
-  const deleteRack = async (e) => {
+  const deleteLAN = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlEliminarRack, {
+    const res = await instance.post(apiUrls.urlEliminarLan, {
       centroId: tabsInfo[selectedTab].centro._id,
-      rackId: updatedRack._id,
+      lanId: updatedLan._id,
     });
     const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.racks = res.data;
+    tabsInfoVar[selectedTab].centro.rede.lans = res.data;
     handleUpdateTabsInfo([...tabsInfoVar]);
     handleCloseModal();
   };
@@ -66,10 +66,10 @@ const RackForm = ({ rack, handleCloseModal }) => {
   return (
     <form>
       <div className="flex items-end gap-x-5">
-        {rack != undefined ? (
+        {lan != undefined ? (
           <div className="mb-1">
             <button
-              onClick={deleteRack}
+              onClick={deleteLAN}
               className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
             >
               <img
@@ -83,55 +83,59 @@ const RackForm = ({ rack, handleCloseModal }) => {
           <></>
         )}
         <div className="flex flex-col">
-          <label htmlFor="nome" className="font-medium text-center mb-4">
-            Nome
+          <label htmlFor="rango" className="font-medium text-center mb-4">
+            LAN
           </label>
           <input
             type="text"
-            name="nome"
-            value={updatedRack.nome}
+            name="rango"
+            value={updatedLan.rango}
             onChange={handleInputChange}
             className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
           />
         </div>
         <div className="flex flex-col">
-          <label htmlFor="tipo" className="font-medium text-center mb-4">
-            Tipo
+          <label htmlFor="rede" className="font-medium text-center mb-4">
+            Rede
           </label>
           <select
-            name="tipo"
-            id="tipo"
-            defaultValue={updatedRack.tipo || "Armario"}
+            name="rede"
+            id="rede"
+            defaultValue={updatedLan.rede}
             onChange={handleInputChange}
             className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
           >
-            <option value="Armario">Armario</option>
-            <option value="De parede">De parede</option>
+            <option value="Rede principal">Rede principal</option>
+            <option value="Rede secundaria">Rede secundaria</option>
+            <option value="Rede edu.xunta.gal">Rede edu.xunta.gal</option>
           </select>
         </div>
         <div className="flex flex-col">
-          <label htmlFor="ubicacion" className="font-medium text-center mb-4">
-            Ubicación
+          <label htmlFor="dhcp" className="font-medium text-center mb-4">
+            DHCP
           </label>
-          <input
-            name="ubicacion"
-            id="ubicacion"
-            value={updatedRack.ubicacion}
+          <select
+            name="dhcp"
+            id="dhcp"
+            defaultValue={updatedLan.dhcp}
             onChange={handleInputChange}
             className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
-          />
+          >
+            <option value={true}>Si</option>
+            <option value={false}>Non</option>
+          </select>
         </div>
         <div>
-          {rack != undefined ? (
+          {lan != undefined ? (
             <button
-              onClick={submitUpdateRack}
+              onClick={submitUpdateLan}
               className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
             >
               Gardar
             </button>
           ) : (
             <button
-              onClick={submitEngadirRack}
+              onClick={submitEngadirLan}
               className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
             >
               Engadir
@@ -143,4 +147,4 @@ const RackForm = ({ rack, handleCloseModal }) => {
   );
 };
 
-export default RackForm;
+export default PlanoForm;
