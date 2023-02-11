@@ -20,6 +20,17 @@ export const apiUrls = {
   urlEngadirRack: "/rack/engadir",
   urlEliminarRack: "/rack/eliminar",
 
+  // PLANOS - CAMBIAR PLANO
+  urlCambiarPlano: "/plano/cambiar-plano",
+  // PLANOS - EDIFICIO
+  urlActualizarEdificio: "/plano/actualizar-edificio",
+  urlEngadirEdificio: "/plano/engadir-edificio",
+  urlEliminarEdificio: "/plano/eliminar-edificio",
+  // PLANOS - PLANTA
+  urlActualizarPlanta: "/plano/actualizar-planta",
+  urlEngadirPlanta: "/plano/engadir-planta",
+  urlEliminarPlanta: "/plano/eliminar-planta",
+
   // MONITORIZACIONS
   urlGetAvisos: "/monitorizacions/",
 

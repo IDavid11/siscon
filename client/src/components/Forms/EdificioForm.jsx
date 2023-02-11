@@ -3,21 +3,21 @@ import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
 
-const PlanoForm = ({ lan, handleCloseModal }) => {
+const PlanoForm = ({ edificio, handleCloseModal }) => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
-  const [updatedLan, setUpdatedLan] = useState({
-    _id: lan?._id || "",
-    rango: lan?.rango || "",
-    rede: lan?.rede || "Rede principal",
-    dhcp: lan?.dhcp || false,
+  const [updatedEdificio, setUpdatedEdificio] = useState({
+    nome_edificio: edificio?.nome_edificio || "",
   });
 
   const handleInputChange = (e) => {
     if (e.target.value !== "") {
-      setUpdatedLan({ ...updatedLan, [e.target.name]: e.target.value });
+      setUpdatedEdificio({
+        ...updatedEdificio,
+        [e.target.name]: e.target.value,
+      });
     } else {
-      setUpdatedLan({ ...updatedLan, [e.target.name]: "" });
+      setUpdatedEdificio({ ...updatedEdificio, [e.target.name]: "" });
     }
   };
 

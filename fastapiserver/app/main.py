@@ -3,17 +3,11 @@ from threading import Thread
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.param_functions import Depends
 from .config import origins
-from .routers import centros, monitorizacions, estadisticas, conexion, listados, usuarios, save_data, switches, dashboard, avisos, lans, tipos, electronica, racks
+from .routers import centros, monitorizacions, estadisticas, conexion, listados, usuarios, save_data, switches, dashboard, avisos, lans, tipos, electronica, racks, planos
 from .monitorizacion import monitorizacion
 from app.routers.usuarios import get_current_user
 
 ###### IMPORTANTE ######
-
-# app = FastAPI(dependencies=[Depends(get_query_token)])
-# UTILIZAR ISTO CANDO FINALICE PARA QUE TODA ACCIÓN REQUIRA ESTAR AUTENTICADO
-
-###### IMPORTANTE ######
-
 #thread = Thread(target=monitorizacion)
 #thread.daemon = True
 # thread.start()
@@ -38,6 +32,7 @@ app.include_router(lans.router)
 app.include_router(tipos.router)
 app.include_router(racks.router)
 app.include_router(electronica.router)
+app.include_router(planos.router)
 app.include_router(listados.router, dependencies=[Depends(get_current_user)])
 app.include_router(save_data.router, dependencies=[Depends(get_current_user)])
 app.include_router(switches.router)

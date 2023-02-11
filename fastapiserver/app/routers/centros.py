@@ -26,6 +26,10 @@ def centros():
         down = []
         del centro["contrasinais"]
         centro["_id"] = str(centro["_id"])
+        for plano in centro["planos"]:
+            plano["_id"] = str(plano["_id"])
+            for planta in plano["plantas"]:
+                planta["_id"] = str(planta["_id"])
         for lan in centro["rede"]["lans"]:
             lan["_id"] = str(lan["_id"])
         for item in centro["rede"]["electronica"]:

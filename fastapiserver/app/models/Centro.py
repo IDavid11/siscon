@@ -1,5 +1,6 @@
 from typing import List, Optional
 from pydantic import BaseModel
+from fastapi import File, UploadFile
 
 
 class Lan(BaseModel):
@@ -84,8 +85,14 @@ class Rack(BaseModel):
 
 class Plano(BaseModel):
     centroId: Optional[str]
-    planoId: Optional[str]
     edificioId: Optional[str]
+    plantaId: Optional[str]
     nome: Optional[str]
-    tipo: Optional[str]
     plano: Optional[str]
+
+
+class CambiarPlano(BaseModel):
+    centroId: Optional[str]
+    edificioIndex: Optional[str]
+    plantaIndex: Optional[str]
+    plano: UploadFile = File(...)

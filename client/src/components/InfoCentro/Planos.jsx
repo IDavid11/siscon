@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import ModalPlanos from "../Modales/ModalPlanos";
+import React, { useState, useEffect } from "react";
+import ModalPlanos from "../Modales/ModalPlanos/ModalPlanos";
 import ContainerWrap from "../utils/ContainerWrap";
 
 const Planos = ({ planos }) => {
@@ -8,6 +8,8 @@ const Planos = ({ planos }) => {
   const handleShowModal = () => {
     setShowModal(!showModal);
   };
+
+  useEffect(() => {}, [planos]);
 
   return (
     <>
@@ -34,6 +36,13 @@ const Planos = ({ planos }) => {
                     key={index}
                     className="font-medium hover:bg-gray-200 cursor-pointer"
                   >
+                    <td className="py-2.5 px-2 w-10">
+                      <img
+                        className="h-6"
+                        src="/assets/icons/school-building.png"
+                        alt=""
+                      />
+                    </td>
                     <td className="py-2.5 px-2">{plano.nome_edificio}</td>
                     <td className="py-2.5 px-2">
                       <span className="py-1.5 px-4 text-sm bg-gray-200 rounded-full">
