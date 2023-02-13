@@ -8,6 +8,8 @@
   font-size: 13px;
 }
 
+input, select, textarea {outline: none;}
+
 /* VARIABLES USADAS */
 
 .modal {

@@ -1,9 +1,8 @@
 import React, { useContext, useState, useEffect } from "react";
 import TabsInfoContext from "../../context/TabsInfoContext";
-import { actualizarCentro } from "../../services/actualizarCentro";
 import ContainerWrap from "../../components/utils/ContainerWrap";
 import InfoCentro from "../../components/InfoCentro/InfoCentro";
-import InfoCentroAdmin from "../../components/Admin/InfoCentroAdmin";
+import InfoCentroForm from "../../components/Forms/InfoCentroForm";
 import Electronica from "../../components/InfoCentro/Electronica";
 import LANs from "../../components/InfoCentro/LANs";
 import { instance } from "../../services/axios";
@@ -13,6 +12,7 @@ import Planos from "../../components/InfoCentro/Planos";
 import Racks from "../../components/InfoCentro/Racks";
 import AvariasDetectadas from "../../components/InfoCentro/AvariasDetectadas";
 import Estadisticas from "../../components/InfoCentro/Estadisticas";
+import { randomImg } from "../../utils/randomImg";
 
 const Centro = () => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
@@ -22,14 +22,8 @@ const Centro = () => {
   const [centro, setCentro] = useState(tabsInfo[selectedTab].centro);
   const [avarias, setAvarias] = useState(tabsInfo[selectedTab].avarias);
 
-  const [updatedLans, setUpdatedLans] = useState(
-    tabsInfo[selectedTab].centro.rede.lans
-  );
-
-  const [updatedCentro, setUpdatedCentro] = useState(
-    tabsInfo[selectedTab].centro
-  );
   const [edit, setEdit] = useState(false);
+  const img = randomImg();
 
   const initCmd = async () => {
     let componentMounted = true;
@@ -56,20 +50,6 @@ const Centro = () => {
     handleUpdateTabsInfo([...tabsInfoVar]);
   };
 
-  const handleUpdateData = async () => {
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro = updatedCentro;
-    handleUpdateTabsInfo(tabsInfoVar);
-    await actualizarCentro(tabsInfoVar[selectedTab].centro);
-    setEdit(false);
-  };
-
-  const submitUpdatedCentro = async () => {
-    updatedCentro.rede.lans = updatedLans;
-    const centro = await actualizarCentro(updatedCentro);
-    //handleUpdateTabsInfo(tabsInfoVar)
-  };
-
   useEffect(() => {
     if (!tabsInfo[selectedTab].centro.network_checked) initCmd();
   }, [tabsInfo]);
@@ -77,22 +57,11 @@ const Centro = () => {
   return (
     <div className="centro-container flex gap-x-20">
       <div>
-        <ContainerWrap
-          editBtn={true}
-          edit={edit}
-          setEdit={setEdit}
-          handleUpdateData={handleUpdateData}
-        >
-          {!edit ? (
-            <InfoCentro centro={centro} />
-          ) : (
-            <InfoCentroAdmin
-              centro={centro}
-              updatedCentro={updatedCentro}
-              setUpdatedCentro={setUpdatedCentro}
-            />
-          )}
-        </ContainerWrap>
+        {!edit ? (
+          <InfoCentro centro={centro} img={img} setEdit={setEdit} />
+        ) : (
+          <InfoCentroForm centro={centro} img={img} setEdit={setEdit} />
+        )}
       </div>
       <div className="centro-middle">
         <LANs lans={centro.rede.lans} />

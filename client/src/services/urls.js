@@ -3,7 +3,7 @@ export const apiUrls = {
   urlGetFullDashboard: "/dashboard/",
   // CENTROS
   urlGetCentros: "/centros/",
-  urlActualizarCentro: "/centros/actualizar-centro",
+  urlActualizarCentro: "/centros/actualizar",
 
   // LANS
   urlActualizarLan: "/lan/actualizar",

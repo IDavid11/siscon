@@ -19,6 +19,17 @@ class BuscarCentro(BaseModel):
     index: str
 
 
+class Centro(BaseModel):
+    centroId: Optional[str]
+    centro: str
+    sf: str
+    concello: str
+    proxecto: str
+    tap: str
+    tar: str
+    comentario: str
+
+
 class CrearCentro(BaseModel):
     sf: str
     codigo: str
