@@ -137,11 +137,29 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
     });
     const tabsInfoVar = tabsInfo;
     tabsInfoVar[selectedTab].centro.planos = res.data;
+    setEdificioSeleccionado(
+      tabsInfoVar[selectedTab].centro.planos.find(
+        (e) => e._id === edificioSeleccionado._id
+      )
+    );
     handleUpdateTabsInfo([...tabsInfoVar]);
     setIsChangingPlanta(false);
   };
 
-  useEffect(() => {}, [planos, tabsInfo]);
+  useEffect(() => {
+    const edfSeleccionado = tabsInfo[selectedTab].centro.planos.find(
+      (e) => e._id === edificioSeleccionado._id
+    );
+    setEdificioSeleccionado(edfSeleccionado);
+    setPlantas(edfSeleccionado.plantas);
+  }, [
+    planos,
+    edificioSeleccionado,
+    plantaSeleccionada,
+    plantas,
+    visiblePlano,
+    tabsInfo,
+  ]);
 
   return (
     <Modal title={"Planos"} handleCloseModal={handleCloseModal}>
@@ -176,7 +194,7 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                       setHoverEdificio(null);
                     }}
                     className={`${
-                      edificioSeleccionado == edificio
+                      edificioSeleccionado?._id == edificio._id
                         ? "bg-gray-200 shadow-md"
                         : ""
                     } ${
@@ -184,7 +202,8 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                     } w-72 h-10 hover:bg-gray-200 rounded-xl flex items-center pl-4 cursor-pointer border border-solid border-gray-300`}
                     onClick={(e) => handleSeleccionarEdificio(edificio)}
                   >
-                    {isChangingEdificio && edificioSeleccionado == edificio ? (
+                    {isChangingEdificio &&
+                    edificioSeleccionado?._id === edificio._id ? (
                       <>
                         <div>
                           <button
@@ -228,7 +247,8 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                           />
                         </div>
                         <div className="ml-4">{edificio.nome_edificio}</div>
-                        {isMouseOverItem && hoverEdificio === edificio ? (
+                        {isMouseOverItem &&
+                        hoverEdificio?._id === edificio._id ? (
                           <div className="ml-auto pr-4 pt-1">
                             <button
                               onClick={(e) => {
@@ -321,6 +341,7 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                 return (
                   <div
                     key={planta._id}
+                    id={planta._id}
                     onMouseOver={(e) => {
                       setIsMouseOverItem(true);
                       setHoverPlanta(planta);
@@ -330,7 +351,7 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                       setHoverPlanta(null);
                     }}
                     className={`${
-                      plantaSeleccionada === planta
+                      plantaSeleccionada?._id === planta._id
                         ? "bg-gray-200 shadow-md"
                         : ""
                     } ${
@@ -338,7 +359,8 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                     } w-52 h-10 hover:bg-gray-200 rounded-xl flex items-center pl-4 cursor-pointer border border-solid border-gray-300`}
                     onClick={(e) => handleSeleccionarPlanta(planta)}
                   >
-                    {isChangingPlanta && plantaSeleccionada === planta ? (
+                    {isChangingPlanta &&
+                    plantaSeleccionada?._id === planta._id ? (
                       <>
                         <div>
                           <button
@@ -382,7 +404,7 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                           />
                         </div>
                         <div className="ml-4">{planta.planta}</div>
-                        {isMouseOverItem && hoverPlanta === planta ? (
+                        {isMouseOverItem && hoverPlanta?._id === planta._id ? (
                           <div className="ml-auto pr-4 pt-1">
                             <button
                               onClick={(e) => {
@@ -500,8 +522,8 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
           </div>
         ) : (
           <CambiarPlanoForm
-            edificioId={edificioSeleccionado}
-            plantaId={plantaSeleccionada}
+            edificioId={edificioSeleccionado._id}
+            plantaId={plantaSeleccionada._id}
             handleCloseModal={handleIsChangingImage}
           />
         )}

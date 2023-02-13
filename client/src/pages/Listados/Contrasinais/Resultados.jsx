@@ -5,7 +5,7 @@ const Resultados = ({ data }) => {
     <>
       {data.map((key, index) => {
         return (
-          <tr key={index}>
+          <tr key={data[index]._id}>
             <td className="py-1.5 px-2">{data[index].nome}</td>
             <td className="py-1.5 px-2">{data[index].centro}</td>
             <td className="py-1.5 px-2">{data[index].contrasinal}</td>

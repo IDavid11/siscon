@@ -183,14 +183,39 @@ def eliminar_planta(request: Plano):
 #### PLANOS ####
 
 @router.post("/cambiar-plano")
-async def cambiar_plano(plano: UploadFile = File(...), centroId: str = Form(...), edificioIndex: int = Form(...), plantaIndex: int = Form(...)):
+async def cambiar_plano(plano: UploadFile = File(...), centroId: str = Form(...), edificioId: str = Form(...), plantaId: str = Form(...)):
     try:
-        planoUrl = await cloudinaryFunctions.upload_photo(plano)
-        centros_collection.update_one({"_id": ObjectId(centroId)}, {"$set": {
-                                      f"planos[{edificioIndex}]['plantas'][{plantaIndex}]['plano']": planoUrl}})
-        return JSONResponse(status_code=status.HTTP_200_OK, content={"centroId": centroId,
-                                                                     "edificioIndex": edificioIndex,
-                                                                     "plantaIndex": plantaIndex,
-                                                                     "plano": plano.filename, })
+        centro = centros_collection.find_one({"_id": ObjectId(centroId)})
+        if not centro:
+            raise HTTPException(
+                status_code=500, detail="Non se atopou o centro indicado")
+
+        planos = centro["planos"]
+        for edificio in planos:
+            if str(edificio["_id"]) == edificioId:
+                for planta in edificio["plantas"]:
+                    if str(planta["_id"]) == plantaId:
+                        if planta["plano"] and planta["plano"] != "":
+                            delStatus = await cloudinaryFunctions.delete_photo(
+                                planta["plano"])
+                            if delStatus["result"] != "ok":
+                                raise HTTPException(
+                                    status_code=500, detail="Erro eliminando a foto actual")
+                        planoUrl = await cloudinaryFunctions.upload_photo(plano)
+                        if not planoUrl:
+                            raise HTTPException(
+                                status_code=500, detail="Erro subindo a foto")
+                        else:
+                            planta["plano"] = planoUrl
+
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"planos": planos}})
+
+        for edificio in planos:
+            edificio["_id"] = str(edificio["_id"])
+            for planta in edificio["plantas"]:
+                planta["_id"] = str(planta["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content=planos)
     except KeyError:
         return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": True, "message": "Erro cambiando a foto"})

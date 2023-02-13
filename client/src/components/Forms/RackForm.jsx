@@ -64,7 +64,7 @@ const RackForm = ({ rack, handleCloseModal }) => {
   };
 
   return (
-    <form>
+    <form onSubmit={rack != undefined ? submitEngadirRack : submitUpdateRack}>
       <div className="flex items-end gap-x-5">
         {rack != undefined ? (
           <div className="mb-1">

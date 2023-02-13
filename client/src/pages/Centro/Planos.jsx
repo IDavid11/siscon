@@ -41,12 +41,11 @@ const Planos = ({ centro }) => {
             <ContainerWrap>
               <div className="planos-nav">
                 <dl>
-                  {planos.map((edificio, index) => {
+                  {planos.map((edificio) => {
                     return (
                       <>
                         <dt
-                          key={index}
-                          id={index}
+                          key={edificio._id}
                           className={visiblePlano === index ? "active" : ""}
                           href=""
                         >

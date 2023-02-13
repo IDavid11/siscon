@@ -4,7 +4,7 @@ import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
 
-const CambiarPlanoForm = ({ edificioIndex, plantaIndex, handleCloseModal }) => {
+const CambiarPlanoForm = ({ edificioId, plantaId, handleCloseModal }) => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
   const [files, setFiles] = useState([]);
@@ -18,7 +18,6 @@ const CambiarPlanoForm = ({ edificioIndex, plantaIndex, handleCloseModal }) => {
         })
       )
     );
-    console.log(acceptedFiles);
   }, []);
 
   const {
@@ -27,22 +26,16 @@ const CambiarPlanoForm = ({ edificioIndex, plantaIndex, handleCloseModal }) => {
     isDragActive,
     isDragAccept,
     isDragReject,
-  } = useDropzone({ onDrop, accept: "image/*", maxFiles: 2 });
-
-  const thumbs = files.map((file) => (
-    <div key={file.name}>
-      <span>{file.name}</span>
-    </div>
-  ));
+  } = useDropzone({ onDrop, accept: "image/*", maxFiles: 1 });
 
   const handleSubmitImage = async () => {
     const formData = new FormData();
     formData.append("plano", files[0]);
     formData.append("centroId", tabsInfo[selectedTab].centro._id);
-    formData.append("edificioId", edificioIndex);
-    formData.append("plantaId", plantaIndex);
+    formData.append("edificioId", edificioId);
+    formData.append("plantaId", plantaId);
     const res = await instance.post(apiUrls.urlCambiarPlano, formData);
-    console.log(res.data);
+    if (res.status === 200) handleCloseModal();
   };
 
   useEffect(
