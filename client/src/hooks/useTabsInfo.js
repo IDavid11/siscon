@@ -14,8 +14,10 @@ import {
 } from "../context/types";
 
 export default function TabsInfoState({ isLoading, children }) {
+  const sessionTabsInfo = sessionStorage.getItem("tabsInfo");
+  const sessionTabsInfoJSON = JSON.parse(sessionTabsInfo);
   const initialState = {
-    tabsInfo: initialTabsInfoState,
+    tabsInfo: sessionTabsInfoJSON ? sessionTabsInfoJSON : initialTabsInfoState,
     selectedTab: 0,
   };
 

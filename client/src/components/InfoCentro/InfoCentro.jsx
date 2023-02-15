@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ContainerWrap from "../utils/ContainerWrap";
 
 const InfoCentro2 = ({ centro, setEdit, img }) => {

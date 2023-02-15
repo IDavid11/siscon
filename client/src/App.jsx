@@ -20,6 +20,7 @@ function App() {
     const localToken = localStorage.getItem("token");
     if (localToken) setUser(localToken);
     if (localToken === null) setUser(null);
+    const sessionTabsInfo = sessionStorage.getItem("tabsInfo");
     sessionStorage.setItem("tabsInfo", JSON.stringify(tabsInfo));
   }, [user, selectedTab, tabsInfo]);
 

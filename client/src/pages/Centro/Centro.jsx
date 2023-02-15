@@ -27,7 +27,6 @@ const Centro = () => {
 
   const initCmd = async () => {
     let componentMounted = true;
-    console.log(tabsInfo[selectedTab].centro.network_checked);
     if (
       tabsInfo[selectedTab].centro.network_checked === false &&
       componentMounted
@@ -52,6 +51,7 @@ const Centro = () => {
 
   useEffect(() => {
     if (!tabsInfo[selectedTab].centro.network_checked) initCmd();
+    setCentro(tabsInfo[selectedTab].centro);
   }, [tabsInfo]);
 
   return (
