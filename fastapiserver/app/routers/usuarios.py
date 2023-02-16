@@ -2,17 +2,18 @@ from fastapi import APIRouter, Response
 from datetime import datetime, timedelta
 from typing import Optional
 
-from fastapi import Depends, HTTPException, status, Cookie
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.hash import pbkdf2_sha256
 from passlib.context import CryptContext
-from pydantic import BaseModel
 from starlette.responses import JSONResponse
+from pymongo.collection import ReturnDocument
 
 from app.db import users_collection
 from app import config
-from app.models.Usuario import AddUser, Login, SearchUser, TokenData, User
+from app.models.Usuario import Login, SearchUser, TokenData, User, Usuario
+from bson.objectid import ObjectId
 
 router = APIRouter(
     prefix="/usuarios", tags=["usuarios"], responses={404: {"description": "Not found"}}
@@ -143,26 +144,40 @@ def get_users():
     return users
 
 
-@router.post("/add-user")
-def get_users(form_request: AddUser):
-    user = form_request.username
-    user_db = users_collection.find_one({"usuario": user})
+@router.post("/engadir")
+def engadir_usuario(request: User):
+    user_db = users_collection.find_one({"usuario": request.usuario})
     if user_db:
-        return {"error": "Usuario xa rexistrado na base de datos"}
+        raise HTTPException(
+            status_code=500, detail="Xa existe o usuario indicado na base de datos")
     users_collection.insert_one({
-        "nome": form_request.name,
-        "usuario": form_request.username,
-        "grupo": form_request.group,
+        "nome": request.nome,
+        "usuario": request.usuario,
+        "grupo": request.grupo,
         "autenticado": False,
         "admin": False
     })
-    return user
+    return JSONResponse(status_code=status.HTTP_200_OK, content="ok")
 
 
-@router.delete("/delete-user", tags=["usuarios"])
-def delete_user(user_request: SearchUser):
-    print(user_request.username)
+@router.post("/actualizar")
+def actualizar_usuario(request: Usuario):
+    user_db = users_collection.find_one({"_id": ObjectId(request.usuarioId)})
+    if not user_db:
+        raise HTTPException(
+            status_code=500, detail="Non se atopou o usuario indicado")
+    usuario_actualizado = users_collection.find_one_and_update({"usuario": request.usuario}, {"$set": {
+        "nome": request.nome,
+        "usuario": request.usuario,
+        "grupo": request.grupo,
+    }}, return_document=ReturnDocument.AFTER)
+    usuario_actualizado["_id"] = str(usuario_actualizado["_id"])
+    return JSONResponse(status_code=status.HTTP_200_OK, content=usuario_actualizado)
+
+
+@router.post("/eliminar")
+def eliminar_usuario(request: Usuario):
     users_collection.find_one_and_delete(
-        {'usuario': user_request.username})
+        {'_id': ObjectId(request.usuarioId)})
 
-    return "Done"
+    return JSONResponse(status_code=status.HTTP_200_OK, content="ok")

@@ -18,10 +18,11 @@ class Group(str, Enum):
     aplicacions = "aplicacions"
 
 
-class AddUser(BaseModel):
-    name: str
-    username: str
-    group: Group
+class Usuario(BaseModel):
+    usuarioId: Optional[str]
+    nome: Optional[str]
+    usuario: str
+    grupo: Optional[str]
 
 
 class Token(BaseModel):
@@ -34,13 +35,13 @@ class TokenData(BaseModel):
 
 
 class User(BaseModel):
-    username: str
-    full_name: Optional[str] = None
-    group: Optional[str] = None
-    authenticated: Optional[bool] = False
+    usuario: str
+    nome: Optional[str] = None
+    grupo: Optional[str] = 'n1'
+    autenticado: Optional[bool] = False
     admin: Optional[bool] = False
-    password: Optional[str] = None
+    contrasinal: Optional[str] = None
 
 
 class UserInDB(User):
-    hashed_password: str
+    contrasinal_hashed: str

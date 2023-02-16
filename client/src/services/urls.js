@@ -46,8 +46,10 @@ export const apiUrls = {
   // TIPO ELECTRÓNICA
   urlObterTiposDispositivos: "/tipos/",
 
-  // USER
-  urlGetSavedProperties: "/user/saved-properties",
+  // USUARIO
+  urlActualizarUsuario: "/usuarios/actualizar",
+  urlEngadirUsuario: "/usuarios/engadir",
+  urlEliminarUsuario: "/usuarios/eliminar",
 
   // AUTH
   urlCheckUser: "/auth/check-user",
