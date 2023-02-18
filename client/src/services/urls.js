@@ -42,6 +42,9 @@ export const apiUrls = {
 
   // SWITCHES
   urlObterSwitches: "/switches/",
+  urlActualizarSwitch: "/switches/actualizar",
+  urlEngadirSwitch: "/switches/engadir",
+  urlEliminarSwitch: "/switches/eliminar",
 
   // TIPO ELECTRÓNICA
   urlObterTiposDispositivos: "/tipos/",
@@ -50,6 +53,7 @@ export const apiUrls = {
   urlActualizarUsuario: "/usuarios/actualizar",
   urlEngadirUsuario: "/usuarios/engadir",
   urlEliminarUsuario: "/usuarios/eliminar",
+  urlRenovarContrasinalUsuario: "/usuarios/renovar-contrasinal",
 
   // AUTH
   urlCheckUser: "/auth/check-user",

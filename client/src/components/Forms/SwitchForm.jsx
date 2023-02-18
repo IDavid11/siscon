@@ -2,90 +2,82 @@ import React, { useState } from "react";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 
-const UsuarioForm = ({ usuario, handleCloseModal, users, setUsers }) => {
+const SwitchForm = ({ sw, handleCloseModal, setSwitches }) => {
   const [isError, setIsError] = useState(false);
   const [error, setError] = useState("");
-  const [newUser, setNewUser] = useState({
-    usuarioId: usuario?._id || "",
-    nome: usuario?.nome || "",
-    usuario: usuario?.usuario || "",
-    grupo: usuario?.grupo || "n1",
+  const [updatedSw, setUpdatedSw] = useState({
+    swId: sw?._id || "",
+    nome: sw?.nome || "",
+    portos: sw?.portos || "",
   });
 
   const handleInputChange = (e) => {
     if (e.target.value !== "") {
-      setNewUser({ ...newUser, [e.target.name]: e.target.value });
+      setUpdatedSw({ ...updatedSw, [e.target.name]: e.target.value });
     } else {
-      setNewUser({ ...newUser, [e.target.name]: "" });
+      setUpdatedSw({ ...updatedSw, [e.target.name]: "" });
     }
   };
 
   const submitUpdateUsuario = async (e) => {
     e.preventDefault();
-    console.log(newUser);
-    const res = await instance.post(apiUrls.urlActualizarUsuario, newUser);
-    if (res.data.error) {
+    const { data } = await instance.post(
+      apiUrls.urlActualizarSwitch,
+      updatedSw
+    );
+    if (data.error) {
       setIsError(true);
-      setError(res.data.error);
+      setError(data.message);
     }
-    if (!res.data.error) {
-      console.log(users);
+    if (!data.error) {
       setIsError(false);
       setError("");
-      setUsers(res.data);
+      setSwitches(data.data);
       handleCloseModal();
     }
   };
 
   const submitEngadirUsuario = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlEngadirUsuario, newUser);
-    if (res.data.error) {
+    const { data } = await instance.post(apiUrls.urlEngadirSwitch, updatedSw);
+    console.log(data);
+    if (data.error) {
       setIsError(true);
-      setError(res.data.error);
+      setError(data.message);
     }
-    if (!res.data.error) {
+    if (!data.error) {
       setIsError(false);
       setError("");
-      setUsers(res.data);
+      setSwitches(data.data);
       handleCloseModal();
     }
   };
 
-  const submitRenovarContrasinal = async (e) => {
-    e.preventDefault();
-    const res = await instance.post(
-      apiUrls.urlRenovarContrasinalUsuario,
-      newUser
-    );
-    if (res.data.error) {
+  const deleteSw = async () => {
+    console.log(updatedSw);
+    const { data } = await instance.post(apiUrls.urlEliminarSwitch, updatedSw);
+    if (data.error) {
       setIsError(true);
-      setError(res.data.error);
+      setError(data.message);
     }
-    if (!res.data.error) {
+    if (!data.error) {
       setIsError(false);
       setError("");
+      setSwitches(data.data);
       handleCloseModal();
     }
-  };
-
-  const deleteUsuario = async () => {
-    const res = await instance.post(apiUrls.urlEliminarUsuario, {
-      usuarioId: usuario._id,
-    });
-    setUsers(res.data);
   };
 
   return (
     <form
       autoComplete="off"
-      onSubmit={usuario ? submitUpdateUsuario : submitEngadirUsuario}
+      onSubmit={sw ? submitUpdateUsuario : submitEngadirUsuario}
     >
       <div className="flex items-end gap-x-5">
-        {usuario != undefined ? (
+        {sw != undefined ? (
           <div className="mb-1">
             <button
-              onClick={deleteUsuario}
+              onClick={deleteSw}
               className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
             >
               <img
@@ -105,38 +97,22 @@ const UsuarioForm = ({ usuario, handleCloseModal, users, setUsers }) => {
           <input
             type="text"
             name="nome"
-            value={newUser.nome}
+            value={updatedSw.nome}
             onChange={handleInputChange}
             className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
           />
         </div>
         <div className="flex flex-col">
-          <label htmlFor="usuario" className="font-medium text-center mb-4">
-            Usuario
+          <label htmlFor="portos" className="font-medium text-center mb-4">
+            Portos
           </label>
           <input
             type="text"
-            name="usuario"
-            value={newUser.usuario}
+            name="portos"
+            value={updatedSw.portos}
             onChange={handleInputChange}
             className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
           />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="grupo" className="font-medium text-center mb-4">
-            Grupo
-          </label>
-          <select
-            name="grupo"
-            id="grupo"
-            defaultValue={newUser.grupo}
-            onChange={handleInputChange}
-            className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
-          >
-            <option value="n1">N1</option>
-            <option value="sistemas">Sistemas N2</option>
-            <option value="aplicacions">Aplicacións N2</option>
-          </select>
         </div>
         {isError ? (
           <div className="form-add-user-error-container">
@@ -146,7 +122,7 @@ const UsuarioForm = ({ usuario, handleCloseModal, users, setUsers }) => {
           <></>
         )}
         <div>
-          {usuario != undefined ? (
+          {sw != undefined ? (
             <button
               onClick={submitUpdateUsuario}
               className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
@@ -163,17 +139,8 @@ const UsuarioForm = ({ usuario, handleCloseModal, users, setUsers }) => {
           )}
         </div>
       </div>
-      {usuario != undefined ? (
-        <div className="mt-4">
-          <button className="font-medium" onClick={submitRenovarContrasinal}>
-            Renovar contrasinal
-          </button>
-        </div>
-      ) : (
-        <></>
-      )}
     </form>
   );
 };
 
-export default UsuarioForm;
+export default SwitchForm;

@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import UsuarioItem from "../../../components/Admin/UsuarioItem";
-import { buscarUsuarios } from "../../../services/usuarios";
-import ModalUsuario from "../../../components/Modales/ModalUsuario";
-import ContainerWrap from "../../../components/utils/ContainerWrap";
+import { buscarUsuarios } from "../../services/usuarios";
+import ModalUsuario from "../../components/Modales/ModalUsuario";
+import ContainerWrap from "../../components/utils/ContainerWrap";
 
 const Usuarios = () => {
   const [users, setUsers] = useState([]);
@@ -31,29 +30,32 @@ const Usuarios = () => {
           onClick={(e) => handleShowModal(undefined)}
         >
           <div className="flex items-center justify-center">
-            <img className="h-5" src="assets/icons/add-user.png" alt="" />
-            <span className="ml-2">Engadir usuario</span>
+            <img className="h-5" src="assets/icons/add-button.png" alt="" />
+            <span className="ml-2 pb-px">Engadir usuario</span>
           </div>
         </button>
       </div>
       <ContainerWrap>
-        <table className="rounded-xl overflow-hidden w-full table-fixed">
+        <table className="rounded-xl w-full table-fixed">
           <tbody>
             <tr className="h-10 bg-gray-200">
               <th className="text-left px-20">Nome</th>
               <th className="text-left px-20">Usuario</th>
               <th className="text-left px-20">Grupo</th>
-              <th className="text-left px-20">Accións</th>
             </tr>
             {users.map((usuario) => {
               return (
-                <UsuarioItem
+                <tr
                   key={usuario._id}
-                  usuario={usuario}
-                  handleShowModal={handleShowModal}
-                  users={users}
-                  setUsers={setUsers}
-                />
+                  onClick={(e) => handleShowModal(usuario)}
+                  className="font-medium hover:bg-gray-200 cursor-pointer"
+                >
+                  <td className="text-left px-20 py-2">{usuario.nome}</td>
+                  <td className="text-left px-20 py-2">{usuario.usuario}</td>
+                  <td className="text-left px-20 py-2 capitalize">
+                    {usuario.grupo}
+                  </td>
+                </tr>
               );
             })}
           </tbody>

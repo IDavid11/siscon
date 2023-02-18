@@ -7,22 +7,22 @@ const ResultadosCargando = () => {
         return (
           <tr key={i}>
             <td className="py-1.5 px-2">
-              <div className="h-6 w-full bg-cell-loading rounded-full"></div>
+              <div className="h-6 bg-cell-loading rounded-full"></div>
             </td>
             <td className="py-1.5 px-2">
-              <div className="h-6 w-full bg-cell-loading rounded-full"></div>
+              <div className="h-6 bg-cell-loading rounded-full"></div>
             </td>
             <td className="py-1.5 px-2">
-              <div className="h-6 w-full bg-cell-loading rounded-full"></div>
+              <div className="h-6 bg-cell-loading rounded-full"></div>
             </td>
             <td className="py-1.5 px-2">
-              <div className="h-6 w-full bg-cell-loading rounded-full"></div>
+              <div className="h-6 bg-cell-loading rounded-full"></div>
             </td>
             <td className="py-1.5 px-2">
-              <div className="h-6 w-full bg-cell-loading rounded-full"></div>
+              <div className="h-6 bg-cell-loading rounded-full"></div>
             </td>
             <td className="py-1.5 px-2">
-              <div className="h-6 w-full bg-cell-loading rounded-full"></div>
+              <div className="h-6 bg-cell-loading rounded-full"></div>
             </td>
           </tr>
         );

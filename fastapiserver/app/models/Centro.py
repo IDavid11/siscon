@@ -107,3 +107,9 @@ class CambiarPlano(BaseModel):
     edificioIndex: Optional[str]
     plantaIndex: Optional[str]
     plano: UploadFile = File(...)
+
+
+class Switch(BaseModel):
+    swId: Optional[str]
+    nome: Optional[str]
+    portos: Optional[str]

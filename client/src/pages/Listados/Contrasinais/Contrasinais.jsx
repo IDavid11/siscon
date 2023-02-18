@@ -17,16 +17,16 @@ const Contrasinais = () => {
   };
 
   return (
-    <>
+    <div className="listado-container remove-scrollbar">
       <SearchForm
         search={search}
         setSearch={setSearch}
         handleSearch={handleSearch}
         isError={isError}
       />
-      <div className="mt-8">
-        <table className="rounded-xl overflow-hidden">
-          <tbody className="tbody-screen remove-scrollbar bg-white rounded-b-xl overflow-hidden">
+      <div className="listado mt-8">
+        <table className="rounded-xl overflow-hidden w-full bg-white">
+          <tbody className=" rounded-b-xl overflow-hidden">
             <tr className="h-10 bg-gray-200 w-full">
               <th className="text-left px-2">Nome</th>
               <th className="text-left px-2">Centro</th>
@@ -46,7 +46,7 @@ const Contrasinais = () => {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 };
 

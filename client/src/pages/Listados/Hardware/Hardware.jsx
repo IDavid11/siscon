@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import ModalHardware from "../../../components/Modales/ModalHardware";
 import SearchForm from "../../../components/utils/SearchForm";
 import { useFileSearch } from "../../../hooks/useFileSearch";
 import Resultados from "./Resultados";
@@ -6,10 +7,17 @@ import ResultadosCargando from "./ResultadosCargando";
 
 const Hardware = () => {
   const [search, setSearch] = useState("");
-  const { data, findData, isLoading, isError } = useFileSearch({
+  const [showModal, setShowModal] = useState(false);
+  const [modalHardware, setModalHardware] = useState();
+  const { data, setData, findData, isLoading, isError } = useFileSearch({
     search,
     listado: "hardware",
   });
+
+  const handleShowModal = (hardware) => {
+    setShowModal(!showModal);
+    setModalHardware(hardware);
+  };
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -17,47 +25,63 @@ const Hardware = () => {
   };
 
   return (
-    <>
-      <SearchForm
-        search={search}
-        setSearch={setSearch}
-        handleSearch={handleSearch}
-        isError={isError}
-      />
-      <div className="mt-8">
-        <table className="rounded-xl overflow-hidden">
-          <tbody className="tbody-screen remove-scrollbar bg-white rounded-b-xl overflow-hidden">
-            <tr className="h-10 bg-gray-200 min-w-full">
-              <th className="text-left px-2">Garantía</th>
-              <th className="text-left px-2">Marca e modelo</th>
-              <th className="text-left px-2">Expediente</th>
-              <th className="text-left px-2">S/N</th>
-              <th className="text-left px-2">Técnico</th>
-              <th className="text-left px-2">Grupo</th>
-              <th className="text-left px-2">Equipamento</th>
-              <th className="text-left px-2">S.O</th>
-            </tr>
-            {isLoading && findData.length < 1 && data.length < 1 ? (
-              <ResultadosCargando />
-            ) : (
-              <></>
-            )}
-
-            {!isError ? (
-              <>
-                {findData.length > 0 && findData.length < 25 ? (
-                  <Resultados data={findData} />
-                ) : (
-                  <Resultados data={data} />
-                )}
-              </>
-            ) : (
-              <></>
-            )}
-          </tbody>
-        </table>
+    <div className="listado-container remove-scrollbar">
+      <div className="flex items-center justify-between">
+        <SearchForm
+          search={search}
+          setSearch={setSearch}
+          handleSearch={handleSearch}
+          isError={isError}
+        />
+        <div>
+          <button
+            className="flex itesm-center justify-center py-4 px-10 rounded-xl float-right bg-primary-color text-white"
+            onClick={(e) => handleShowModal(undefined)}
+          >
+            <div className="flex items-center justify-center">
+              <img className="h-5" src="assets/icons/add-button.png" alt="" />
+              <span className="ml-2 pb-px">Engadir hardware</span>
+            </div>
+          </button>
+        </div>
       </div>
-    </>
+      <div className="listado mt-8">
+        {isLoading && findData.length < 1 && data.length < 1 ? (
+          <ResultadosCargando />
+        ) : (
+          <></>
+        )}
+
+        {!isError ? (
+          <>
+            {findData.length > 0 && findData.length < 25 ? (
+              <Resultados
+                data={findData}
+                showAll={true}
+                handleShowModal={handleShowModal}
+              />
+            ) : (
+              <Resultados
+                data={data}
+                showAll={false}
+                handleShowModal={handleShowModal}
+              />
+            )}
+          </>
+        ) : (
+          <></>
+        )}
+      </div>
+      {showModal ? (
+        <ModalHardware
+          hardware={modalHardware}
+          handleCloseModal={handleShowModal}
+          setData={setData}
+        />
+      ) : (
+        <></>
+      )}
+    </div>
   );
 };
 

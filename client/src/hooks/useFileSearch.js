@@ -39,5 +39,5 @@ export function useFileSearch({ search, listado }) {
     }
   }, [search]);
 
-  return { data, findData, isLoading, isError };
+  return { data, setData, findData, isLoading, isError };
 }

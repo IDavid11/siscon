@@ -157,7 +157,12 @@ def engadir_usuario(request: User):
         "autenticado": False,
         "admin": False
     })
-    return JSONResponse(status_code=status.HTTP_200_OK, content="ok")
+    usuarios = []
+    resultados = users_collection.find()
+    for usuario in resultados:
+        usuario["_id"] = str(usuario["_id"])
+        usuarios.append(usuario)
+    return JSONResponse(status_code=status.HTTP_200_OK, content=usuarios)
 
 
 @router.post("/actualizar")
@@ -166,18 +171,46 @@ def actualizar_usuario(request: Usuario):
     if not user_db:
         raise HTTPException(
             status_code=500, detail="Non se atopou o usuario indicado")
-    usuario_actualizado = users_collection.find_one_and_update({"usuario": request.usuario}, {"$set": {
+    usuario_actualizado = users_collection.find_one_and_update({"_id": ObjectId(request.usuarioId)}, {"$set": {
         "nome": request.nome,
         "usuario": request.usuario,
         "grupo": request.grupo,
     }}, return_document=ReturnDocument.AFTER)
-    usuario_actualizado["_id"] = str(usuario_actualizado["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=usuario_actualizado)
+    if usuario_actualizado:
+        usuarios = []
+        resultados = users_collection.find()
+        for usuario in resultados:
+            usuario["_id"] = str(usuario["_id"])
+            usuarios.append(usuario)
+        return JSONResponse(status_code=status.HTTP_200_OK, content=usuarios)
+    else:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Erro actualizando o usuario")
 
 
 @router.post("/eliminar")
 def eliminar_usuario(request: Usuario):
     users_collection.find_one_and_delete(
         {'_id': ObjectId(request.usuarioId)})
+    usuarios = []
+    resultados = users_collection.find()
+    for usuario in resultados:
+        usuario["_id"] = str(usuario["_id"])
+        usuarios.append(usuario)
+    return JSONResponse(status_code=status.HTTP_200_OK, content=usuarios)
 
-    return JSONResponse(status_code=status.HTTP_200_OK, content="ok")
+
+@router.post("/renovar-contrasinal")
+def renovar_contrasinal(request: Usuario):
+    user_db = users_collection.find_one({"_id": ObjectId(request.usuarioId)})
+    if not user_db:
+        raise HTTPException(
+            status_code=500, detail="Non se atopou o usuario indicado")
+    usuario_actualizado = users_collection.find_one_and_update({"_id": ObjectId(request.usuarioId)}, {"$set": {
+        "contrasinal": "",
+        "autenticado": False,
+    }}, return_document=ReturnDocument.AFTER)
+
+    if usuario_actualizado:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok"})
+    else:
+        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": False, "message": "Erro renovando o contrasinal do usuario."})

@@ -32,6 +32,16 @@ input, select, textarea {outline: none;}
 
 /* VARIABLES USADAS */
 
+.listado-container {
+  max-height: calc(100vh - (1.5rem * 2));
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
+.listado {
+  max-height: inherit;
+}
+
 .modal {
   position: absolute;
   z-index: 100;
@@ -127,7 +137,7 @@ input, select, textarea {outline: none;}
 
 .remove-scrollbar {
   scrollbar-width: none;
-  max-height: inherit;
+  /*max-height: inherit;*/
 }
 
 .remove-scrollbar::-webkit-scrollbar {

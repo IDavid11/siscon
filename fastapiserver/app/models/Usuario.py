@@ -21,7 +21,7 @@ class Group(str, Enum):
 class Usuario(BaseModel):
     usuarioId: Optional[str]
     nome: Optional[str]
-    usuario: str
+    usuario: Optional[str]
     grupo: Optional[str]
 
 
