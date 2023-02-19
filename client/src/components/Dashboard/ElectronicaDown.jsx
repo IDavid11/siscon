@@ -3,7 +3,7 @@ import ContainerWrap from "../utils/ContainerWrap";
 import Nav from "../utils/Nav/Nav";
 import NavItem from "../utils/Nav/NavItem";
 
-const ElectronicaDown = ({ electronica }) => {
+const ElectronicaDown = ({ monitorizacions }) => {
   const nav = [
     { k: "Todos", v: "Todos" },
     { k: "Router", v: "Routers" },
@@ -50,32 +50,39 @@ const ElectronicaDown = ({ electronica }) => {
       </div>
       <table className="rounded-xl overflow-hidden mt-14 w-full table-fixed">
         <tbody>
-          {electronica &&
-            electronica.map((item) => {
+          {monitorizacions &&
+            monitorizacions.map((item) => {
               return (
                 <>
-                  {item.electronica.tipo == vista || vista == "Todos" ? (
-                    <tr key={item._id} className="h-10 mt-8">
-                      <td className="py-2.5 px-2 w-2">
-                        <span className="p-px bg-red-400 rounded-full"></span>
-                      </td>
-                      <td className="py-2.5 px-2 w-2/3 text-ellipsis whitespace-nowrap overflow-hidden">
-                        {item.centro}
-                      </td>
-                      <td className="py-2.5 px-2 w-1/3 text-ellipsis whitespace-nowrap overflow-hidden">
-                        {item.electronica.nome}
-                      </td>
-                      <td className="y-2.5 px-2 w-10">
-                        <img
-                          className="w-10"
-                          src={imgs[item.electronica.tipo]}
-                          alt=""
-                        />
-                      </td>
-                    </tr>
-                  ) : (
-                    <></>
-                  )}
+                  {item.monitorizacions.map((monitorizacion) => {
+                    return (
+                      <>
+                        {monitorizacion.electronica.tipo == vista ||
+                        vista == "Todos" ? (
+                          <tr key={monitorizacion._id} className="h-10 mt-8">
+                            <td className="py-2.5 px-2 w-2">
+                              <span className="p-px bg-red-400 rounded-full"></span>
+                            </td>
+                            <td className="py-2.5 px-2 w-2/3 text-ellipsis whitespace-nowrap overflow-hidden">
+                              {item.centro.centro}
+                            </td>
+                            <td className="py-2.5 px-2 w-1/3 text-ellipsis whitespace-nowrap overflow-hidden">
+                              {monitorizacion.electronica.tipo}
+                            </td>
+                            <td className="y-2.5 px-2 w-10">
+                              <img
+                                className="w-10"
+                                src={imgs[monitorizacion.electronica.tipo]}
+                                alt=""
+                              />
+                            </td>
+                          </tr>
+                        ) : (
+                          <></>
+                        )}
+                      </>
+                    );
+                  })}
                 </>
               );
             })}

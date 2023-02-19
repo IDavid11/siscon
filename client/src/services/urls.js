@@ -1,11 +1,12 @@
 export const apiUrls = {
   // DASHBOARD
-  urlGetFullDashboard: "/dashboard/",
+  urlGetFullDashboard: "/dashboard/dashboard2",
   // CENTROS
   urlGetCentros: "/centros/",
   urlActualizarCentro: "/centros/actualizar",
 
   // LANS
+  urlObterElectronicaLan: "/lan/electronica",
   urlActualizarLan: "/lan/actualizar",
   urlEngadirLan: "/lan/engadir",
   urlEliminarLan: "/lan/eliminar",
@@ -16,6 +17,7 @@ export const apiUrls = {
   urlEliminarDispostivo: "/electronica/eliminar",
 
   // RACKS
+  urlObterElectronicaRack: "/rack/electronica",
   urlActualizarRack: "/rack/actualizar",
   urlEngadirRack: "/rack/engadir",
   urlEliminarRack: "/rack/eliminar",
@@ -32,7 +34,10 @@ export const apiUrls = {
   urlEliminarPlanta: "/plano/eliminar-planta",
 
   // MONITORIZACIONS
-  urlGetAvisos: "/monitorizacions/",
+  urlObterMonitorizacions: "/monitorizacions/",
+
+  // AVISOS
+  urlObterAvisos: "/avisos/",
 
   // ESTADISTICAS
   urlGetEstadisticas: "/estadisticas/centros",

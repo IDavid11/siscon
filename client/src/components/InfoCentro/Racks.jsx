@@ -54,7 +54,7 @@ const Racks = ({ racks }) => {
                 );
               })}
             {racks && racks.length < 1 ? (
-              <div className="text-center">Non hai racks gardados</div>
+              <div className="text-center">Non hai racks rexistrados</div>
             ) : (
               <></>
             )}

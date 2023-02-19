@@ -5,6 +5,7 @@ from fastapi import APIRouter
 from app.db import monitorizacion_collection, centros_collection
 from starlette.responses import JSONResponse
 from fastapi import status
+from app.utils.format_to_json import format_monitorizacion_to_json
 
 router = APIRouter(
     prefix="/monitorizacions",
@@ -50,3 +51,18 @@ def monitorizacions():
         return json.loads(json_util.dumps(monitorizacions))
     except:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as monitorizacións."})
+
+
+@router.get("/{electronicaId}")
+async def monitorizacions_electronica(electronicaId):
+    try:
+        historial = []
+        monitorizacions_mongo = monitorizacion_collection.find(
+            {"electronicaId": ObjectId(electronicaId)})
+        for monitorizacion in monitorizacions_mongo:
+            monitorizacion = format_monitorizacion_to_json(monitorizacion)
+            historial.append(monitorizacion)
+
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": historial})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo o historial de monitorizacións."})

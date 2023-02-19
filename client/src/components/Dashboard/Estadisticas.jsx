@@ -13,25 +13,10 @@ const Estadisticas = ({ estadisticas }) => {
                   {Object.entries(estadistica).map((est) => {
                     var est_calc = est[1];
                     var p_up = Math.round(
-                      (est_calc.up /
-                        (est_calc.up +
-                          est_calc.con_incidencias +
-                          est_calc.down)) *
-                        100
-                    );
-                    var p_ci = Math.round(
-                      (est_calc.con_incidencias /
-                        (est_calc.up +
-                          est_calc.con_incidencias +
-                          est_calc.down)) *
-                        100
+                      (est_calc.up / (est_calc.up + est_calc.down)) * 100
                     );
                     var p_down = Math.round(
-                      (est_calc.down /
-                        (est_calc.up +
-                          est_calc.con_incidencias +
-                          est_calc.down)) *
-                        100
+                      (est_calc.down / (est_calc.up + est_calc.down)) * 100
                     );
 
                     return (
@@ -45,11 +30,6 @@ const Estadisticas = ({ estadisticas }) => {
                               className="h-1.5 bg-green-400"
                               style={{ width: `${p_up}%` }}
                               title={`${est[1].up} up`}
-                            ></div>
-                            <div
-                              className="h-1.5 bg-orange-400"
-                              style={{ width: `${p_ci}%` }}
-                              title={`${est[1].con_incidencias} con incidencias`}
                             ></div>
                             <div
                               className="h-1.5 bg-red-400"

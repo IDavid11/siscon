@@ -1,10 +1,9 @@
-import json
 from bson.objectid import ObjectId
-from bson import json_util
 from fastapi import APIRouter
 from app.db import centros_collection, avisos_collection, tipo_electronica_collection
 from starlette.responses import JSONResponse
 from fastapi import status
+from app.utils.format_to_json import format_aviso_to_json
 
 router = APIRouter(
     prefix="/avisos",
@@ -53,3 +52,18 @@ def avisos():
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": avisos})
     except:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo os avisos."})
+
+
+@router.get("/{electronicaId}")
+async def avisos_electronica(electronicaId):
+    try:
+        historial = []
+        avisos_mongo = avisos_collection.find(
+            {"electronicaId": ObjectId(electronicaId)})
+        for aviso in avisos_mongo:
+            aviso = format_aviso_to_json(aviso)
+            historial.append(aviso)
+
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": historial})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo o historial de avisos."})

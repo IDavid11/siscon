@@ -13,6 +13,7 @@ import Racks from "../../components/InfoCentro/Racks";
 import AvariasDetectadas from "../../components/InfoCentro/AvariasDetectadas";
 import Estadisticas from "../../components/InfoCentro/Estadisticas";
 import { randomImg } from "../../utils/randomImg";
+import Avisos from "../../components/InfoCentro/Avisos";
 
 const Centro = () => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
@@ -20,7 +21,6 @@ const Centro = () => {
   const { isLoading, setIsLoading } = useLoading(false);
 
   const [centro, setCentro] = useState(tabsInfo[selectedTab].centro);
-  const [avarias, setAvarias] = useState(tabsInfo[selectedTab].avarias);
 
   const [edit, setEdit] = useState(false);
   const img = randomImg();
@@ -65,7 +65,7 @@ const Centro = () => {
       </div>
       <div className="centro-middle">
         <LANs lans={centro.rede.lans} />
-        <AvariasDetectadas avarias={avarias} />
+        <AvariasDetectadas avarias={tabsInfo[selectedTab].monitorizacions} />
         <Electronica
           electronica={centro.rede.electronica}
           isLoading={isLoading}
@@ -73,10 +73,7 @@ const Centro = () => {
       </div>
       <div className="centro-right">
         <Estadisticas electronicaCentro={centro.rede.electronica} />
-        <ContainerWrap
-          title={"Avisos"}
-          img={"/assets/icons/danger.png"}
-        ></ContainerWrap>
+        <Avisos avisos={tabsInfo[selectedTab].avisos} />
         <Racks racks={centro.rede.racks} />
         <Planos planos={centro.planos} />
       </div>

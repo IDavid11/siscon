@@ -113,3 +113,8 @@ class Switch(BaseModel):
     swId: Optional[str]
     nome: Optional[str]
     portos: Optional[str]
+
+
+class ElectronicaRack(BaseModel):
+    centroId: str
+    nomeRack: str

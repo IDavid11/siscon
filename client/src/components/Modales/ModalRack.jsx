@@ -1,5 +1,6 @@
 import React from "react";
 import RackForm from "../Forms/RackForm";
+import RackInfo from "../MaisInfoModales/RackInfo";
 import Modal from "../utils/Modal";
 
 const ModalRack = ({ rack, handleCloseModal }) => {
@@ -10,7 +11,7 @@ const ModalRack = ({ rack, handleCloseModal }) => {
     >
       <div>
         <RackForm rack={rack} handleCloseModal={handleCloseModal} />
-        <div></div>
+        <RackInfo rack={rack} />
       </div>
     </Modal>
   );

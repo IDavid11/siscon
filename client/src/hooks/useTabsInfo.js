@@ -24,6 +24,7 @@ export default function TabsInfoState({ isLoading, children }) {
   const [state, dispatch] = useReducer(TabsInfoReducer, initialState);
 
   const handleNewTabButton = (centro) => {
+    console.log(centro);
     if (!isLoading && state.tabsInfo.length < 9) {
       const index = state.tabsInfo.length;
       centro.centro.network_checked = false;
@@ -38,41 +39,8 @@ export default function TabsInfoState({ isLoading, children }) {
               page: "",
               type: "Centro",
               centro: centro.centro,
-              avarias: centro.avarias,
-            },
-          ],
-          selectedTab: index,
-        },
-      });
-      sessionStorage.setItem("value", index);
-      sessionStorage.setItem("selectedTab", index);
-    }
-  };
-
-  const handleNewTabButtons = (e) => {
-    console.log(state.tabsInfo.length);
-    if (!isLoading && state.tabsInfo.length < 9) {
-      const index = state.tabsInfo.length;
-      dispatch({
-        type: NOVA_PESTANA,
-        payload: {
-          tabsInfo: [
-            ...state.tabsInfo,
-            {
-              tabId: index,
-              label: "Nova pestana",
-              page: "",
-              type: "Centro",
-              centro: [
-                {
-                  centro: "",
-                  imaxe: "",
-                  id: "",
-                  concello: "",
-                  rede: {},
-                  dhcp: "",
-                },
-              ],
+              monitorizacions: centro.monitorizacions,
+              avisos: centro.avisos,
             },
           ],
           selectedTab: index,

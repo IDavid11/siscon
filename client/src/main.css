@@ -64,6 +64,12 @@ input, select, textarea {outline: none;}
   background-color: green;
 }
 
+.historial {
+  max-height: 200px;
+  overflow: hidden;
+  overflow-y: scroll;
+}
+
 /* VARIABLES USADAS */
 
 .listado-container {

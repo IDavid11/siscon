@@ -53,7 +53,7 @@ const Planos = ({ planos }) => {
                 );
               })}
             {planos && planos.length < 1 ? (
-              <div className="text-center">Non hai planos gardados</div>
+              <div className="text-center">Non hai planos rexistrados</div>
             ) : (
               <></>
             )}

@@ -14,6 +14,7 @@ const Dashboard = () => {
   const { createToastMessage } = useContext(ToastMessageContext);
   const [centros, setCentros] = useState([]);
   const [avisos, setAvisos] = useState([]);
+  const [monitorizacions, setMonitorizacions] = useState([]);
   const [estadisticas, setEstadisticas] = useState([]);
 
   const [filtros, setFiltros] = useState({ concello: "", centro: "" });
@@ -96,22 +97,44 @@ const Dashboard = () => {
   };
 
   const getFullDashboard = async () => {
-    const res = await instance.get(apiUrls.urlGetFullDashboard);
-    setCentros(
-      res.data.centros.sort((a, b) => a.centro.porcentaxe - b.centro.porcentaxe)
+    const { data } = await instance.get(apiUrls.urlGetFullDashboard);
+    var dataCentros = [];
+    var dataMonitorizacions = [];
+    var dataAvisos = [];
+    data.data.centros.forEach((item) => {
+      dataCentros.push({
+        centro: item.centro,
+        monitorizacions: item.monitorizacions,
+        avisos: item.avisos,
+      });
+      if (item.monitorizacions.length > 0)
+        dataMonitorizacions.push({
+          monitorizacions: item.monitorizacions,
+          centro: item.centro,
+        });
+      if (item.avisos.length > 0)
+        dataAvisos.push({ avisos: item.avisos, centro: item.centro });
+    });
+
+    dataCentros = dataCentros.sort(
+      (a, b) => a.centro.porcentaxe - b.centro.porcentaxe
     );
-    setAvisos(
-      res.data.monitorizacions.sort(
-        (a, b) => Date.parse(b.data.$date) - Date.parse(a.data.$date)
+    setCentros(dataCentros);
+    if (search?.length < 1) setSearch(dataCentros);
+
+    setMonitorizacions(
+      dataMonitorizacions.sort(
+        (a, b) => Date.parse(b.data) - Date.parse(a.data)
       )
     );
-    setEstadisticas(res.data.estadisticas);
+    setAvisos(
+      dataAvisos.sort((a, b) => Date.parse(b.data) - Date.parse(a.data))
+    );
+    setEstadisticas(data.data.estadisticas);
   };
 
   useEffect(() => {
-    getCentros();
-    getAvisos();
-    getEstadisticas();
+    getFullDashboard();
     handleSearch();
     const interval = setInterval(() => {
       getFullDashboard();
@@ -225,7 +248,7 @@ const Dashboard = () => {
                         <td className="py-2.5 px-2">{centro.centro.centro}</td>
                         <td className="py-2.5 px-2">
                           <span className="py-1.5 px-4 text-sm bg-gray-200 rounded-full">
-                            {centro.avarias.length} avarías detectadas
+                            {centro.monitorizacions.length} avarías detectadas
                           </span>
                         </td>
                         <td className="w-40 py-2.5 px-2">
@@ -272,7 +295,7 @@ const Dashboard = () => {
       </ContainerWrap>
       <div className="dashboard-right">
         <Estadisticas estadisticas={estadisticas} />
-        <ElectronicaDown electronica={avisos} />
+        <ElectronicaDown monitorizacions={monitorizacions} />
         <Avisos avisos={avisos} />
       </div>
     </div>

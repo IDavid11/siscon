@@ -23,14 +23,14 @@ def estadisticas_centros():
         centros_up = centros_collection.count_documents(filtro_routers_up)
 
         centros_abalar = centros_collection.count_documents(
-            {"proxecto": "Abalar"})
+            {"proxecto": "ABALAR"})
         centros_abalar_up = centros_collection.count_documents(
             {
-                "proxecto": "Abalar", "rede.electronica.tipo": "SW_Abalar", "rede.electronica.status": "up"})
+                "proxecto": "ABALAR", "rede.electronica.tipo": "SW_Abalar", "rede.electronica.status": "up"})
 
         sw_abalar_totais = centros_collection.count_documents(
-            {"proxecto": "Abalar", "rede.electronica.tipo": 7})
-        sw_abalar_up = centros_collection.count_documents({"proxecto": "Abalar",
+            {"proxecto": "ABALAR", "rede.electronica.tipo": "SW_Abalar"})
+        sw_abalar_up = centros_collection.count_documents({"proxecto": "ABALAR",
                                                            "rede.electronica.tipo": "SW_Abalar", "rede.electronica.status": "up"})
 
         sw_siega_totais = centros_collection.count_documents(
@@ -46,40 +46,35 @@ def estadisticas_centros():
         estadisticas.append({
             "centros": {
                 "up": centros_up,
-                "con_incidencias": 13,
                 "down": centros_mongo - centros_up
             }})
         estadisticas.append({
             "centros abalar": {
                 "up": centros_abalar_up,
-                "con_incidencias": 13,
                 "down": centros_abalar - centros_abalar_up
             }})
         estadisticas.append({
             "sw_abalar": {
                 "up": sw_abalar_up,
-                "con_incidencias": 13,
                 "down": sw_abalar_totais - sw_abalar_up
             }})
         estadisticas.append({
             "sw_siega": {
                 "up": sw_siega_up,
-                "con_incidencias": 13,
                 "down": sw_siega_totais - sw_siega_up
             }})
         estadisticas.append({
             "routers": {
                 "up": centros_up,
-                "con_incidencias": 13,
                 "down": centros_mongo - centros_up
             }})
         estadisticas.append({
             "aps": {
                 "up": aps_edu_up,
-                "con_incidencias": 13,
                 "down": aps_edu_totais - aps_edu_up
             }})
 
-        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": estadisticas})
+        return estadisticas
+        # return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": estadisticas})
     except:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as estadísticas."})

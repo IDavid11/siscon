@@ -1,5 +1,6 @@
 import React from "react";
 import LanForm from "../Forms/LanForm";
+import LanInfo from "../MaisInfoModales/LANInfo";
 import Modal from "../utils/Modal";
 
 const ModalLAN = ({ lan, handleCloseModal }) => {
@@ -10,7 +11,7 @@ const ModalLAN = ({ lan, handleCloseModal }) => {
     >
       <div>
         <LanForm lan={lan} handleCloseModal={handleCloseModal} />
-        <div></div>
+        <LanInfo lan={lan} />
       </div>
     </Modal>
   );

@@ -7,6 +7,7 @@ import ModalElectronica from "../Modales/ModalElectronica";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import ToastMessageContext from "../../context/ToastMessageContext";
+import { imgs } from "../../utils/imgs";
 
 const Electronica = ({ electronica, isLoading }) => {
   const { createToastMessage } = useContext(ToastMessageContext);
@@ -28,14 +29,6 @@ const Electronica = ({ electronica, isLoading }) => {
   const handleShowModal = (dispositivo) => {
     setShowModal(!showModal);
     setModalElectronica(dispositivo);
-  };
-
-  const imgs = {
-    Router: "/assets/images/router.png",
-    SW_Abalar: "/assets/images/switch.png",
-    SW_Siega: "/assets/images/switch.png",
-    Switch: "/assets/images/switch.png",
-    AP_edu_xunta_gal: "/assets/images/ap.png",
   };
 
   const [vista, setVista] = useState("Todos");

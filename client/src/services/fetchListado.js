@@ -5,5 +5,5 @@ export const fetchListado = async (listado) => {
     `http://127.0.0.1:8000/listados/${listado}`
   );
 
-  return data;
+  return data.data;
 };

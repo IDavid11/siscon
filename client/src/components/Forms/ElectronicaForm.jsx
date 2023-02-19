@@ -160,10 +160,11 @@ const ElectronicaForm = ({
           <select
             name="tipo"
             id="tipo"
-            defaultValue={updatedDispositivo.tipo}
+            defaultValue={updatedDispositivo.tipo || ""}
             onChange={handleInputChange}
             className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
           >
+            <option value={""}>Seleccionar</option>
             {tiposDispositivos &&
               tiposDispositivos.map((tipo) => {
                 return <option value={tipo.nome}>{tipo.nome}</option>;
@@ -181,6 +182,7 @@ const ElectronicaForm = ({
             onChange={handleInputChange}
             className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
           >
+            <option value={"Sen determinar"}>Sen determinar</option>
             {modelos &&
               modelos.map((modelo) => {
                 return <option value={modelo.nome}>{modelo.nome}</option>;
@@ -196,10 +198,11 @@ const ElectronicaForm = ({
             <select
               name="ubicacion"
               id="ubicacion"
-              defaultValue={updatedDispositivo.ubicacion || "Sen ubicar"}
+              defaultValue={updatedDispositivo.ubicacion || "Sen localizar"}
               onChange={handleInputChange}
               className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
             >
+              <option value={"Sen localizar"}>Sen localizar</option>
               {tabsInfo[selectedTab].centro.rede.racks &&
                 tabsInfo[selectedTab].centro.rede.racks.map((rack) => {
                   return <option value={rack.nome}>{rack.nome}</option>;
@@ -209,7 +212,7 @@ const ElectronicaForm = ({
             <input
               name="ubicacion"
               id="ubicacion"
-              defaultValue={updatedDispositivo.ubicacion || "Sen ubicar"}
+              defaultValue={updatedDispositivo.ubicacion || "Sen localizar"}
               onChange={handleInputChange}
               className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
             />

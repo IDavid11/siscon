@@ -3,10 +3,12 @@ import TabsInfoContext from "../../context/TabsInfoContext";
 import ContainerWrap from "../utils/ContainerWrap";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const InfoCentroForm = ({ centro, img, setEdit }) => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
+  const { createToastMessage } = useContext(ToastMessageContext);
 
   const [updatedCentro, setUpdatedCentro] = useState({
     _id: centro?._id || "",
@@ -29,7 +31,7 @@ const InfoCentroForm = ({ centro, img, setEdit }) => {
 
   const submitUpdatedCentro = async (e) => {
     e.preventDefault();
-    const data = {
+    const varUpdatedCentro = {
       centroId: updatedCentro._id,
       centro: updatedCentro.centro,
       sf: updatedCentro.sf,
@@ -39,11 +41,17 @@ const InfoCentroForm = ({ centro, img, setEdit }) => {
       tar: updatedCentro.tar,
       comentario: updatedCentro.comentario,
     };
-    const res = await instance.post(apiUrls.urlActualizarCentro, data);
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro = res.data;
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    setEdit(false);
+    const { data } = await instance.post(
+      apiUrls.urlActualizarCentro,
+      varUpdatedCentro
+    );
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro = data.data;
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      setEdit(false);
+    }
   };
 
   return (
