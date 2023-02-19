@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
-const UsuarioForm = ({ usuario, handleCloseModal, users, setUsers }) => {
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState("");
+const UsuarioForm = ({ usuario, handleCloseModal, setUsers }) => {
+  const { createToastMessage } = useContext(ToastMessageContext);
   const [newUser, setNewUser] = useState({
     usuarioId: usuario?._id || "",
     nome: usuario?.nome || "",
@@ -23,57 +23,43 @@ const UsuarioForm = ({ usuario, handleCloseModal, users, setUsers }) => {
   const submitUpdateUsuario = async (e) => {
     e.preventDefault();
     console.log(newUser);
-    const res = await instance.post(apiUrls.urlActualizarUsuario, newUser);
-    if (res.data.error) {
-      setIsError(true);
-      setError(res.data.error);
-    }
-    if (!res.data.error) {
-      console.log(users);
-      setIsError(false);
-      setError("");
-      setUsers(res.data);
+    const { data } = await instance.post(apiUrls.urlActualizarUsuario, newUser);
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      setUsers(data.data);
       handleCloseModal();
     }
   };
 
   const submitEngadirUsuario = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlEngadirUsuario, newUser);
-    if (res.data.error) {
-      setIsError(true);
-      setError(res.data.error);
-    }
-    if (!res.data.error) {
-      setIsError(false);
-      setError("");
-      setUsers(res.data);
+    const { data } = await instance.post(apiUrls.urlEngadirUsuario, newUser);
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      setUsers(data.data);
       handleCloseModal();
     }
   };
 
   const submitRenovarContrasinal = async (e) => {
     e.preventDefault();
-    const res = await instance.post(
+    const { data } = await instance.post(
       apiUrls.urlRenovarContrasinalUsuario,
       newUser
     );
-    if (res.data.error) {
-      setIsError(true);
-      setError(res.data.error);
-    }
-    if (!res.data.error) {
-      setIsError(false);
-      setError("");
-      handleCloseModal();
-    }
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else handleCloseModal();
   };
 
   const deleteUsuario = async () => {
-    const res = await instance.post(apiUrls.urlEliminarUsuario, {
+    const { data } = await instance.post(apiUrls.urlEliminarUsuario, {
       usuarioId: usuario._id,
     });
-    setUsers(res.data);
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      setUsers(data.data);
+      handleCloseModal();
+    }
   };
 
   return (
@@ -85,6 +71,7 @@ const UsuarioForm = ({ usuario, handleCloseModal, users, setUsers }) => {
         {usuario != undefined ? (
           <div className="mb-1">
             <button
+              type="button"
               onClick={deleteUsuario}
               className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
             >
@@ -138,13 +125,6 @@ const UsuarioForm = ({ usuario, handleCloseModal, users, setUsers }) => {
             <option value="aplicacions">Aplicacións N2</option>
           </select>
         </div>
-        {isError ? (
-          <div className="form-add-user-error-container">
-            <span>{error}</span>
-          </div>
-        ) : (
-          <></>
-        )}
         <div>
           {usuario != undefined ? (
             <button

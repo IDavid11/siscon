@@ -6,14 +6,17 @@ const Aside = ({ isLoading }) => {
   const { tabsInfo, handleNewTabButton } = useContext(TabsInfoContext);
 
   const dashboardTab = [tabsInfo[0]];
-  const centrosTab = tabsInfo.slice(5, 10); // Si se queren aumentar o número de pestanas de centros que se pode abrir, é necesario modificar a función handleNewTabButton en App.js
-  const listadosTab = tabsInfo.slice(1, 4);
-  const adminTab = [tabsInfo[4]];
+  const centrosTab = tabsInfo.slice(3, 8); // Si se queren aumentar o número de pestanas de centros que se pode abrir, é necesario modificar a función handleNewTabButton en App.js
+  const listadosTab = tabsInfo.slice(1, 2);
+  const adminTab = [tabsInfo[2]];
 
   return (
     <div className="h-screen w-fit bg-primary-color">
-      <aside className="h-full w-[273px] p-10 mt-2.5 text-white">
-        <div className="mt-6">
+      <aside className="h-full w-[273px] p-5 mt-2.5 text-white">
+        <div>
+          <img className="h-16" src="siscon.png" alt="" />
+        </div>
+        <div className="mt-10">
           <div className="mt-2.5">
             <div className="flex flex-col items-start">
               {dashboardTab.map((tab) => {

@@ -50,6 +50,7 @@ export const apiUrls = {
   urlObterTiposDispositivos: "/tipos/",
 
   // USUARIO
+  urlObterUsuarios: "/usuarios/",
   urlActualizarUsuario: "/usuarios/actualizar",
   urlEngadirUsuario: "/usuarios/engadir",
   urlEliminarUsuario: "/usuarios/eliminar",

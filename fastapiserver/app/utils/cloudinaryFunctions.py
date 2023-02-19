@@ -27,5 +27,5 @@ async def delete_photo(url):
         result = cloudinary.uploader.destroy(
             public_id)
         return result
-    except KeyError:
+    except:
         return False

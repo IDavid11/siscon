@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const SwitchForm = ({ sw, handleCloseModal, setSwitches }) => {
-  const [isError, setIsError] = useState(false);
-  const [error, setError] = useState("");
+  const { createToastMessage } = useContext(ToastMessageContext);
+
   const [updatedSw, setUpdatedSw] = useState({
     swId: sw?._id || "",
     nome: sw?.nome || "",
@@ -19,50 +20,34 @@ const SwitchForm = ({ sw, handleCloseModal, setSwitches }) => {
     }
   };
 
-  const submitUpdateUsuario = async (e) => {
+  const submitUpdateSwitch = async (e) => {
     e.preventDefault();
     const { data } = await instance.post(
       apiUrls.urlActualizarSwitch,
       updatedSw
     );
-    if (data.error) {
-      setIsError(true);
-      setError(data.message);
-    }
-    if (!data.error) {
-      setIsError(false);
-      setError("");
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
       setSwitches(data.data);
       handleCloseModal();
     }
   };
 
-  const submitEngadirUsuario = async (e) => {
+  const submitEngadirSwitch = async (e) => {
     e.preventDefault();
     const { data } = await instance.post(apiUrls.urlEngadirSwitch, updatedSw);
     console.log(data);
-    if (data.error) {
-      setIsError(true);
-      setError(data.message);
-    }
-    if (!data.error) {
-      setIsError(false);
-      setError("");
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
       setSwitches(data.data);
       handleCloseModal();
     }
   };
 
   const deleteSw = async () => {
-    console.log(updatedSw);
     const { data } = await instance.post(apiUrls.urlEliminarSwitch, updatedSw);
-    if (data.error) {
-      setIsError(true);
-      setError(data.message);
-    }
-    if (!data.error) {
-      setIsError(false);
-      setError("");
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
       setSwitches(data.data);
       handleCloseModal();
     }
@@ -71,12 +56,13 @@ const SwitchForm = ({ sw, handleCloseModal, setSwitches }) => {
   return (
     <form
       autoComplete="off"
-      onSubmit={sw ? submitUpdateUsuario : submitEngadirUsuario}
+      onSubmit={sw ? submitUpdateSwitch : submitEngadirSwitch}
     >
       <div className="flex items-end gap-x-5">
         {sw != undefined ? (
           <div className="mb-1">
             <button
+              type="button"
               onClick={deleteSw}
               className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
             >
@@ -114,24 +100,17 @@ const SwitchForm = ({ sw, handleCloseModal, setSwitches }) => {
             className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
           />
         </div>
-        {isError ? (
-          <div className="form-add-user-error-container">
-            <span>{error}</span>
-          </div>
-        ) : (
-          <></>
-        )}
         <div>
           {sw != undefined ? (
             <button
-              onClick={submitUpdateUsuario}
+              onClick={submitUpdateSwitch}
               className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
             >
               Gardar
             </button>
           ) : (
             <button
-              onClick={submitEngadirUsuario}
+              onClick={submitEngadirSwitch}
               className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
             >
               Engadir

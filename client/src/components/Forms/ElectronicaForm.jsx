@@ -2,6 +2,7 @@ import React, { useState, useContext, useEffect } from "react";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const ElectronicaForm = ({
   dispositivo,
@@ -11,6 +12,7 @@ const ElectronicaForm = ({
 }) => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
+  const { createToastMessage } = useContext(ToastMessageContext);
 
   const [tipoUbicacion, setTipoUbicacion] = useState();
   const [updatedDispositivo, setUpdatedDispositivo] = useState({
@@ -43,7 +45,7 @@ const ElectronicaForm = ({
 
   const submitUpdateDispositivo = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlActualizarDispositivo, {
+    const { data } = await instance.post(apiUrls.urlActualizarDispositivo, {
       centroId: tabsInfo[selectedTab].centro._id,
       dispositivoId: updatedDispositivo._id,
       ip: updatedDispositivo.ip,
@@ -52,16 +54,18 @@ const ElectronicaForm = ({
       ubicacion: updatedDispositivo.ubicacion,
       nome: updatedDispositivo.nome,
     });
-
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.electronica = res.data;
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.electronica = data.data;
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
   const submitEngadirDispositivo = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlEngadirDispositivo, {
+    const { data } = await instance.post(apiUrls.urlEngadirDispositivo, {
       centroId: tabsInfo[selectedTab].centro._id,
       ip: updatedDispositivo.ip,
       tipo: updatedDispositivo.tipo,
@@ -69,22 +73,27 @@ const ElectronicaForm = ({
       ubicacion: updatedDispositivo.ubicacion,
       nome: updatedDispositivo.nome,
     });
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.electronica.push(res.data);
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.electronica.push(data.data);
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
-  const deleteDispostivo = async (e) => {
-    e.preventDefault();
-    const res = await instance.post(apiUrls.urlEliminarDispostivo, {
+  const deleteDispostivo = async () => {
+    const { data } = await instance.post(apiUrls.urlEliminarDispostivo, {
       centroId: tabsInfo[selectedTab].centro._id,
       dispositivoId: updatedDispositivo._id,
     });
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.electronica = res.data;
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.electronica = data.data;
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
   useEffect(() => {
@@ -92,11 +101,16 @@ const ElectronicaForm = ({
   }, [updatedDispositivo]);
 
   return (
-    <form>
+    <form
+      onSubmit={
+        dispositivo ? submitUpdateDispositivo : submitEngadirDispositivo
+      }
+    >
       <div className="flex items-end gap-x-5">
         {dispositivo != undefined ? (
           <div className="mb-1">
             <button
+              type="button"
               onClick={deleteDispostivo}
               className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
             >

@@ -6,10 +6,10 @@ import { ResponsiveTab } from "../Tabs/ResponsiveTab";
 const ResponsiveAside = ({ isLoading }) => {
   const { tabsInfo, handleNewTabButton } = useContext(TabsInfoContext);
 
-  const centrosTab = tabsInfo.slice(4, 9); // Si se queren aumentar o número de pestanas de centros que se pode abrir, é necesario modificar a función handleNewTabButton en App.js
-  //const funcionalidadesTab = tabsInfo.slice(0, 2)
-  const listadosTab = tabsInfo.slice(0, 3);
-  const adminTab = [tabsInfo[3]];
+  const dashboardTab = [tabsInfo[0]];
+  const centrosTab = tabsInfo.slice(3, 8); // Si se queren aumentar o número de pestanas de centros que se pode abrir, é necesario modificar a función handleNewTabButton en App.js
+  const listadosTab = tabsInfo.slice(1, 2);
+  const adminTab = [tabsInfo[2]];
 
   return (
     <div className="h-screen bg-primary-color">

@@ -43,19 +43,22 @@ def check_network_thread(index, q):
 
 @router.post("/network")
 def check_network(request_centro: BuscarCentro):
-    q = queue.Queue()
+    try:
+        q = queue.Queue()
 
-    thread = Thread(target=check_network_thread,
-                    args=(request_centro.index, q,))
-    thread.daemon = True
-    thread.start()
+        thread = Thread(target=check_network_thread,
+                        args=(request_centro.index, q,))
+        thread.daemon = True
+        thread.start()
 
-    result = q.get()
+        result = q.get()
 
-    for item in result:
-        item["_id"] = str(item["_id"])
+        for item in result:
+            item["_id"] = str(item["_id"])
 
-    return JSONResponse(status_code=status.HTTP_200_OK, content=result)
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": result})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro comprobando o estado da rede do centro."})
 
 
 @router.post("/buscar-ip")

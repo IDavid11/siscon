@@ -1,10 +1,9 @@
-from http.client import HTTPException
 from bson.objectid import ObjectId
 from fastapi import APIRouter
 from app.db import centros_collection
 from ..models.Centro import Rack
 from starlette.responses import JSONResponse
-from fastapi import HTTPException, status
+from fastapi import status
 
 router = APIRouter(
     prefix="/rack",
@@ -15,75 +14,78 @@ router = APIRouter(
 
 @router.post("/engadir")
 def engadir_rack(request: Rack):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        racks = centro["rede"]["racks"]
+        rack = {
+            "_id": ObjectId(),
+            "nome": request.nome,
+            "tipo": request.tipo,
+            "ubicacion": request.ubicacion
+        }
+        racks.append(rack)
 
-    racks = centro["rede"]["racks"]
-    rack = {
-        "_id": ObjectId(),
-        "nome": request.nome,
-        "tipo": request.tipo,
-        "ubicacion": request.ubicacion
-    }
-    racks.append(rack)
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"rede.racks": racks}})
 
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"rede.racks": racks}})
-
-    rack["_id"] = str(rack["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=rack)
+        rack["_id"] = str(rack["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": rack})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro engadindo o rack."})
 
 
 @router.post("/actualizar")
 def actualizar_rack(request: Rack):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        racks = centro["rede"]["racks"]
+        for rack in racks:
+            if str(rack["_id"]) == request.rackId:
+                rack["nome"] = request.nome
+                rack["tipo"] = request.tipo
+                rack["ubicacion"] = request.ubicacion
 
-    racks = centro["rede"]["racks"]
-    for rack in racks:
-        if str(rack["_id"]) == request.rackId:
-            rack["nome"] = request.nome
-            rack["tipo"] = request.tipo
-            rack["ubicacion"] = request.ubicacion
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"rede.racks": racks}})
 
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"rede.racks": racks}})
-
-    for rack in racks:
-        rack["_id"] = str(rack["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=racks)
+        for rack in racks:
+            rack["_id"] = str(rack["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": racks})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro actualizando o rack."})
 
 
 @router.post("/eliminar")
 def eliminar_rack(request: Rack):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        racks = centro["rede"]["racks"]
+        for rack in racks:
+            if str(rack["_id"]) == request.rackId:
+                racks.remove(rack)
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"rede.racks": racks}})
 
-    racks = centro["rede"]["racks"]
-    for rack in racks:
-        if str(rack["_id"]) == request.rackId:
-            racks.remove(rack)
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"rede.racks": racks}})
-
-    for rack in racks:
-        rack["_id"] = str(rack["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=racks)
+        for rack in racks:
+            rack["_id"] = str(rack["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": racks})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro eliminando o rack."})

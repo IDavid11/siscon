@@ -13,13 +13,13 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
     tabsInfo[selectedTab].centro.planos[0]
   );
   const [plantaSeleccionada, setPlantaSeleccionada] = useState(
-    tabsInfo[selectedTab].centro.planos[0].plantas[0]
+    tabsInfo[selectedTab].centro.planos[0]?.plantas[0]
   );
   const [plantas, setPlantas] = useState(
-    tabsInfo[selectedTab].centro.planos[0].plantas
+    tabsInfo[selectedTab].centro.planos[0]?.plantas
   );
   const [visiblePlano, setVisibilePlano] = useState(
-    planos[0]?.plantas[0].plano || ""
+    planos[0]?.plantas[0]?.plano || ""
   );
 
   const [updatedItem, setUpdatedItem] = useState();
@@ -81,6 +81,7 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
     });
     const tabsInfoVar = tabsInfo;
     tabsInfoVar[selectedTab].centro.planos.push(res.data);
+    setEdificioSeleccionado(res.data);
     handleUpdateTabsInfo([...tabsInfoVar]);
     setIsAddingEdificio(false);
   };
@@ -148,10 +149,10 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
 
   useEffect(() => {
     const edfSeleccionado = tabsInfo[selectedTab].centro.planos.find(
-      (e) => e._id === edificioSeleccionado._id
+      (e) => e._id === edificioSeleccionado?._id
     );
     setEdificioSeleccionado(edfSeleccionado);
-    setPlantas(edfSeleccionado.plantas);
+    setPlantas(edfSeleccionado?.plantas);
   }, [
     planos,
     edificioSeleccionado,
@@ -163,7 +164,7 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
 
   return (
     <Modal title={"Planos"} handleCloseModal={handleCloseModal}>
-      <div>
+      <div className="min-w-[500px]">
         <div>
           <div className="planos-nav">
             <div className="flex items-center gap-x-4">
@@ -181,99 +182,102 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                 isChangingImage ? "cursor-not-allowed" : ""
               } mt-4 flex items-center gap-x-5`}
             >
-              {planos.map((edificio) => {
-                return (
-                  <div
-                    key={edificio._id}
-                    onMouseOver={(e) => {
-                      setIsMouseOverItem(true);
-                      setHoverEdificio(edificio);
-                    }}
-                    onMouseLeave={(e) => {
-                      setIsMouseOverItem(false);
-                      setHoverEdificio(null);
-                    }}
-                    className={`${
-                      edificioSeleccionado?._id == edificio._id
-                        ? "bg-gray-200 shadow-md"
-                        : ""
-                    } ${
-                      isChangingImage ? "pointer-events-none" : ""
-                    } w-72 h-10 hover:bg-gray-200 rounded-xl flex items-center pl-4 cursor-pointer border border-solid border-gray-300`}
-                    onClick={(e) => handleSeleccionarEdificio(edificio)}
-                  >
-                    {isChangingEdificio &&
-                    edificioSeleccionado?._id === edificio._id ? (
-                      <>
-                        <div>
-                          <button
-                            onClick={deleteEdificio}
-                            className="h-6 w-6 bg-red-400 rounded-lg flex items-center justify-center"
-                          >
-                            <img
-                              className="h-3"
-                              src="/assets/icons/delete.png"
-                              alt=""
-                            />
-                          </button>
-                        </div>
-                        <form onSubmit={submitUpdateEdificio}>
-                          <input
-                            className="outline-none bg-transparent ml-2 w-full"
-                            type="text"
-                            name="nome"
-                            value={updatedItem.nome}
-                            autoFocus={true}
-                            onChange={handleInputChange}
-                          />
-                        </form>
-                        <div className="mr-4">
-                          <button onClick={(e) => setIsChangingEdificio(false)}>
-                            <img
-                              className="h-3"
-                              src="/assets/icons/close-black.png"
-                              alt=""
-                            />
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div>
-                          <img
-                            className="h-6"
-                            src="/assets/icons/school-building.png"
-                            alt=""
-                          />
-                        </div>
-                        <div className="ml-4">{edificio.nome_edificio}</div>
-                        {isMouseOverItem &&
-                        hoverEdificio?._id === edificio._id ? (
-                          <div className="ml-auto pr-4 pt-1">
+              {planos &&
+                planos.map((edificio) => {
+                  return (
+                    <div
+                      key={edificio._id}
+                      onMouseOver={(e) => {
+                        setIsMouseOverItem(true);
+                        setHoverEdificio(edificio);
+                      }}
+                      onMouseLeave={(e) => {
+                        setIsMouseOverItem(false);
+                        setHoverEdificio(null);
+                      }}
+                      className={`${
+                        edificioSeleccionado?._id == edificio._id
+                          ? "bg-gray-200 shadow-md"
+                          : ""
+                      } ${
+                        isChangingImage ? "pointer-events-none" : ""
+                      } w-72 h-10 hover:bg-gray-200 rounded-xl flex items-center pl-4 cursor-pointer border border-solid border-gray-300`}
+                      onClick={(e) => handleSeleccionarEdificio(edificio)}
+                    >
+                      {isChangingEdificio &&
+                      edificioSeleccionado?._id === edificio._id ? (
+                        <>
+                          <div>
                             <button
-                              onClick={(e) => {
-                                setIsChangingEdificio(true);
-                                setUpdatedItem({
-                                  id: edificio._id,
-                                  nome: edificio.nome_edificio,
-                                });
-                              }}
+                              onClick={deleteEdificio}
+                              className="h-6 w-6 bg-red-400 rounded-lg flex items-center justify-center"
                             >
                               <img
-                                className="h-4"
-                                src="/assets/icons/edit-black.png"
+                                className="h-3"
+                                src="/assets/icons/delete.png"
                                 alt=""
                               />
                             </button>
                           </div>
-                        ) : (
-                          <></>
-                        )}
-                      </>
-                    )}
-                  </div>
-                );
-              })}
+                          <form onSubmit={submitUpdateEdificio}>
+                            <input
+                              className="outline-none bg-transparent ml-2 w-full"
+                              type="text"
+                              name="nome"
+                              value={updatedItem.nome}
+                              autoFocus={true}
+                              onChange={handleInputChange}
+                            />
+                          </form>
+                          <div className="mr-4">
+                            <button
+                              onClick={(e) => setIsChangingEdificio(false)}
+                            >
+                              <img
+                                className="h-3"
+                                src="/assets/icons/close-black.png"
+                                alt=""
+                              />
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div>
+                            <img
+                              className="h-6"
+                              src="/assets/icons/school-building.png"
+                              alt=""
+                            />
+                          </div>
+                          <div className="ml-4">{edificio.nome_edificio}</div>
+                          {isMouseOverItem &&
+                          hoverEdificio?._id === edificio._id ? (
+                            <div className="ml-auto pr-4 pt-1">
+                              <button
+                                onClick={(e) => {
+                                  setIsChangingEdificio(true);
+                                  setUpdatedItem({
+                                    id: edificio._id,
+                                    nome: edificio.nome_edificio,
+                                  });
+                                }}
+                              >
+                                <img
+                                  className="h-4"
+                                  src="/assets/icons/edit-black.png"
+                                  alt=""
+                                />
+                              </button>
+                            </div>
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
               {!isAddingEdificio ? (
                 <div className="pt-1">
                   <button
@@ -337,117 +341,125 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                 isChangingImage ? "cursor-not-allowed" : ""
               } mt-4 flex items-center gap-x-5`}
             >
-              {plantas.map((planta) => {
-                return (
-                  <div
-                    key={planta._id}
-                    id={planta._id}
-                    onMouseOver={(e) => {
-                      setIsMouseOverItem(true);
-                      setHoverPlanta(planta);
-                    }}
-                    onMouseLeave={(e) => {
-                      setIsMouseOverItem(false);
-                      setHoverPlanta(null);
-                    }}
-                    className={`${
-                      plantaSeleccionada?._id === planta._id
-                        ? "bg-gray-200 shadow-md"
-                        : ""
-                    } ${
-                      isChangingImage ? "pointer-events-none" : ""
-                    } w-52 h-10 hover:bg-gray-200 rounded-xl flex items-center pl-4 cursor-pointer border border-solid border-gray-300`}
-                    onClick={(e) => handleSeleccionarPlanta(planta)}
-                  >
-                    {isChangingPlanta &&
-                    plantaSeleccionada?._id === planta._id ? (
-                      <>
-                        <div>
-                          <button
-                            onClick={deletePlanta}
-                            className="h-6 w-6 bg-red-400 rounded-lg flex items-center justify-center"
-                          >
-                            <img
-                              className="h-3"
-                              src="/assets/icons/delete.png"
-                              alt=""
-                            />
-                          </button>
-                        </div>
-                        <form onSubmit={submitUpdatePlanta}>
-                          <input
-                            className="outline-none bg-transparent ml-2 w-full"
-                            type="text"
-                            name="nome"
-                            value={updatedItem.nome}
-                            autoFocus={true}
-                            onChange={handleInputChange}
-                          />
-                        </form>
-                        <div className="mr-4">
-                          <button onClick={(e) => setIsChangingPlanta(false)}>
-                            <img
-                              className="h-3"
-                              src="/assets/icons/close-black.png"
-                              alt=""
-                            />
-                          </button>
-                        </div>
-                      </>
-                    ) : (
-                      <>
-                        <div>
-                          <img
-                            className="h-6"
-                            src="/assets/icons/floor.png"
-                            alt=""
-                          />
-                        </div>
-                        <div className="ml-4">{planta.planta}</div>
-                        {isMouseOverItem && hoverPlanta?._id === planta._id ? (
-                          <div className="ml-auto pr-4 pt-1">
+              {plantas &&
+                plantas.map((planta) => {
+                  return (
+                    <div
+                      key={planta._id}
+                      id={planta._id}
+                      onMouseOver={(e) => {
+                        setIsMouseOverItem(true);
+                        setHoverPlanta(planta);
+                      }}
+                      onMouseLeave={(e) => {
+                        setIsMouseOverItem(false);
+                        setHoverPlanta(null);
+                      }}
+                      className={`${
+                        plantaSeleccionada?._id === planta._id
+                          ? "bg-gray-200 shadow-md"
+                          : ""
+                      } ${
+                        isChangingImage ? "pointer-events-none" : ""
+                      } w-52 h-10 hover:bg-gray-200 rounded-xl flex items-center pl-4 cursor-pointer border border-solid border-gray-300`}
+                      onClick={(e) => handleSeleccionarPlanta(planta)}
+                    >
+                      {isChangingPlanta &&
+                      plantaSeleccionada?._id === planta._id ? (
+                        <>
+                          <div>
                             <button
-                              onClick={(e) => {
-                                setIsChangingPlanta(true);
-                                setUpdatedItem({
-                                  id: planta._id,
-                                  nome: planta.planta,
-                                });
-                              }}
+                              onClick={deletePlanta}
+                              className="h-6 w-6 bg-red-400 rounded-lg flex items-center justify-center"
                             >
                               <img
-                                className="h-4"
-                                src="/assets/icons/edit-black.png"
+                                className="h-3"
+                                src="/assets/icons/delete.png"
                                 alt=""
                               />
                             </button>
                           </div>
-                        ) : (
-                          <></>
-                        )}
-                      </>
-                    )}
-                  </div>
-                );
-              })}
+                          <form onSubmit={submitUpdatePlanta}>
+                            <input
+                              className="outline-none bg-transparent ml-2 w-full"
+                              type="text"
+                              name="nome"
+                              value={updatedItem.nome}
+                              autoFocus={true}
+                              onChange={handleInputChange}
+                            />
+                          </form>
+                          <div className="mr-4">
+                            <button onClick={(e) => setIsChangingPlanta(false)}>
+                              <img
+                                className="h-3"
+                                src="/assets/icons/close-black.png"
+                                alt=""
+                              />
+                            </button>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div>
+                            <img
+                              className="h-6"
+                              src="/assets/icons/floor.png"
+                              alt=""
+                            />
+                          </div>
+                          <div className="ml-4">{planta.planta}</div>
+                          {isMouseOverItem &&
+                          hoverPlanta?._id === planta._id ? (
+                            <div className="ml-auto pr-4 pt-1">
+                              <button
+                                onClick={(e) => {
+                                  setIsChangingPlanta(true);
+                                  setUpdatedItem({
+                                    id: planta._id,
+                                    nome: planta.planta,
+                                  });
+                                }}
+                              >
+                                <img
+                                  className="h-4"
+                                  src="/assets/icons/edit-black.png"
+                                  alt=""
+                                />
+                              </button>
+                            </div>
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      )}
+                    </div>
+                  );
+                })}
               {!isAddingPlanta ? (
-                <div className="pt-1">
-                  <button
-                    onClick={(e) => {
-                      setUpdatedItem({ nome: "" });
-                      setIsAddingPlanta(true);
-                    }}
-                    className={`${
-                      isChangingImage ? "pointer-events-none" : ""
-                    }`}
-                  >
-                    <img
-                      className="h-4"
-                      src="/assets/icons/add-button-black.png"
-                      alt=""
-                    />
-                  </button>
-                </div>
+                <>
+                  {edificioSeleccionado ? (
+                    <div className="pt-1">
+                      <button
+                        onClick={(e) => {
+                          setUpdatedItem({ nome: "" });
+                          setIsAddingPlanta(true);
+                        }}
+                        className={`${
+                          isChangingImage ? "pointer-events-none" : ""
+                        }`}
+                      >
+                        <img
+                          className="h-4"
+                          src="/assets/icons/add-button-black.png"
+                          alt=""
+                        />
+                      </button>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
+                </>
               ) : (
                 <div className="shadow-md  w-72 h-10 rounded-xl flex items-center pl-4 cursor-pointer border border-solid border-gray-300">
                   <div>
@@ -494,7 +506,7 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
               </div>
             )}
 
-            {isMouseOverImage ? (
+            {isMouseOverImage && plantaSeleccionada ? (
               <div className="absolute top-0 right-0 h-full flex flex-col justify-between items-end p-2">
                 <div className="">
                   <button className="h-8 w-8 rounded-lg bg-gray-300 shadow-xl flex items-center justify-center">

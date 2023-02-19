@@ -1,10 +1,9 @@
-from http.client import HTTPException
 from bson.objectid import ObjectId
 from fastapi import APIRouter, File, UploadFile, Depends, Form
 from app.db import centros_collection
-from ..models.Centro import Plano, CambiarPlano
+from ..models.Centro import Plano
 from starlette.responses import JSONResponse
-from fastapi import HTTPException, status
+from fastapi import status
 from app.utils import cloudinaryFunctions
 
 router = APIRouter(
@@ -18,178 +17,182 @@ router = APIRouter(
 
 @router.post("/engadir-edificio")
 def engadir_edificio(request: Plano):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        planos = centro["planos"]
+        edificio = {
+            "_id": ObjectId(),
+            "nome_edificio": request.nome,
+            "plantas": []
+        }
+        planos.append(edificio)
 
-    planos = centro["planos"]
-    edificio = {
-        "_id": ObjectId(),
-        "nome_edificio": request.nome,
-        "plantas": []
-    }
-    planos.append(edificio)
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"planos": planos}})
 
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"planos": planos}})
-
-    edificio["_id"] = str(edificio["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=edificio)
+        edificio["_id"] = str(edificio["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": edificio})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro engadindo o edificio."})
 
 
 @router.post("/actualizar-edificio")
 def actualizar_edificio(request: Plano):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        planos = centro["planos"]
+        for edificio in planos:
+            if str(edificio["_id"]) == request.edificioId:
+                edificio["nome_edificio"] = request.nome
 
-    planos = centro["planos"]
-    for edificio in planos:
-        if str(edificio["_id"]) == request.edificioId:
-            edificio["nome_edificio"] = request.nome
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"planos": planos}})
 
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"planos": planos}})
-
-    for edificio in planos:
-        edificio["_id"] = str(edificio["_id"])
-        for planta in edificio["plantas"]:
-            planta["_id"] = str(planta["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=planos)
+        for edificio in planos:
+            edificio["_id"] = str(edificio["_id"])
+            for planta in edificio["plantas"]:
+                planta["_id"] = str(planta["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": planos})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro actualizando o edificio."})
 
 
 @router.post("/eliminar-edificio")
 def eliminar_edificio(request: Plano):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        planos = centro["planos"]
+        for edificio in planos:
+            if str(edificio["_id"]) == request.edificioId:
+                planos.remove(edificio)
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"planos": planos}})
 
-    planos = centro["planos"]
-    for edificio in planos:
-        if str(edificio["_id"]) == request.edificioId:
-            planos.remove(edificio)
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"planos": planos}})
-
-    for edificio in planos:
-        edificio["_id"] = str(edificio["_id"])
-        for planta in edificio["plantas"]:
-            planta["_id"] = str(planta["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=planos)
+        for edificio in planos:
+            edificio["_id"] = str(edificio["_id"])
+            for planta in edificio["plantas"]:
+                planta["_id"] = str(planta["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": planos})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro eliminando o edificio."})
 
 #### PLANTAS ####
 
 
 @router.post("/engadir-planta")
 def engadir_planta(request: Plano):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        planos = centro["planos"]
+        planta = {
+            "_id": ObjectId(),
+            "planta": request.nome,
+            "aps_planta": 0,
+            "plano": "",
+        }
+        for edificio in planos:
+            if str(edificio["_id"]) == request.edificioId:
+                edificio["plantas"].append(planta)
 
-    planos = centro["planos"]
-    planta = {
-        "_id": ObjectId(),
-        "planta": request.nome,
-        "aps_planta": 0,
-        "plano": "",
-    }
-    for edificio in planos:
-        if str(edificio["_id"]) == request.edificioId:
-            edificio["plantas"].append(planta)
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"planos": planos}})
 
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"planos": planos}})
-
-    planta["_id"] = str(planta["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=planta)
+        planta["_id"] = str(planta["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": planos})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro engadindo a planta."})
 
 
 @router.post("/actualizar-planta")
 def actualizar_planta(request: Plano):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        planos = centro["planos"]
+        for edificio in planos:
+            if str(edificio["_id"]) == request.edificioId:
+                for planta in edificio["plantas"]:
+                    if str(planta["_id"]) == request.plantaId:
+                        planta["planta"] = request.nome
 
-    planos = centro["planos"]
-    for edificio in planos:
-        if str(edificio["_id"]) == request.edificioId:
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"planos": planos}})
+
+        for edificio in planos:
+            edificio["_id"] = str(edificio["_id"])
             for planta in edificio["plantas"]:
-                if str(planta["_id"]) == request.plantaId:
-                    planta["planta"] = request.nome
-
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"planos": planos}})
-
-    for edificio in planos:
-        edificio["_id"] = str(edificio["_id"])
-        for planta in edificio["plantas"]:
-            planta["_id"] = str(planta["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=planos)
+                planta["_id"] = str(planta["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": planos})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro actualinado a planta."})
 
 
 @router.post("/eliminar-planta")
 def eliminar_planta(request: Plano):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(request.centroId)})
 
-    centro = centros_collection.find_one(
-        {"_id": ObjectId(request.centroId)})
+        if not centro:
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
-    if not centro:
-        raise HTTPException(
-            status_code=400, detail="Non se atopou o centro indicado")
+        planos = centro["planos"]
+        for edificio in planos:
+            if str(edificio["_id"]) == request.edificioId:
+                for planta in edificio["plantas"]:
+                    if str(planta["_id"]) == request.plantaId:
+                        edificio["plantas"].remove(planta)
 
-    planos = centro["planos"]
-    for edificio in planos:
-        if str(edificio["_id"]) == request.edificioId:
+        centros_collection.update_one(
+            {"_id": centro["_id"]}, {
+                "$set": {"planos": planos}})
+
+        for edificio in planos:
+            edificio["_id"] = str(edificio["_id"])
             for planta in edificio["plantas"]:
-                if str(planta["_id"]) == request.plantaId:
-                    edificio["plantas"].remove(planta)
-
-    centros_collection.update_one(
-        {"_id": centro["_id"]}, {
-            "$set": {"planos": planos}})
-
-    for edificio in planos:
-        edificio["_id"] = str(edificio["_id"])
-        for planta in edificio["plantas"]:
-            planta["_id"] = str(planta["_id"])
-    return JSONResponse(status_code=status.HTTP_200_OK, content=planos)
-
+                planta["_id"] = str(planta["_id"])
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": planos})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro eliminando a planta."})
 
 #### PLANOS ####
+
 
 @router.post("/cambiar-plano")
 async def cambiar_plano(plano: UploadFile = File(...), centroId: str = Form(...), edificioId: str = Form(...), plantaId: str = Form(...)):
     try:
         centro = centros_collection.find_one({"_id": ObjectId(centroId)})
         if not centro:
-            raise HTTPException(
-                status_code=500, detail="Non se atopou o centro indicado")
-
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
         planos = centro["planos"]
         for edificio in planos:
             if str(edificio["_id"]) == edificioId:
@@ -199,12 +202,10 @@ async def cambiar_plano(plano: UploadFile = File(...), centroId: str = Form(...)
                             delStatus = await cloudinaryFunctions.delete_photo(
                                 planta["plano"])
                             if delStatus["result"] != "ok":
-                                raise HTTPException(
-                                    status_code=500, detail="Erro eliminando a foto actual")
+                                return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro eliminando o plano actual."})
                         planoUrl = await cloudinaryFunctions.upload_photo(plano)
                         if not planoUrl:
-                            raise HTTPException(
-                                status_code=500, detail="Erro subindo a foto")
+                            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro subindo o plano."})
                         else:
                             planta["plano"] = planoUrl
 
@@ -216,6 +217,6 @@ async def cambiar_plano(plano: UploadFile = File(...), centroId: str = Form(...)
             edificio["_id"] = str(edificio["_id"])
             for planta in edificio["plantas"]:
                 planta["_id"] = str(planta["_id"])
-        return JSONResponse(status_code=status.HTTP_200_OK, content=planos)
-    except KeyError:
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content={"error": True, "message": "Erro cambiando a foto"})
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": planos})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro cambiando o plano."})

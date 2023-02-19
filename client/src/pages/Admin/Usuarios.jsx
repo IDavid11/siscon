@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { buscarUsuarios } from "../../services/usuarios";
+import React, { useState, useEffect, useContext } from "react";
 import ModalUsuario from "../../components/Modales/ModalUsuario";
 import ContainerWrap from "../../components/utils/ContainerWrap";
+import { instance } from "../../services/axios";
+import { apiUrls } from "../../services/urls";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const Usuarios = () => {
+  const { createToastMessage } = useContext(ToastMessageContext);
   const [users, setUsers] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalUsuario, setModalUsuario] = useState();
 
   const getUsers = async () => {
-    const usuarios = await buscarUsuarios();
-    setUsers(usuarios);
+    const { data } = await instance.get(apiUrls.urlObterUsuarios);
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else setUsers(data.data);
   };
 
   const handleShowModal = (usuario) => {
@@ -43,21 +47,22 @@ const Usuarios = () => {
               <th className="text-left px-20">Usuario</th>
               <th className="text-left px-20">Grupo</th>
             </tr>
-            {users.map((usuario) => {
-              return (
-                <tr
-                  key={usuario._id}
-                  onClick={(e) => handleShowModal(usuario)}
-                  className="font-medium hover:bg-gray-200 cursor-pointer"
-                >
-                  <td className="text-left px-20 py-2">{usuario.nome}</td>
-                  <td className="text-left px-20 py-2">{usuario.usuario}</td>
-                  <td className="text-left px-20 py-2 capitalize">
-                    {usuario.grupo}
-                  </td>
-                </tr>
-              );
-            })}
+            {users &&
+              users.map((usuario) => {
+                return (
+                  <tr
+                    key={usuario._id}
+                    onClick={(e) => handleShowModal(usuario)}
+                    className="font-medium hover:bg-gray-200 cursor-pointer"
+                  >
+                    <td className="text-left px-20 py-2">{usuario.nome}</td>
+                    <td className="text-left px-20 py-2">{usuario.usuario}</td>
+                    <td className="text-left px-20 py-2 capitalize">
+                      {usuario.grupo}
+                    </td>
+                  </tr>
+                );
+              })}
           </tbody>
         </table>
       </ContainerWrap>

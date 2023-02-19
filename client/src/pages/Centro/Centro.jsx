@@ -40,12 +40,12 @@ const Centro = () => {
   };
 
   const doPing = async () => {
-    const res = await instance.post(apiUrls.urlPing, {
+    const { data } = await instance.post(apiUrls.urlPing, {
       index: centro._id,
     });
     const tabsInfoVar = tabsInfo;
     tabsInfoVar[selectedTab].centro.network_checked = true;
-    tabsInfoVar[selectedTab].centro.rede.electronica = res.data;
+    tabsInfoVar[selectedTab].centro.rede.electronica = data.data;
     handleUpdateTabsInfo([...tabsInfoVar]);
   };
 

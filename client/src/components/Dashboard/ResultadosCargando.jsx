@@ -5,7 +5,7 @@ const ResultadosCargando = () => {
     <>
       {Array.apply(0, Array(28)).map((x, i) => {
         return (
-          <tr key={i}>
+          <tr>
             <td className="py-1.5 px-2">
               <div className="h-6 bg-cell-loading rounded-full"></div>
             </td>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import ContainerWrap from "../utils/ContainerWrap";
 import Nav from "../utils/Nav/Nav";
 import NavItem from "../utils/Nav/NavItem";
@@ -6,8 +6,10 @@ import Status from "../utils/Items/Status";
 import ModalElectronica from "../Modales/ModalElectronica";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const Electronica = ({ electronica, isLoading }) => {
+  const { createToastMessage } = useContext(ToastMessageContext);
   const [showModal, setShowModal] = useState(false);
   const [modalElectronica, setModalElectronica] = useState();
 
@@ -39,12 +41,14 @@ const Electronica = ({ electronica, isLoading }) => {
   const [vista, setVista] = useState("Todos");
 
   const getTiposDispositivos = async () => {
-    const res = await instance.get(apiUrls.urlObterTiposDispositivos);
-    setTiposDispositivos(res.data);
+    const { data } = await instance.get(apiUrls.urlObterTiposDispositivos);
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else setTiposDispositivos(data.data);
   };
   const getModelos = async () => {
-    const res = await instance.get(apiUrls.urlObterSwitches);
-    setModelos(res.data);
+    const { data } = await instance.get(apiUrls.urlObterSwitches);
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else setModelos(data.data);
   };
 
   const handleActiveVista = (e) => {

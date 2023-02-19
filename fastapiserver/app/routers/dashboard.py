@@ -1,10 +1,9 @@
 import json
-from bson.objectid import ObjectId
-from bson.son import SON
 from bson import json_util
 from fastapi import APIRouter
-from app.db import monitorizacion_collection, centros_collection
 from app.routers import centros, monitorizacions, estadisticas
+from starlette.responses import JSONResponse
+from fastapi import status
 
 router = APIRouter(
     prefix="/dashboard",
@@ -15,13 +14,16 @@ router = APIRouter(
 
 @router.get("/")
 def dashboard():
-    centros_data = centros.centros()
-    monitorizacions_data = monitorizacions.monitorizacions()
-    estadisticas_data = estadisticas.estadisticas_centros()
-    data = {
-        "centros": centros_data,
-        "monitorizacions": monitorizacions_data,
-        "estadisticas": estadisticas_data
-    }
+    try:
+        centros_data = centros.centros()
+        monitorizacions_data = monitorizacions.monitorizacions()
+        estadisticas_data = estadisticas.estadisticas_centros()
+        data = {
+            "centros": centros_data,
+            "monitorizacions": monitorizacions_data,
+            "estadisticas": estadisticas_data
+        }
 
-    return json.loads(json_util.dumps(data))
+        return json.loads(json_util.dumps(data))
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro engadindo o dispositivo."})

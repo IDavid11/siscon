@@ -19,45 +19,52 @@ router = APIRouter(
 
 @router.get("/")
 def centros():
-    centros = []
-    resultados = centros_collection.find()
+    try:
+        centros = []
+        resultados = centros_collection.find()
 
-    for centro in resultados:
-        up = []
-        down = []
-        del centro["contrasinais"]
-        centro["_id"] = str(centro["_id"])
-        for plano in centro["planos"]:
-            plano["_id"] = str(plano["_id"])
-            for planta in plano["plantas"]:
-                planta["_id"] = str(planta["_id"])
-        for lan in centro["rede"]["lans"]:
-            lan["_id"] = str(lan["_id"])
-        for item in centro["rede"]["electronica"]:
-            item["_id"] = str(item["_id"])
-            if item["status"] == "up":
-                up.append(item)
-            if item["status"] == "down":
-                down.append(item)
-        for rack in centro["rede"]["racks"]:
-            rack["_id"] = str(rack["_id"])
-        centro["porcentaxe"] = round(
-            (len(up) / len(centro["rede"]["electronica"])) * 100)
+        for centro in resultados:
+            up = []
+            down = []
+            del centro["contrasinais"]
+            centro["_id"] = str(centro["_id"])
+            for plano in centro["planos"]:
+                plano["_id"] = str(plano["_id"])
+                for planta in plano["plantas"]:
+                    planta["_id"] = str(planta["_id"])
+            for lan in centro["rede"]["lans"]:
+                lan["_id"] = str(lan["_id"])
+            for item in centro["rede"]["electronica"]:
+                item["_id"] = str(item["_id"])
+                if item["status"] == "up":
+                    up.append(item)
+                if item["status"] == "down":
+                    down.append(item)
+            for rack in centro["rede"]["racks"]:
+                rack["_id"] = str(rack["_id"])
+            centro["porcentaxe"] = round(
+                (len(up) / len(centro["rede"]["electronica"])) * 100)
 
-        avisos = []
-        filter = {"centroId": ObjectId(centro["_id"]), "status": "open"}
-        monitorizacions = monitorizacion_collection.find(filter)
+            avisos = []
+            filter = {"centroId": ObjectId(centro["_id"]), "status": "open"}
+            monitorizacions = monitorizacion_collection.find(filter)
 
-        for monitorizacion in monitorizacions:
-            avisos.append(monitorizacion)
+            for monitorizacion in monitorizacions:
+                monitorizacion["_id"] = str(monitorizacion["_id"])
+                monitorizacion["centroId"] = str(monitorizacion["centroId"])
+                monitorizacion["electronicaId"] = str(
+                    monitorizacion["electronicaId"])
+                avisos.append(monitorizacion)
 
-        resposta = {
-            "centro": centro,
-            "avarias": avisos
-        }
-        centros.append(resposta)
+            resposta = {
+                "centro": centro,
+                "avarias": avisos
+            }
+            centros.append(resposta)
 
-    return json.loads(json_util.dumps(centros))
+        return json.loads(json_util.dumps(centros))
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo os centros."})
 
 
 @router.post("/buscar")
@@ -112,7 +119,7 @@ def actualizar_centro(request: Centro):
         centro_mongo = centros_collection.find_one(
             {"_id": ObjectId(request.centroId)})
         if not centro_mongo:
-            raise HTTPException(status_code=400, detail="O centro non existe")
+            return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
         centro_actualizado = centros_collection.find_one_and_update({"_id": ObjectId(request.centroId)}, {"$set": {
             "centro": request.centro.upper(),
@@ -137,7 +144,6 @@ def actualizar_centro(request: Centro):
 #
         centro_actualizado["_id"] = str(centro_actualizado["_id"])
 
-        return JSONResponse(status_code=status.HTTP_200_OK, content=centro_actualizado)
-    except KeyError:
-        print(KeyError)
-        return JSONResponse(status_code=status.HTTP_400_BAD_REQUEST, content="Erro modificando o centro")
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": centro_actualizado})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro actualizando o centro."})

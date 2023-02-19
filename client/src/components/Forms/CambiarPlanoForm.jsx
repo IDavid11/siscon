@@ -3,10 +3,11 @@ import { useDropzone } from "react-dropzone";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const CambiarPlanoForm = ({ edificioId, plantaId, handleCloseModal }) => {
-  const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
-    useContext(TabsInfoContext);
+  const { tabsInfo, selectedTab } = useContext(TabsInfoContext);
+  const { createToastMessage } = useContext(ToastMessageContext);
   const [files, setFiles] = useState([]);
   const [isMouseOverImage, setIsMouseOverImage] = useState(false);
 
@@ -34,8 +35,9 @@ const CambiarPlanoForm = ({ edificioId, plantaId, handleCloseModal }) => {
     formData.append("centroId", tabsInfo[selectedTab].centro._id);
     formData.append("edificioId", edificioId);
     formData.append("plantaId", plantaId);
-    const res = await instance.post(apiUrls.urlCambiarPlano, formData);
-    if (res.status === 200) handleCloseModal();
+    const { data } = await instance.post(apiUrls.urlCambiarPlano, formData);
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else handleCloseModal();
   };
 
   useEffect(

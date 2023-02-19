@@ -2,10 +2,12 @@ import React, { useState, useContext } from "react";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const LanForm = ({ lan, handleCloseModal }) => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
+  const { createToastMessage } = useContext(ToastMessageContext);
   const [updatedLan, setUpdatedLan] = useState({
     _id: lan?._id || "",
     rango: lan?.rango || "",
@@ -23,52 +25,60 @@ const LanForm = ({ lan, handleCloseModal }) => {
 
   const submitUpdateLan = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlActualizarLan, {
+    const { data } = await instance.post(apiUrls.urlActualizarLan, {
       centroId: tabsInfo[selectedTab].centro._id,
       lanId: updatedLan._id,
       rango: updatedLan.rango,
       rede: updatedLan.rede,
       dhcp: updatedLan.dhcp,
     });
-
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.lans = res.data;
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.lans = data.data;
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
   const submitEngadirLan = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlEngadirLan, {
+    const { data } = await instance.post(apiUrls.urlEngadirLan, {
       centroId: tabsInfo[selectedTab].centro._id,
       rango: updatedLan.rango,
       rede: updatedLan.rede,
       dhcp: updatedLan.dhcp,
     });
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.lans.push(res.data);
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.lans.push(data.data);
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
-  const deleteLAN = async (e) => {
-    e.preventDefault();
-    const res = await instance.post(apiUrls.urlEliminarLan, {
+  const deleteLAN = async () => {
+    const { data } = await instance.post(apiUrls.urlEliminarLan, {
       centroId: tabsInfo[selectedTab].centro._id,
       lanId: updatedLan._id,
     });
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.lans = res.data;
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.lans = data.data;
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
   return (
-    <form>
+    <form onSubmit={lan ? submitUpdateLan : submitEngadirLan}>
       <div className="flex items-end gap-x-5">
         {lan != undefined ? (
           <div className="mb-1">
             <button
+              type="button"
               onClick={deleteLAN}
               className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
             >

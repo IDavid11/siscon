@@ -5,40 +5,81 @@ import Avisos from "../../components/Dashboard/Avisos";
 import ElectronicaDown from "../../components/Dashboard/ElectronicaDown";
 import Estadisticas from "../../components/Dashboard/Estadisticas";
 import TabsInfoContext from "../../context/TabsInfoContext";
-import ResultadosCargando from "../Listados/CentrosEducativos/ResultadosCargando";
+import ToastMessageContext from "../../context/ToastMessageContext";
+import ResultadosCargando from "../../components/Dashboard/ResultadosCargando";
 import ContainerWrap from "../../components/utils/ContainerWrap";
 
 const Dashboard = () => {
   const { handleNewTabButton } = useContext(TabsInfoContext);
+  const { createToastMessage } = useContext(ToastMessageContext);
   const [centros, setCentros] = useState([]);
   const [avisos, setAvisos] = useState([]);
   const [estadisticas, setEstadisticas] = useState([]);
 
+  const [filtros, setFiltros] = useState({ concello: "", centro: "" });
   const [search, setSearch] = useState([]);
-  const [showSearchInput, setShowSearchInput] = useState(false);
+  const [searchBox, setSearchBox] = useState(false);
 
-  const handleSearch = (e) => {
-    if (e.target.value != "" || e.target.value != null) {
-      var centrosFiltrados = centros.filter((c) =>
-        c.centro.centro.toUpperCase().includes(e.target.value.toUpperCase())
-      );
-      setSearch(centrosFiltrados);
+  const handleInputChange = (e) => {
+    if (e.target.value !== "") {
+      setFiltros({
+        ...filtros,
+        [e.target.name]: e.target.value.toUpperCase().trim(),
+      });
     } else {
-      setSearch(centros);
+      setFiltros({ ...filtros, [e.target.name]: "" });
     }
+  };
+
+  const handleSearch = () => {
+    var centrosFiltrados = [];
+    if (filtros.concello != "" && filtros.centro != "") {
+      centrosFiltrados = centros.filter(
+        (obj) =>
+          obj.centro.centro.includes(filtros.centro) &&
+          obj.centro.concello.includes(filtros.concello)
+      );
+
+      if (centrosFiltrados?.length < 1) setSearch(null);
+      else setSearch(centrosFiltrados);
+    }
+
+    if (filtros.concello == "" && filtros.centro != "") {
+      centrosFiltrados = centros.filter((c) =>
+        c.centro.centro.includes(filtros.centro)
+      );
+      if (centrosFiltrados?.length < 1) setSearch(null);
+      else setSearch(centrosFiltrados);
+    }
+
+    if (filtros.concello != "" && filtros.centro == "") {
+      centrosFiltrados = centros.filter((c) =>
+        c.centro.concello.includes(filtros.concello)
+      );
+      if (centrosFiltrados?.length < 1) setSearch(null);
+      else setSearch(centrosFiltrados);
+    }
+
+    if (filtros.concello == "" && filtros.centro == "") setSearch(centros);
   };
 
   const getCentros = async () => {
     const res = await instance.get(apiUrls.urlGetCentros);
-    const data = res.data.sort(
+    if (res.data.error) {
+      createToastMessage({ tipo: 1, message: res.data.message });
+    }
+    const dataCentros = res.data.sort(
       (a, b) => a.centro.porcentaxe - b.centro.porcentaxe
     );
-    setCentros(data);
-    if (search.length < 1) setSearch(data);
+    setCentros(dataCentros);
+    if (search?.length < 1) setSearch(dataCentros);
   };
 
   const getAvisos = async () => {
     const res = await instance.get(apiUrls.urlGetAvisos);
+    if (res.data.error) {
+      createToastMessage({ tipo: 1, message: res.data.message });
+    }
     setAvisos(
       res.data.sort(
         (a, b) => Date.parse(b.data.$date) - Date.parse(a.data.$date)
@@ -47,8 +88,11 @@ const Dashboard = () => {
   };
 
   const getEstadisticas = async () => {
-    const res = await instance.get(apiUrls.urlGetEstadisticas);
-    setEstadisticas(res.data);
+    const { data } = await instance.get(apiUrls.urlGetEstadisticas);
+    if (data.error) {
+      createToastMessage({ tipo: 1, message: data.message });
+    }
+    setEstadisticas(data.data);
   };
 
   const getFullDashboard = async () => {
@@ -68,54 +112,86 @@ const Dashboard = () => {
     getCentros();
     getAvisos();
     getEstadisticas();
+    handleSearch();
     const interval = setInterval(() => {
       getFullDashboard();
     }, 20000);
     return () => clearInterval(interval);
-  }, []);
+  }, [filtros]);
 
   return (
     <div className="dashboard">
       <ContainerWrap>
         <table className="rounded-xl overflow-hidden w-full">
           <tbody>
-            <tr className="h-10 mt-8 bg-primary-color text-white w-full">
-              <td className="text-left px-2 font-medium"></td>
-              <td className="text-left px-2 font-medium">Concello</td>
-              {!showSearchInput ? (
+            {!searchBox ? (
+              <tr className="dashboard-header h-10 mt-8 bg-primary-color text-white w-full">
                 <td className="text-left px-2 font-medium">
-                  <div className="flex items-center justify-between">
-                    <div>Centro</div>
-                    <div className="mr-20">
-                      <button
-                        onClick={(e) => setShowSearchInput(true)}
-                        className="h-8 w-8 rounded-full bg-white flex items-center justify-center"
-                      >
-                        <img
-                          className="h-4 pr-px"
-                          src="/assets/icons/loupe-black.png"
-                          alt=""
-                        />
-                      </button>
-                    </div>
+                  <div>
+                    <button
+                      onClick={(e) => setSearchBox(true)}
+                      className="h-7 w-7 rounded-full bg-white flex items-center justify-center"
+                    >
+                      <img
+                        className="h-3.5"
+                        src="/assets/icons/loupe-black.png"
+                        alt=""
+                      />
+                    </button>
                   </div>
                 </td>
-              ) : (
+                <td className="text-left px-2 font-medium">Concello</td>
+                <td className="text-left px-2 font-medium">Centro</td>
+                <td className="text-left px-2 font-medium">Avisos</td>
+                <td className="text-left px-2 font-medium">Estadísticas</td>
+                <td className="text-left px-2 font-medium">%</td>
+              </tr>
+            ) : (
+              <tr className="dashboard-header h-20 mt-8 bg-primary-color text-white w-full">
+                <td className="text-left px-2 font-medium">
+                  <div>
+                    <button
+                      onClick={(e) => {
+                        setSearchBox(false);
+                        setFiltros({ concello: "", centro: "" });
+                        setSearch(centros);
+                      }}
+                      className="h-7 w-7 rounded-full bg-white flex items-center justify-center"
+                    >
+                      <img
+                        className="h-2.5"
+                        src="/assets/icons/close-black.png"
+                        alt=""
+                      />
+                    </button>
+                  </div>
+                </td>
                 <td className="text-left px-2 font-medium">
                   <input
+                    className="bg-transparent border-b border-solid border-gray-400 w-2/3 pl-1 pb-px font-medium"
                     type="text"
-                    onChange={handleSearch}
-                    className="w-96 outline-none pl-2 border-b border-solid border-white bg-transparent"
-                    placeholder="Centro"
-                    autoFocus={true}
+                    name="concello"
+                    onChange={handleInputChange}
+                    placeholder="Concello"
                   />
                 </td>
-              )}
-              <td className="text-left px-2 font-medium">Avisos</td>
-              <td className="text-left px-2 font-medium">Estadísticas</td>
-              <td className="text-left px-2 font-medium">%</td>
-            </tr>
-            {search.length < 1 ? (
+                <td className="text-left px-2 font-medium">
+                  <div className="w-2/3">
+                    <input
+                      className="bg-transparent border-b border-solid border-gray-400 pl-1 pb-px font-medium w-full"
+                      type="text"
+                      name="centro"
+                      onChange={handleInputChange}
+                      placeholder="Centro"
+                    />
+                  </div>
+                </td>
+                <td className="text-left px-2 font-medium">Avisos</td>
+                <td className="text-left px-2 font-medium">Estadísticas</td>
+                <td className="text-left px-2 font-medium">%</td>
+              </tr>
+            )}
+            {search && search.length < 1 ? (
               <ResultadosCargando />
             ) : (
               <>
@@ -180,6 +256,16 @@ const Dashboard = () => {
                     );
                   })}
               </>
+            )}
+            {!search ? (
+              <td
+                colSpan={6}
+                className="w-full text-center py-4 font-medium text-lg"
+              >
+                Non hai coincidencias
+              </td>
+            ) : (
+              <></>
             )}
           </tbody>
         </table>

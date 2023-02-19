@@ -1,17 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import ContainerWrap from "../../components/utils/ContainerWrap";
 import ModalSwitch from "../../components/Modales/ModalSwitch";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const Switches = () => {
+  const { createToastMessage } = useContext(ToastMessageContext);
   const [switches, setSwitches] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [modalUsuario, setModalUsuario] = useState();
 
   const getSwitches = async () => {
-    const res = await instance.get(apiUrls.urlObterSwitches);
-    setSwitches(res.data);
+    const { data } = await instance.get(apiUrls.urlObterSwitches);
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else setSwitches(data.data);
   };
 
   const handleShowModal = (usuario) => {

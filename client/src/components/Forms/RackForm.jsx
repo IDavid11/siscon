@@ -2,10 +2,12 @@ import React, { useState, useContext } from "react";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
+import ToastMessageContext from "../../context/ToastMessageContext";
 
 const RackForm = ({ rack, handleCloseModal }) => {
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
+  const { createToastMessage } = useContext(ToastMessageContext);
   const [updatedRack, setUpdatedRack] = useState({
     _id: rack?._id || "",
     nome: rack?.nome || "",
@@ -23,44 +25,51 @@ const RackForm = ({ rack, handleCloseModal }) => {
 
   const submitUpdateRack = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlActualizarRack, {
+    const { data } = await instance.post(apiUrls.urlActualizarRack, {
       centroId: tabsInfo[selectedTab].centro._id,
       rackId: updatedRack._id,
       nome: updatedRack.nome,
       tipo: updatedRack.tipo,
       ubicacion: updatedRack.ubicacion,
     });
-
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.racks = res.data;
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.racks = data.data;
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
   const submitEngadirRack = async (e) => {
     e.preventDefault();
-    const res = await instance.post(apiUrls.urlEngadirRack, {
+    const { data } = await instance.post(apiUrls.urlEngadirRack, {
       centroId: tabsInfo[selectedTab].centro._id,
       nome: updatedRack.nome,
       tipo: updatedRack.tipo,
       ubicacion: updatedRack.ubicacion,
     });
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.racks.push(res.data);
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.racks.push(data.data);
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
-  const deleteRack = async (e) => {
-    e.preventDefault();
-    const res = await instance.post(apiUrls.urlEliminarRack, {
+  const deleteRack = async () => {
+    const { data } = await instance.post(apiUrls.urlEliminarRack, {
       centroId: tabsInfo[selectedTab].centro._id,
       rackId: updatedRack._id,
     });
-    const tabsInfoVar = tabsInfo;
-    tabsInfoVar[selectedTab].centro.rede.racks = res.data;
-    handleUpdateTabsInfo([...tabsInfoVar]);
-    handleCloseModal();
+    if (data.error) createToastMessage({ tipo: 1, message: data.message });
+    else {
+      const tabsInfoVar = tabsInfo;
+      tabsInfoVar[selectedTab].centro.rede.racks = data.data;
+      handleUpdateTabsInfo([...tabsInfoVar]);
+      handleCloseModal();
+    }
   };
 
   return (
@@ -69,6 +78,7 @@ const RackForm = ({ rack, handleCloseModal }) => {
         {rack != undefined ? (
           <div className="mb-1">
             <button
+              type="button"
               onClick={deleteRack}
               className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
             >

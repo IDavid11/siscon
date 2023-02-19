@@ -93,6 +93,7 @@ const HardwareForm = ({ hardware, handleCloseModal, setData }) => {
         {hardware != undefined ? (
           <div className="mb-1">
             <button
+              type="button"
               onClick={deleteSw}
               className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
             >

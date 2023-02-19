@@ -10,15 +10,6 @@ export const initialTabsInfoState = [
   },
   {
     tabId: 1,
-    label: "Centros educativos",
-    type: "Page",
-    page: "Centros Educativos",
-    header: "Listados",
-    info: "",
-    iconSrc: "assets/icons/file.png",
-  },
-  {
-    tabId: 2,
     label: "Hardware",
     type: "Page",
     page: "Hardware",
@@ -27,16 +18,7 @@ export const initialTabsInfoState = [
     iconSrc: "/assets/icons/file.png",
   },
   {
-    tabId: 3,
-    label: "Contrasinais",
-    type: "Page",
-    page: "Contrasinais",
-    header: "Listados",
-    info: "",
-    iconSrc: "/assets/icons/file.png",
-  },
-  {
-    tabId: 4,
+    tabId: 2,
     label: "Admin",
     type: "Page",
     page: "Admin",

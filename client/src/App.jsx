@@ -8,6 +8,7 @@ import { pages } from "./utils/pages";
 import Auth from "./pages/Auth/Auth";
 import { UserContext } from "./hooks/useUser";
 import TabsInfoContext from "./context/TabsInfoContext";
+import ToastMessageContext from "./context/ToastMessageContext";
 
 function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,6 +16,7 @@ function App() {
   const providerUser = useMemo(() => ({ user, setUser }), [user, setUser]);
 
   const { tabsInfo, selectedTab } = useContext(TabsInfoContext);
+  const { activo, tipo, message } = useContext(ToastMessageContext);
 
   useEffect(() => {
     const localToken = localStorage.getItem("token");
@@ -22,7 +24,7 @@ function App() {
     if (localToken === null) setUser(null);
     const sessionTabsInfo = sessionStorage.getItem("tabsInfo");
     sessionStorage.setItem("tabsInfo", JSON.stringify(tabsInfo));
-  }, [user, selectedTab, tabsInfo]);
+  }, [user, selectedTab, tabsInfo, activo]);
 
   return (
     <UserContext.Provider value={providerUser}>
@@ -65,6 +67,19 @@ function App() {
                 </TabPanelPersonal>
               );
             })}
+            {activo ? (
+              <div className="toast-message-container">
+                <div
+                  className={`toast-message ${tipo == 1 ? "toast-error" : ""} ${
+                    tipo == 2 ? "toast-warning" : ""
+                  } ${tipo == 0 ? "toast-success" : ""}`}
+                >
+                  <div className="font-medium text-white">{message}</div>
+                </div>
+              </div>
+            ) : (
+              <></>
+            )}
           </Layout>
         </>
       )}
