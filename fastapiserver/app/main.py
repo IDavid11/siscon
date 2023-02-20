@@ -8,9 +8,9 @@ from .monitorizacion import monitorizacion
 from app.routers.usuarios import get_current_user
 
 ###### IMPORTANTE ######
-#thread = Thread(target=monitorizacion)
-#thread.daemon = True
-# thread.start()
+thread = Thread(target=monitorizacion)
+thread.daemon = True
+thread.start()
 
 app = FastAPI()
 

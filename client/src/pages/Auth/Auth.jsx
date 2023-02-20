@@ -99,7 +99,7 @@ const Auth = () => {
         <div className="img">
           <img className="h-9" src="favicon.png" alt="" />
         </div>
-        <div className="ml-2.5 font-medium">UAC | Sistemas</div>
+        <div className="ml-2.5 font-medium">SISCON | UAC</div>
       </div>
       <div className="w-full h-full flex items-center">
         <div className="w-[60%] h-full flex items-center justify-center">

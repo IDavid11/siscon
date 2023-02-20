@@ -37,17 +37,13 @@ def comprobar_failed_ping(centro, item):
 
 
 def monitorizacion():
-    centros = []
-    resultados = centros_collection.find({})
-
-    for resultado in resultados:
-        centros.append(resultado)
 
     while True:
+        centros = centros_collection.find({})
+
         for centro in centros:
             electronica = centro["rede"]["electronica"]
-            resultadosPing = []
-            print("Comeza bucle")
+
             with open(os.devnull, "wb") as limbo:
                 for item in electronica:
                     print("Continuando")
@@ -60,10 +56,6 @@ def monitorizacion():
                         failed = comprobar_failed_ping(centro, item)
                         # if failed and item["tipo"] == 1:
                         #    break
-
-                resultadosPing.append(resultado)
-
-        return resultadosPing
 
 
 def cambiar_status(centro, item):

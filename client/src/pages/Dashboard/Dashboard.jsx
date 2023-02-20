@@ -17,23 +17,17 @@ const Dashboard = () => {
   const [monitorizacions, setMonitorizacions] = useState([]);
   const [estadisticas, setEstadisticas] = useState([]);
 
-  const [filtros, setFiltros] = useState({ concello: "", centro: "" });
   const [search, setSearch] = useState([]);
   const [searchBox, setSearchBox] = useState(false);
 
-  const handleInputChange = (e) => {
-    if (e.target.value !== "") {
-      setFiltros({
-        ...filtros,
-        [e.target.name]: e.target.value.toUpperCase().trim(),
-      });
-    } else {
-      setFiltros({ ...filtros, [e.target.name]: "" });
-    }
-  };
-
-  const handleSearch = () => {
+  const handleSearch = (e) => {
+    e.preventDefault();
     var centrosFiltrados = [];
+    const filtros = {
+      concello: document.getElementById("concello").value.toUpperCase(),
+      centro: document.getElementById("centro").value.toUpperCase(),
+    };
+    console.log(filtros);
     if (filtros.concello != "" && filtros.centro != "") {
       centrosFiltrados = centros.filter(
         (obj) =>
@@ -62,38 +56,6 @@ const Dashboard = () => {
     }
 
     if (filtros.concello == "" && filtros.centro == "") setSearch(centros);
-  };
-
-  const getCentros = async () => {
-    const res = await instance.get(apiUrls.urlGetCentros);
-    if (res.data.error) {
-      createToastMessage({ tipo: 1, message: res.data.message });
-    }
-    const dataCentros = res.data.sort(
-      (a, b) => a.centro.porcentaxe - b.centro.porcentaxe
-    );
-    setCentros(dataCentros);
-    if (search?.length < 1) setSearch(dataCentros);
-  };
-
-  const getAvisos = async () => {
-    const res = await instance.get(apiUrls.urlGetAvisos);
-    if (res.data.error) {
-      createToastMessage({ tipo: 1, message: res.data.message });
-    }
-    setAvisos(
-      res.data.sort(
-        (a, b) => Date.parse(b.data.$date) - Date.parse(a.data.$date)
-      )
-    );
-  };
-
-  const getEstadisticas = async () => {
-    const { data } = await instance.get(apiUrls.urlGetEstadisticas);
-    if (data.error) {
-      createToastMessage({ tipo: 1, message: data.message });
-    }
-    setEstadisticas(data.data);
   };
 
   const getFullDashboard = async () => {
@@ -134,13 +96,13 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    getFullDashboard();
-    handleSearch();
+    console.log("refreshing");
+    if (search?.length < 1) getFullDashboard();
     const interval = setInterval(() => {
       getFullDashboard();
     }, 20000);
     return () => clearInterval(interval);
-  }, [filtros]);
+  }, []);
 
   return (
     <div className="dashboard">
@@ -176,7 +138,6 @@ const Dashboard = () => {
                     <button
                       onClick={(e) => {
                         setSearchBox(false);
-                        setFiltros({ concello: "", centro: "" });
                         setSearch(centros);
                       }}
                       className="h-7 w-7 rounded-full bg-white flex items-center justify-center"
@@ -190,24 +151,31 @@ const Dashboard = () => {
                   </div>
                 </td>
                 <td className="text-left px-2 font-medium">
-                  <input
-                    className="bg-transparent border-b border-solid border-gray-400 w-2/3 pl-1 pb-px font-medium"
-                    type="text"
-                    name="concello"
-                    onChange={handleInputChange}
-                    placeholder="Concello"
-                  />
+                  <form onSubmit={handleSearch}>
+                    <input
+                      className="bg-transparent border-b border-solid border-gray-400 w-2/3 pl-1 pb-px font-medium"
+                      type="text"
+                      name="concello"
+                      id="concello"
+                      autoComplete={"off"}
+                      placeholder="Concello"
+                    />
+                  </form>
                 </td>
                 <td className="text-left px-2 font-medium">
-                  <div className="w-2/3">
+                  <form onSubmit={handleSearch}>
                     <input
-                      className="bg-transparent border-b border-solid border-gray-400 pl-1 pb-px font-medium w-full"
+                      className="bg-transparent border-b border-solid border-gray-400 pl-1 pb-px font-medium w-2/3"
                       type="text"
                       name="centro"
-                      onChange={handleInputChange}
+                      id="centro"
+                      autoComplete={"off"}
                       placeholder="Centro"
                     />
-                  </div>
+                    <button type="submit" onClick={handleSearch}>
+                      Buscar
+                    </button>
+                  </form>
                 </td>
                 <td className="text-left px-2 font-medium">Avisos</td>
                 <td className="text-left px-2 font-medium">Estadísticas</td>
