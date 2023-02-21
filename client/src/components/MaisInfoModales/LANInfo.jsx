@@ -1,29 +1,12 @@
-import React, { useEffect, useState, useContext } from "react";
-import { instance } from "../../services/axios";
-import { apiUrls } from "../../services/urls";
+import React from "react";
 import Status from "../utils/Items/Status";
-import TabsInfoContext from "../../context/TabsInfoContext";
 
 const LanInfo = ({ lan }) => {
-  const { tabsInfo, selectedTab } = useContext(TabsInfoContext);
-  const [electronicaLan, setElectronicaLan] = useState([]);
-  const obterElectronicaLan = async () => {
-    const { data } = await instance.post(apiUrls.urlObterElectronicaLan, {
-      centroId: tabsInfo[selectedTab].centro._id,
-      lanId: lan._id,
-    });
-    setElectronicaLan(data.data);
-  };
-
-  useEffect(() => {
-    obterElectronicaLan();
-  }, []);
-
   return (
     <div className="mt-8 border border-solid border-gray-300 rounded-xl p-10">
       <div className="font-bold">Electrónica na LAN</div>
       <div className="historial mt-4 remove-scrollbar">
-        {electronicaLan && electronicaLan.length > 0 ? (
+        {lan.electronica && lan.electronica.length > 0 ? (
           <table className="text-left">
             <tbody>
               <tr>
@@ -34,8 +17,8 @@ const LanInfo = ({ lan }) => {
                 <th className="w-52">Ubicación</th>
                 <th className="text-center">Estado</th>
               </tr>
-              {electronicaLan &&
-                electronicaLan.map((electronica) => {
+              {lan.electronica &&
+                lan.electronica.map((electronica) => {
                   return (
                     <tr key={electronica._id}>
                       <td className="py-2.5 px-2 w-2">

@@ -8,8 +8,10 @@ import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import ToastMessageContext from "../../context/ToastMessageContext";
 import { imgs } from "../../utils/imgs";
+import UserContext from "../../context/UserContext";
 
 const Electronica = ({ electronica, isLoading }) => {
+  const { grupo } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
   const [showModal, setShowModal] = useState(false);
   const [modalElectronica, setModalElectronica] = useState();
@@ -57,15 +59,19 @@ const Electronica = ({ electronica, isLoading }) => {
   return (
     <>
       <ContainerWrap title={"Rede"}>
-        <div className="absolute top-3 right-3 flex items-center gap-x-2">
-          <button onClick={(e) => handleShowModal(undefined)}>
-            <img
-              className="h-6"
-              src="/assets/icons/add-button-black.png"
-              alt=""
-            />
-          </button>
-        </div>
+        {grupo === "sistemas" || grupo === "admin" ? (
+          <div className="absolute top-3 right-3 flex items-center gap-x-2">
+            <button onClick={(e) => handleShowModal(undefined)}>
+              <img
+                className="h-6"
+                src="/assets/icons/add-button-black.png"
+                alt=""
+              />
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
         <div className="h-10 pt-4 fixed bg-white">
           <Nav>
             {nav.map((li) => {

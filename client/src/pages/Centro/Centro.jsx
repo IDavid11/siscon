@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
 import TabsInfoContext from "../../context/TabsInfoContext";
-import ContainerWrap from "../../components/utils/ContainerWrap";
 import InfoCentro from "../../components/InfoCentro/InfoCentro";
 import InfoCentroForm from "../../components/Forms/InfoCentroForm";
 import Electronica from "../../components/InfoCentro/Electronica";
@@ -14,8 +13,10 @@ import AvariasDetectadas from "../../components/InfoCentro/AvariasDetectadas";
 import Estadisticas from "../../components/InfoCentro/Estadisticas";
 import { randomImg } from "../../utils/randomImg";
 import Avisos from "../../components/InfoCentro/Avisos";
+import UserContext from "../../context/UserContext";
 
 const Centro = () => {
+  const { grupo } = useContext(UserContext);
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
   const { isLoading, setIsLoading } = useLoading(false);
@@ -23,6 +24,7 @@ const Centro = () => {
   const [centro, setCentro] = useState(tabsInfo[selectedTab].centro);
 
   const [edit, setEdit] = useState(false);
+  console.log("refreshing centro 2");
   const img = randomImg();
 
   const initCmd = async () => {
@@ -49,10 +51,26 @@ const Centro = () => {
     handleUpdateTabsInfo([...tabsInfoVar]);
   };
 
+  const obterElectronicaLan = () => {
+    const tabsInfoVar = tabsInfo;
+    tabsInfoVar[selectedTab].centro.rede.lans.map(async (lan, index) => {
+      const { data } = await instance.post(apiUrls.urlObterElectronicaLan, {
+        centroId: tabsInfo[selectedTab].centro._id,
+        lanId: lan._id,
+      });
+      tabsInfoVar[selectedTab].centro.rede.lans[index].electronica = data.data;
+    });
+    handleUpdateTabsInfo([...tabsInfoVar]);
+  };
+
+  const obterInformacionSistemas = async () => {};
+
   useEffect(() => {
+    console.log("refresing centro");
     if (!tabsInfo[selectedTab].centro.network_checked) initCmd();
+    obterElectronicaLan();
     setCentro(tabsInfo[selectedTab].centro);
-  }, [tabsInfo]);
+  }, []);
 
   return (
     <div className="centro-container flex gap-x-20">

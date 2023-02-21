@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import ModalPlanos from "../Modales/ModalPlanos/ModalPlanos";
 import ContainerWrap from "../utils/ContainerWrap";
+import UserContext from "../../context/UserContext";
 
 const Planos = ({ planos }) => {
+  const { grupo } = useContext(UserContext);
+
   const [showModal, setShowModal] = useState(false);
 
   const handleShowModal = () => {
@@ -17,15 +20,19 @@ const Planos = ({ planos }) => {
         title={"Planos"}
         img={"/assets/icons/file-upload-black.png"}
       >
-        <div className="absolute top-3 right-3 flex items-center gap-x-2">
-          <button onClick={handleShowModal}>
-            <img
-              className="h-6"
-              src="/assets/icons/add-button-black.png"
-              alt=""
-            />
-          </button>
-        </div>
+        {grupo === "sistemas" || grupo === "admin" ? (
+          <div className="absolute top-3 right-3 flex items-center gap-x-2">
+            <button onClick={handleShowModal}>
+              <img
+                className="h-6"
+                src="/assets/icons/add-button-black.png"
+                alt=""
+              />
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
         <table className="rounded-xl mt-4 w-full">
           <tbody>
             {planos &&

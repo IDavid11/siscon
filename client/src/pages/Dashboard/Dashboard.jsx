@@ -96,7 +96,7 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    console.log("refreshing");
+    console.log("refreshing dashboard");
     if (search?.length < 1) getFullDashboard();
     const interval = setInterval(() => {
       getFullDashboard();

@@ -24,8 +24,7 @@ export default function TabsInfoState({ isLoading, children }) {
   const [state, dispatch] = useReducer(TabsInfoReducer, initialState);
 
   const handleNewTabButton = (centro) => {
-    console.log(centro);
-    if (!isLoading && state.tabsInfo.length < 9) {
+    if (!isLoading && state.tabsInfo.length < 8) {
       const index = state.tabsInfo.length;
       centro.centro.network_checked = false;
       dispatch({
@@ -113,6 +112,15 @@ export default function TabsInfoState({ isLoading, children }) {
     dispatch({ type: ACTUALIZAR_TABS_INFO, payload: newTabsInfo });
   };
 
+  const handleRestartTabsInfo = () => {
+    dispatch({ type: ACTUALIZAR_TABS_INFO, payload: initialTabsInfoState });
+  };
+
+  const handleRestartSelectedTab = () => {
+    dispatch({ type: TAB_SELECCIONADA, payload: 0 });
+    sessionStorage.setItem("selectedTab", 0);
+  };
+
   useEffect(() => {}, [state.tabsInfo, state.selectedTab]);
 
   return (
@@ -124,6 +132,8 @@ export default function TabsInfoState({ isLoading, children }) {
         handleSelectedTab,
         handleRemoveTab,
         handleUpdateTabsInfo,
+        handleRestartTabsInfo,
+        handleRestartSelectedTab,
       }}
     >
       {children}

@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import ModalRack from "../Modales/ModalRack";
 import ContainerWrap from "../utils/ContainerWrap";
+import UserContext from "../../context/UserContext";
 
 const Racks = ({ racks }) => {
+  const { grupo } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [modalRack, setModalRack] = useState();
 
@@ -13,15 +15,19 @@ const Racks = ({ racks }) => {
   return (
     <>
       <ContainerWrap title={"Racks"} img={"/assets/icons/rack.png"}>
-        <div className="absolute top-3 right-3 flex items-center gap-x-2">
-          <button onClick={(e) => handleShowModal(undefined)}>
-            <img
-              className="h-6"
-              src="/assets/icons/add-button-black.png"
-              alt=""
-            />
-          </button>
-        </div>
+        {grupo === "sistemas" || grupo === "admin" ? (
+          <div className="absolute top-3 right-3 flex items-center gap-x-2">
+            <button onClick={(e) => handleShowModal(undefined)}>
+              <img
+                className="h-6"
+                src="/assets/icons/add-button-black.png"
+                alt=""
+              />
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
         <table className="rounded-xl mt-4 w-full table-fixed">
           <tbody>
             {racks &&

@@ -7,14 +7,14 @@ function reducer(state, action) {
   switch (type) {
     case "crearMensaxeToast":
       return {
-        activo: payload.activo,
-        tipo: payload.activo,
+        error: payload.error,
+        tipo: payload.tipo,
         message: payload.message,
       };
     case "eliminarMensaxeToast":
       return {
-        activo: payload.activo,
-        tipo: payload.activo,
+        error: payload.error,
+        tipo: payload.tipo,
         message: payload.message,
       };
     default:
@@ -24,7 +24,7 @@ function reducer(state, action) {
 
 export default function ToastMessageState({ children }) {
   const initialState = {
-    activo: false,
+    error: false,
     tipo: 0, // 0 OK // 1 ERROR // 2 WARNING
     message: "",
   };
@@ -35,7 +35,7 @@ export default function ToastMessageState({ children }) {
     dispatch({
       type: "crearMensaxeToast",
       payload: {
-        activo: true,
+        error: true,
         tipo: toastMessage.tipo,
         message: toastMessage.message,
       },
@@ -46,7 +46,7 @@ export default function ToastMessageState({ children }) {
     dispatch({
       type: "eliminarMensaxeToast",
       payload: {
-        activo: false,
+        error: false,
         tipo: 0,
         message: "",
       },
@@ -54,16 +54,18 @@ export default function ToastMessageState({ children }) {
   };
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      deleteToastMessage();
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [state.activo]);
+    if (state.error) {
+      const interval = setInterval(() => {
+        deleteToastMessage();
+      }, 3000);
+      return () => clearInterval(interval);
+    }
+  }, [state.error]);
 
   return (
     <ToastMessageContext.Provider
       value={{
-        activo: state.activo,
+        error: state.error,
         tipo: state.tipo,
         message: state.message,
         createToastMessage,

@@ -1,14 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
 import ContainerWrap from "../utils/ContainerWrap";
+import UserContext from "../../context/UserContext";
 
-const InfoCentro2 = ({ centro, setEdit, img }) => {
+const InfoCentro = ({ centro, setEdit, img }) => {
+  const { grupo } = useContext(UserContext);
+
   return (
     <ContainerWrap>
-      <div className="absolute top-3 right-3 flex items-center gap-x-2">
-        <button onClick={(e) => setEdit(true)}>
-          <img className="h-8" src="/assets/icons/edit-bg.png" alt="" />
-        </button>
-      </div>
+      {grupo === "sistemas" || grupo === "admin" ? (
+        <div className="absolute top-3 right-3 flex items-center gap-x-2">
+          <button onClick={(e) => setEdit(true)}>
+            <img className="h-8" src="/assets/icons/edit-bg.png" alt="" />
+          </button>
+        </div>
+      ) : (
+        <></>
+      )}
       <div className="bg-white p-3 rounded-xl overflow-hidden">
         <div className="h-64">
           <img
@@ -67,6 +74,16 @@ const InfoCentro2 = ({ centro, setEdit, img }) => {
                 )}
               </div>
             </div>
+            {grupo === "sistemas" || grupo === "admin" ? (
+              <div className="mt-8">
+                <div className="w-24 font-medium whitespace-nowrap">
+                  Información sistemas
+                </div>
+                <div className="mt-2"></div>
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
         </div>
       </div>
@@ -74,4 +91,4 @@ const InfoCentro2 = ({ centro, setEdit, img }) => {
   );
 };
 
-export default InfoCentro2;
+export default InfoCentro;

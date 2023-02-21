@@ -1,11 +1,10 @@
 import React, { useState, useContext } from "react";
 import ContainerWrap from "../utils/ContainerWrap";
 import ModalLAN from "../Modales/ModalLAN";
-import TabsInfoContext from "../../context/TabsInfoContext";
+import UserContext from "../../context/UserContext";
 
 const LANs = ({ lans }) => {
-  const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
-    useContext(TabsInfoContext);
+  const { grupo } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [modalLan, setModalLan] = useState();
 
@@ -17,15 +16,19 @@ const LANs = ({ lans }) => {
   return (
     <>
       <ContainerWrap title={"LANs"}>
-        <div className="absolute top-3 right-3 flex items-center gap-x-2">
-          <button onClick={(e) => handleShowModal(undefined)}>
-            <img
-              className="h-6"
-              src="/assets/icons/add-button-black.png"
-              alt=""
-            />
-          </button>
-        </div>
+        {grupo === "sistemas" || grupo === "admin" ? (
+          <div className="absolute top-3 right-3 flex items-center gap-x-2">
+            <button onClick={(e) => handleShowModal(undefined)}>
+              <img
+                className="h-6"
+                src="/assets/icons/add-button-black.png"
+                alt=""
+              />
+            </button>
+          </div>
+        ) : (
+          <></>
+        )}
         <table className="rounded-xl mt-4 w-full table-fixed">
           <tbody>
             {lans &&
@@ -65,7 +68,7 @@ const LANs = ({ lans }) => {
                       className="py-2.5 px-2"
                     >
                       <span className="py-1.5 px-4 text-sm bg-gray-200 rounded-full">
-                        4 dispositivos
+                        {lan.electronica?.length || "0"} dispositivos
                       </span>
                     </td>
                   </tr>

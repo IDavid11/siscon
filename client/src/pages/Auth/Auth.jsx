@@ -1,27 +1,22 @@
 import React, { useState, useContext } from "react";
-import { UserContext } from "../../hooks/useUser";
+import UserContext from "../../context/UserContext";
 import ErrorIcon from "../../icons/ErrorIcon";
 import { instance } from "../../services/axios";
 
 const Auth = () => {
+  const { iniciarSesion } = useContext(UserContext);
   const [usuarioExiste, setUsuarioExiste] = useState(false);
   const [usuarioAutenticado, setUsuarioAutenticado] = useState(false);
   const [isError, setIsError] = useState("");
   const [error, setError] = useState("");
-
-  const { user, setUser } = useContext(UserContext);
 
   const handleUserForm = async (e) => {
     e.preventDefault();
     const username = document.getElementById("usuario").value;
     const res = await instance.post(
       "http://127.0.0.1:8000/usuarios/buscar-usuario",
-      {
-        username: username,
-      }
+      { username: username }
     );
-
-    console.log(res);
 
     if (res.status === 200) {
       setUsuarioExiste(true);
@@ -37,7 +32,7 @@ const Auth = () => {
 
   const handleRegisterForm = async (e) => {
     e.preventDefault();
-    const usuario = document.getElementById("usuario").value;
+    const login = document.getElementById("usuario").value;
     const novo_contrasinal = document.getElementById("novo-contrasinal").value;
     const repetir_novo_contrasinal = document.getElementById(
       "repetir-novo-contrasinal"
@@ -50,14 +45,13 @@ const Auth = () => {
       const { data } = await instance.post(
         "http://127.0.0.1:8000/usuarios/login",
         {
-          username: usuario,
+          username: login,
           password: novo_contrasinal,
         }
       );
-      const { token_type, access_token } = data;
+      const { usuario, access_token } = data;
       if (access_token) {
-        setUser(data);
-        const localToken = localStorage.setItem("token", `${access_token}`);
+        iniciarSesion({ grupo: usuario.grupo, token: access_token });
       }
     } else {
       setIsError("password");
@@ -67,23 +61,20 @@ const Auth = () => {
 
   const handleLoginForm = async (e) => {
     e.preventDefault();
-    const usuario = document.getElementById("usuario").value;
+    const login = document.getElementById("usuario").value;
     const contrasinal = document.getElementById("contrasinal").value;
 
     const { data } = await instance.post(
       "http://127.0.0.1:8000/usuarios/login",
       {
-        username: usuario,
+        username: login,
         password: contrasinal,
       }
     );
 
-    console.log(data);
-    const { token_type, access_token } = data;
-
+    const { usuario, access_token } = data;
     if (access_token) {
-      setUser(data);
-      const localToken = localStorage.setItem("token", `${access_token}`);
+      iniciarSesion({ grupo: usuario.grupo, token: access_token });
     } else {
       setIsError("password");
       setError("Contrasinal incorrecto");

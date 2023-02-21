@@ -3,6 +3,7 @@ import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
 import ToastMessageContext from "../../context/ToastMessageContext";
+import UserContext from "../../context/UserContext";
 
 const ElectronicaForm = ({
   dispositivo,
@@ -10,6 +11,7 @@ const ElectronicaForm = ({
   tiposDispositivos,
   modelos,
 }) => {
+  const { grupo } = useContext(UserContext);
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
   const { createToastMessage } = useContext(ToastMessageContext);
@@ -101,142 +103,251 @@ const ElectronicaForm = ({
   }, [updatedDispositivo]);
 
   return (
-    <form
-      onSubmit={
-        dispositivo ? submitUpdateDispositivo : submitEngadirDispositivo
-      }
-    >
-      <div className="flex items-end gap-x-5">
-        {dispositivo != undefined ? (
-          <div className="mb-1">
-            <button
-              type="button"
-              onClick={deleteDispostivo}
-              className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
-            >
-              <img
-                style={{ width: "12px" }}
-                src="/assets/icons/delete.png"
-                alt=""
+    <>
+      {grupo === "sistemas" || grupo === "admin" ? (
+        <form
+          onSubmit={
+            dispositivo ? submitUpdateDispositivo : submitEngadirDispositivo
+          }
+        >
+          <div className="flex items-end gap-x-5">
+            {dispositivo != undefined ? (
+              <div className="mb-1">
+                <button
+                  type="button"
+                  onClick={deleteDispostivo}
+                  className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
+                >
+                  <img
+                    style={{ width: "12px" }}
+                    src="/assets/icons/delete.png"
+                    alt=""
+                  />
+                </button>
+              </div>
+            ) : (
+              <></>
+            )}
+            <div className="flex flex-col">
+              <label htmlFor="ip" className="font-medium text-center mb-4">
+                IP
+              </label>
+              <input
+                type="text"
+                name="ip"
+                value={updatedDispositivo.ip}
+                onChange={handleInputChange}
+                className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
               />
-            </button>
-          </div>
-        ) : (
-          <></>
-        )}
-        <div className="flex flex-col">
-          <label htmlFor="ip" className="font-medium text-center mb-4">
-            IP
-          </label>
-          <input
-            type="text"
-            name="ip"
-            value={updatedDispositivo.ip}
-            onChange={handleInputChange}
-            className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
-          />
-        </div>
-        {updatedDispositivo.tipo === "AP_edu_xunta_gal" ||
-        updatedDispositivo.tipo === "AP_Siega" ? (
-          <div className="flex flex-col">
-            <label htmlFor="nome" className="font-medium text-center mb-4">
-              Nome
-            </label>
-            <input
-              type="text"
-              name="nome"
-              value={updatedDispositivo.nome}
-              onChange={handleInputChange}
-              className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
-            />
-          </div>
-        ) : (
-          <></>
-        )}
-        <div className="flex flex-col">
-          <label htmlFor="tipo" className="font-medium text-center mb-4">
-            Tipo
-          </label>
-          <select
-            name="tipo"
-            id="tipo"
-            defaultValue={updatedDispositivo.tipo || ""}
-            onChange={handleInputChange}
-            className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
-          >
-            <option value={""}>Seleccionar</option>
-            {tiposDispositivos &&
-              tiposDispositivos.map((tipo) => {
-                return <option value={tipo.nome}>{tipo.nome}</option>;
-              })}
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="modelo" className="font-medium text-center mb-4">
-            Marca e modelo
-          </label>
-          <select
-            name="modelo"
-            id="modelo"
-            defaultValue={updatedDispositivo.modelo || "Sen determinar"}
-            onChange={handleInputChange}
-            className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
-          >
-            <option value={"Sen determinar"}>Sen determinar</option>
-            {modelos &&
-              modelos.map((modelo) => {
-                return <option value={modelo.nome}>{modelo.nome}</option>;
-              })}
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="ubicacion" className="font-medium text-center mb-4">
-            Ubicación
-          </label>
+            </div>
+            {updatedDispositivo.tipo === "AP_edu_xunta_gal" ||
+            updatedDispositivo.tipo === "AP_Siega" ? (
+              <div className="flex flex-col">
+                <label htmlFor="nome" className="font-medium text-center mb-4">
+                  Nome
+                </label>
+                <input
+                  type="text"
+                  name="nome"
+                  value={updatedDispositivo.nome}
+                  onChange={handleInputChange}
+                  className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+            <div className="flex flex-col">
+              <label htmlFor="tipo" className="font-medium text-center mb-4">
+                Tipo
+              </label>
+              <select
+                name="tipo"
+                id="tipo"
+                defaultValue={updatedDispositivo.tipo || ""}
+                onChange={handleInputChange}
+                className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+              >
+                <option value={""}>Seleccionar</option>
+                {tiposDispositivos &&
+                  tiposDispositivos.map((tipo) => {
+                    return <option value={tipo.nome}>{tipo.nome}</option>;
+                  })}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="modelo" className="font-medium text-center mb-4">
+                Marca e modelo
+              </label>
+              <select
+                name="modelo"
+                id="modelo"
+                defaultValue={updatedDispositivo.modelo || "Sen determinar"}
+                onChange={handleInputChange}
+                className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+              >
+                <option value={"Sen determinar"}>Sen determinar</option>
+                {modelos &&
+                  modelos.map((modelo) => {
+                    return <option value={modelo.nome}>{modelo.nome}</option>;
+                  })}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="ubicacion"
+                className="font-medium text-center mb-4"
+              >
+                Ubicación
+              </label>
 
-          {tipoUbicacion === "Rack" ? (
-            <select
-              name="ubicacion"
-              id="ubicacion"
-              defaultValue={updatedDispositivo.ubicacion || "Sen localizar"}
-              onChange={handleInputChange}
-              className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
-            >
-              <option value={"Sen localizar"}>Sen localizar</option>
-              {tabsInfo[selectedTab].centro.rede.racks &&
-                tabsInfo[selectedTab].centro.rede.racks.map((rack) => {
-                  return <option value={rack.nome}>{rack.nome}</option>;
-                })}
-            </select>
-          ) : (
-            <input
-              name="ubicacion"
-              id="ubicacion"
-              defaultValue={updatedDispositivo.ubicacion || "Sen localizar"}
-              onChange={handleInputChange}
-              className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
-            />
-          )}
-        </div>
+              {tipoUbicacion === "Rack" ? (
+                <select
+                  name="ubicacion"
+                  id="ubicacion"
+                  defaultValue={updatedDispositivo.ubicacion || "Sen localizar"}
+                  onChange={handleInputChange}
+                  className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+                >
+                  <option value={"Sen localizar"}>Sen localizar</option>
+                  {tabsInfo[selectedTab].centro.rede.racks &&
+                    tabsInfo[selectedTab].centro.rede.racks.map((rack) => {
+                      return <option value={rack.nome}>{rack.nome}</option>;
+                    })}
+                </select>
+              ) : (
+                <input
+                  name="ubicacion"
+                  id="ubicacion"
+                  defaultValue={updatedDispositivo.ubicacion || "Sen localizar"}
+                  onChange={handleInputChange}
+                  className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+                />
+              )}
+            </div>
+            <div>
+              {dispositivo != undefined ? (
+                <button
+                  onClick={submitUpdateDispositivo}
+                  className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
+                >
+                  Gardar
+                </button>
+              ) : (
+                <button
+                  onClick={submitEngadirDispositivo}
+                  className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
+                >
+                  Engadir
+                </button>
+              )}
+            </div>
+          </div>
+        </form>
+      ) : (
         <div>
-          {dispositivo != undefined ? (
-            <button
-              onClick={submitUpdateDispositivo}
-              className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
-            >
-              Gardar
-            </button>
-          ) : (
-            <button
-              onClick={submitEngadirDispositivo}
-              className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
-            >
-              Engadir
-            </button>
-          )}
+          <div className="flex items-end gap-x-5">
+            <div className="flex flex-col">
+              <label htmlFor="ip" className="font-medium text-center mb-4">
+                IP
+              </label>
+              <input
+                type="text"
+                name="ip"
+                value={updatedDispositivo.ip}
+                disabled
+                className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
+              />
+            </div>
+            {updatedDispositivo.tipo === "AP_edu_xunta_gal" ||
+            updatedDispositivo.tipo === "AP_Siega" ? (
+              <div className="flex flex-col">
+                <label htmlFor="nome" className="font-medium text-center mb-4">
+                  Nome
+                </label>
+                <input
+                  type="text"
+                  name="nome"
+                  value={updatedDispositivo.nome}
+                  disabled
+                  className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
+                />
+              </div>
+            ) : (
+              <></>
+            )}
+            <div className="flex flex-col">
+              <label htmlFor="tipo" className="font-medium text-center mb-4">
+                Tipo
+              </label>
+              <select
+                name="tipo"
+                id="tipo"
+                defaultValue={updatedDispositivo.tipo || ""}
+                disabled
+                className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+              >
+                <option value={""}>Seleccionar</option>
+                {tiposDispositivos &&
+                  tiposDispositivos.map((tipo) => {
+                    return <option value={tipo.nome}>{tipo.nome}</option>;
+                  })}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="modelo" className="font-medium text-center mb-4">
+                Marca e modelo
+              </label>
+              <select
+                name="modelo"
+                id="modelo"
+                defaultValue={updatedDispositivo.modelo || "Sen determinar"}
+                disabled
+                className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+              >
+                <option value={"Sen determinar"}>Sen determinar</option>
+                {modelos &&
+                  modelos.map((modelo) => {
+                    return <option value={modelo.nome}>{modelo.nome}</option>;
+                  })}
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="ubicacion"
+                className="font-medium text-center mb-4"
+              >
+                Ubicación
+              </label>
+
+              {tipoUbicacion === "Rack" ? (
+                <select
+                  name="ubicacion"
+                  id="ubicacion"
+                  defaultValue={updatedDispositivo.ubicacion || "Sen localizar"}
+                  disabled
+                  className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+                >
+                  <option value={"Sen localizar"}>Sen localizar</option>
+                  {tabsInfo[selectedTab].centro.rede.racks &&
+                    tabsInfo[selectedTab].centro.rede.racks.map((rack) => {
+                      return <option value={rack.nome}>{rack.nome}</option>;
+                    })}
+                </select>
+              ) : (
+                <input
+                  name="ubicacion"
+                  id="ubicacion"
+                  defaultValue={updatedDispositivo.ubicacion || "Sen localizar"}
+                  disabled
+                  className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+                />
+              )}
+            </div>
+          </div>
         </div>
-      </div>
-    </form>
+      )}
+    </>
   );
 };
 

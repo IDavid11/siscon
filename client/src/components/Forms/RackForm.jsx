@@ -3,8 +3,10 @@ import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import TabsInfoContext from "../../context/TabsInfoContext";
 import ToastMessageContext from "../../context/ToastMessageContext";
+import UserContext from "../../context/UserContext";
 
 const RackForm = ({ rack, handleCloseModal }) => {
+  const { grupo } = useContext(UserContext);
   const { tabsInfo, selectedTab, handleUpdateTabsInfo } =
     useContext(TabsInfoContext);
   const { createToastMessage } = useContext(ToastMessageContext);
@@ -73,83 +75,139 @@ const RackForm = ({ rack, handleCloseModal }) => {
   };
 
   return (
-    <form onSubmit={rack != undefined ? submitEngadirRack : submitUpdateRack}>
-      <div className="flex items-end gap-x-5">
-        {rack != undefined ? (
-          <div className="mb-1">
-            <button
-              type="button"
-              onClick={deleteRack}
-              className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
-            >
-              <img
-                style={{ width: "12px" }}
-                src="/assets/icons/delete.png"
-                alt=""
+    <>
+      {grupo === "sistemas" || grupo === "admin" ? (
+        <form
+          onSubmit={rack != undefined ? submitEngadirRack : submitUpdateRack}
+        >
+          <div className="flex items-end gap-x-5">
+            {rack != undefined ? (
+              <div className="mb-1">
+                <button
+                  type="button"
+                  onClick={deleteRack}
+                  className="h-8 w-8 bg-red-400 rounded-lg flex items-center justify-center"
+                >
+                  <img
+                    style={{ width: "12px" }}
+                    src="/assets/icons/delete.png"
+                    alt=""
+                  />
+                </button>
+              </div>
+            ) : (
+              <></>
+            )}
+            <div className="flex flex-col">
+              <label htmlFor="nome" className="font-medium text-center mb-4">
+                Nome
+              </label>
+              <input
+                type="text"
+                name="nome"
+                value={updatedRack.nome}
+                onChange={handleInputChange}
+                className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
               />
-            </button>
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="tipo" className="font-medium text-center mb-4">
+                Tipo
+              </label>
+              <select
+                name="tipo"
+                id="tipo"
+                defaultValue={updatedRack.tipo || "Armario"}
+                onChange={handleInputChange}
+                className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+              >
+                <option value="Armario">Armario</option>
+                <option value="De parede">De parede</option>
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="ubicacion"
+                className="font-medium text-center mb-4"
+              >
+                Ubicación
+              </label>
+              <input
+                name="ubicacion"
+                id="ubicacion"
+                value={updatedRack.ubicacion}
+                onChange={handleInputChange}
+                className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+              />
+            </div>
+            <div>
+              {rack != undefined ? (
+                <button
+                  onClick={submitUpdateRack}
+                  className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
+                >
+                  Gardar
+                </button>
+              ) : (
+                <button
+                  onClick={submitEngadirRack}
+                  className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
+                >
+                  Engadir
+                </button>
+              )}
+            </div>
           </div>
-        ) : (
-          <></>
-        )}
-        <div className="flex flex-col">
-          <label htmlFor="nome" className="font-medium text-center mb-4">
-            Nome
-          </label>
-          <input
-            type="text"
-            name="nome"
-            value={updatedRack.nome}
-            onChange={handleInputChange}
-            className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
-          />
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="tipo" className="font-medium text-center mb-4">
-            Tipo
-          </label>
-          <select
-            name="tipo"
-            id="tipo"
-            defaultValue={updatedRack.tipo || "Armario"}
-            onChange={handleInputChange}
-            className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
-          >
-            <option value="Armario">Armario</option>
-            <option value="De parede">De parede</option>
-          </select>
-        </div>
-        <div className="flex flex-col">
-          <label htmlFor="ubicacion" className="font-medium text-center mb-4">
-            Ubicación
-          </label>
-          <input
-            name="ubicacion"
-            id="ubicacion"
-            value={updatedRack.ubicacion}
-            onChange={handleInputChange}
-            className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
-          />
-        </div>
+        </form>
+      ) : (
         <div>
-          {rack != undefined ? (
-            <button
-              onClick={submitUpdateRack}
-              className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
-            >
-              Gardar
-            </button>
-          ) : (
-            <button
-              onClick={submitEngadirRack}
-              className="bg-primary-color rounded-lg h-10 px-10 text-white font-medium"
-            >
-              Engadir
-            </button>
-          )}
+          <div className="flex items-end gap-x-5">
+            <div className="flex flex-col">
+              <label htmlFor="nome" className="font-medium text-center mb-4">
+                Nome
+              </label>
+              <input
+                type="text"
+                name="nome"
+                value={updatedRack.nome}
+                disabled
+                className="border border-solid border-gray-300 h-10 rounded-lg px-4 outline-none"
+              />
+            </div>
+            <div className="flex flex-col">
+              <label htmlFor="tipo" className="font-medium text-center mb-4">
+                Tipo
+              </label>
+              <select
+                name="tipo"
+                id="tipo"
+                defaultValue={updatedRack.tipo || "Armario"}
+                disabled
+                className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+              >
+                <option value="Armario">Armario</option>
+                <option value="De parede">De parede</option>
+              </select>
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="ubicacion"
+                className="font-medium text-center mb-4"
+              >
+                Ubicación
+              </label>
+              <input
+                name="ubicacion"
+                id="ubicacion"
+                value={updatedRack.ubicacion}
+                disabled
+                className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
+              />
+            </div>
+          </div>
         </div>
-      </div>
-    </form>
+      )}
+    </>
   );
 };
 

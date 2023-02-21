@@ -1,7 +1,7 @@
 import React from "react";
 import { dispositivos } from "../../../utils/dispositivos";
 
-const Resultados = ({ data, showAll, handleShowModal }) => {
+const Resultados = ({ data, showAll, handleShowModal, grupo }) => {
   return (
     <>
       {dispositivos.map((tipoDispositivo) => {
@@ -39,8 +39,14 @@ const Resultados = ({ data, showAll, handleShowModal }) => {
                   <th className="text-left px-2">Marca e modelo</th>
                   <th className="text-left px-2">Expediente</th>
                   <th className="text-left px-2">S/N</th>
-                  <th className="text-left px-2">Técnico</th>
-                  <th className="text-left px-2">Grupo</th>
+                  {grupo === "sistemas" || grupo === "admin" ? (
+                    <>
+                      <th className="text-left px-2">Técnico</th>
+                      <th className="text-left px-2">Grupo</th>
+                    </>
+                  ) : (
+                    <></>
+                  )}
                   <th className="text-left px-2">Equipamento</th>
                   <th className="text-left px-2">S.O</th>
                 </tr>
@@ -65,10 +71,18 @@ const Resultados = ({ data, showAll, handleShowModal }) => {
                             {dispositivo.expediente}
                           </td>
                           <td className="py-1.5 px-2">{dispositivo.ns}</td>
-                          <td className="py-1.5 px-2">{dispositivo.tecnico}</td>
-                          <td className="py-1.5 px-2">
-                            {dispositivo.grupo_escalado}
-                          </td>
+                          {grupo === "sistemas" || grupo === "admin" ? (
+                            <>
+                              <td className="py-1.5 px-2">
+                                {dispositivo.tecnico}
+                              </td>
+                              <td className="py-1.5 px-2">
+                                {dispositivo.grupo_escalado}
+                              </td>
+                            </>
+                          ) : (
+                            <></>
+                          )}
                           <td className="py-1.5 px-2">
                             {dispositivo.equipamento}
                           </td>

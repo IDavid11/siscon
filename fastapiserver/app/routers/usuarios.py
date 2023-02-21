@@ -105,7 +105,6 @@ async def gardar_contrasinal(usuario, contrasinal):
 @router.post("/login")
 async def login(login_request: Login, response: Response):
     usuario = users_collection.find_one({"usuario": login_request.username})
-
     if usuario["autenticado"]:
         contrasinal_verificado = pbkdf2_sha256.verify(
             login_request.password, usuario["contrasinal"]
@@ -120,11 +119,13 @@ async def login(login_request: Login, response: Response):
             return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Contrasinal incorrecto."})
 
         access_token = await xerar_token(usuario, response)
-        return {"access_token": access_token, "token_type": "bearer"}
+        del usuario["contrasinal"], usuario["_id"]
+        return {"usuario": usuario, "access_token": access_token, "token_type": "bearer"}
 
     await gardar_contrasinal(usuario, login_request.password)
     access_token = await xerar_token(usuario, response)
-    return {"access_token": access_token, "token_type": "bearer"}
+    del usuario["contrasinal"], usuario["_id"]
+    return {"usuario": usuario, "access_token": access_token, "token_type": "bearer"}
 
 
 @router.get("/")
