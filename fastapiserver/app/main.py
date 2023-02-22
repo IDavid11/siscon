@@ -3,14 +3,14 @@ from threading import Thread
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.param_functions import Depends
 from .config import origins
-from .routers import centros, monitorizacions, estadisticas, conexion, listados, usuarios, save_data, switches, dashboard, avisos, lans, tipos, electronica, racks, planos
+from .routers import centros, monitorizacions, estadisticas, conexion, listados, usuarios, save_data, switches, dashboard, avisos, lans, tipos, electronica, racks, planos, glpi
 from .monitorizacion import monitorizacion
 from app.routers.usuarios import get_current_user
 
 ###### IMPORTANTE ######
-thread = Thread(target=monitorizacion)
-thread.daemon = True
-thread.start()
+#thread = Thread(target=monitorizacion)
+#thread.daemon = True
+# thread.start()
 
 app = FastAPI()
 
@@ -33,6 +33,7 @@ app.include_router(tipos.router)
 app.include_router(racks.router)
 app.include_router(electronica.router)
 app.include_router(planos.router)
+app.include_router(glpi.router)
 app.include_router(listados.router, dependencies=[Depends(get_current_user)])
 app.include_router(save_data.router, dependencies=[Depends(get_current_user)])
 app.include_router(switches.router)

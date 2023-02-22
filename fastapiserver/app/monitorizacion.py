@@ -4,9 +4,6 @@ from datetime import datetime
 from bson.objectid import ObjectId
 from app.db import centros_collection, monitorizacion_collection, avisos_collection
 
-pings = ["1", "7", "10"]
-FNULL = open(os.devnull, 'wb')
-
 
 def comprobar_failed_ping(centro, item):
     with open(os.devnull, "wb") as limbo:
