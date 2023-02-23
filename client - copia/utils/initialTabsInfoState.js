@@ -1,0 +1,30 @@
+export const initialTabsInfoState = [
+  {
+    tabId: 0,
+    label: "Dashboard",
+    type: "Page",
+    page: "Dashboard",
+    header: "Dashboard",
+    info: "",
+    iconSrc: "/assets/icons/home.png",
+  },
+  {
+    tabId: 1,
+    label: "Hardware",
+    type: "Page",
+    page: "Hardware",
+    header: "Listados",
+    info: "",
+    iconSrc: "/assets/icons/file.png",
+  },
+  {
+    tabId: 2,
+    label: "Admin",
+    type: "Page",
+    page: "Admin",
+    header: "Admin",
+    info: "",
+    iconSrc: "/assets/icons/admin.png",
+    centro: "",
+  },
+];
