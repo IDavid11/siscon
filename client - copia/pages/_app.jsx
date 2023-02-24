@@ -4,7 +4,6 @@ import "../styles/globals.css";
 import UserState from "../hooks/useUser";
 import ToastMessageState from "../hooks/useToastMessage";
 import CentroState from "../hooks/useCentro";
-import Layout from "../layouts/Layout";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -24,9 +23,7 @@ export default function App({ Component, pageProps }) {
       <UserState>
         <ToastMessageState>
           <CentroState>
-            <Layout>
-              <Component {...pageProps} />
-            </Layout>
+            <Component {...pageProps} />
           </CentroState>
         </ToastMessageState>
       </UserState>

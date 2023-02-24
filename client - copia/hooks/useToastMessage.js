@@ -54,6 +54,7 @@ export default function ToastMessageState({ children }) {
   };
 
   useEffect(() => {
+    console.log("Toast Message");
     if (state.error) {
       const interval = setInterval(() => {
         deleteToastMessage();

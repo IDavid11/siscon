@@ -8,9 +8,14 @@ import ResultadosCargando from "../../components/Dashboard/ResultadosCargando";
 import ContainerWrap from "../../components/utils/ContainerWrap";
 import Pool from "../../components/GLPI/Pool2";
 import ModalCentro from "../../components/Modales/MainModales/ModalCentro";
+import ModalAuthGLPI from "../../components/Modales/ModalAuthGLPI";
 import CentroContext from "../../context/CentroContext";
+import UserContext from "../../context/UserContext";
+import { useRouter } from "next/router";
+import Layout from "../../layouts/Layout";
 
 const index = () => {
+  const { token, glpi_cookie } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
   const { seleccionarCentro } = useContext(CentroContext);
   const [showModal, setShowModal] = useState(false);
@@ -21,6 +26,7 @@ const index = () => {
   const [estadisticas, setEstadisticas] = useState([]);
 
   const [search, setSearch] = useState([]);
+  const router = useRouter();
 
   const handleShowModal = (centro) => {
     setShowModal(!showModal);
@@ -103,7 +109,6 @@ const index = () => {
   };
 
   useEffect(() => {
-    console.log("refreshing dashboard");
     if (search?.length < 1) getFullDashboard();
     const interval = setInterval(() => {
       getFullDashboard();
@@ -112,7 +117,7 @@ const index = () => {
   }, []);
 
   return (
-    <>
+    <Layout>
       <div className="dashboard">
         <ContainerWrap>
           <table className="rounded-xl w-full relative">
@@ -221,7 +226,7 @@ const index = () => {
       ) : (
         <></>
       )}
-    </>
+    </Layout>
   );
 };
 

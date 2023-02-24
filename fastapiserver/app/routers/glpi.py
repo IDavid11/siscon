@@ -34,13 +34,14 @@ def get_index_info():
     }
 
 
-def glpi_login(index_info):
+def glpi_login(index_info, request):
     url = "https://glpi.edu.xunta.gal/uac/helpdesk/front/login.php"
-    payload = f"noAUTO=1&redirect=&_glpi_csrf_token={index_info['csrf_token']}&{index_info['login_input_id']}=ue108435&{index_info['password_input_id']}=Callobre1111&auth=ldap-1&submit="
+    payload = f"noAUTO=1&redirect=&_glpi_csrf_token={index_info['csrf_token']}&{index_info['login_input_id']}={request.username}&{index_info['password_input_id']}={request.password}&auth=ldap-1&submit="
 
-    requests.request(
-        "POST", url, headers=GLPI_HEADERS_LOGIN, data=payload)
-
+    response = requests.request(
+        "POST", url, headers=GLPI_HEADERS_LOGIN, data=payload, cookies=index_info["cookie"])
+    soup = BeautifulSoup(response.text, 'html.parser')
+    print(soup)
     return "ok"
 
 
@@ -103,11 +104,16 @@ def format_pool_strings(string):
     return string
 
 
-@router.get("/login")
-def login():
+@router.post("/login")
+def login(request: Login):
     index_info = get_index_info()
-    glpi_login(index_info)
+    glpi_login(index_info, request)
     search_info = get_search_id(index_info["cookie"])
-    pool = format_pool_to_json(get_pool_sistemas(search_info))
-    return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": pool, "glpi_csrf_token": index_info["csrf_token"]})
+    #pool = format_pool_to_json(get_pool_sistemas(search_info))
+    data = {
+        "glpi_csrf_token": index_info["csrf_token"],
+        "glpi_cookie": index_info["cookie"],
+        "glpi_search_id": search_info["searchform_id"]
+    }
+    return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": data})
     # return "ok"

@@ -65,4 +65,7 @@ export const apiUrls = {
   urlCheckUser: "/auth/check-user",
   urlRegister: "/auth/register",
   urlLogin: "/auth/login",
+
+  // GLPI
+  urlLoginGLPI: "/glpi/login",
 };
