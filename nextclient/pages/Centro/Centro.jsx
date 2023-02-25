@@ -13,87 +13,46 @@ import Estadisticas from "../../components/InfoCentro/Estadisticas";
 import { randomImg } from "../../utils/randomImg";
 import Avisos from "../../components/InfoCentro/Avisos";
 import UserContext from "../../context/UserContext";
+import Aside from "@/components/Modales/MainModales/ModalCentro/Aside";
+import CentroContext from "@/context/CentroContext";
+import Pool from "@/components/GLPI/Pool2";
 
 const Centro = ({ centro }) => {
-  console.log(centro);
+  const { avarias } = useContext(CentroContext);
   const { grupo } = useContext(UserContext);
-  const { isLoading, setIsLoading } = useLoading(false);
 
   const [edit, setEdit] = useState(false);
   console.log("refreshing centro 2");
   const img = randomImg();
 
-  const initCmd = async () => {
-    let componentMounted = true;
-    if (centro.network_checked === false && componentMounted) {
-      setIsLoading(true);
-      await doPing();
-      setIsLoading(false);
-    }
-
-    return () => (componentMounted = false);
-  };
-
-  const doPing = async () => {
-    const { data } = await instance.post(apiUrls.urlPing, {
-      index: centro._id,
-    });
-    centro.network_checked = true;
-    centro.centro.rede.electronica = data.data;
-  };
-
-  const obterElectronicaLan = () => {
-    centro.centro.rede.lans.map(async (lan, index) => {
-      const { data } = await instance.post(apiUrls.urlObterElectronicaLan, {
-        centroId: centro.centro._id,
-        lanId: lan._id,
-      });
-      centro.centro.rede.lans[index].electronica = data.data;
-    });
-  };
-
-  const obterInformacionSistemas = async () => {};
-
   useEffect(() => {
     console.log("refresing centro");
-    if (!centro.centro.network_checked) initCmd();
-    obterElectronicaLan();
   }, []);
 
   return (
-    <div className="centro-container">
-      <div>
-        {!edit ? (
-          <InfoCentro centro={centro.centro} img={img} setEdit={setEdit} />
-        ) : (
-          <InfoCentroForm centro={centro.centro} img={img} setEdit={setEdit} />
-        )}
-      </div>
-      <div className="centro-middle">
-        <LANs lans={centro.centro.rede.lans} />
-
-        <Electronica
-          electronica={centro.centro.rede.electronica}
-          isLoading={isLoading}
-        />
-      </div>
-      <div className="centro-right">
-        <div className="w-full h-full border-l border-solid border-gray-400">
-          <div className="p-4">
-            <div>
-              <ul>
-                <li>Controladora</li>
-                <li>Log</li>
-                <li>Rede</li>
-                <li>Racks</li>
-                <li>Planos</li>
-                <li>Estadísticas</li>
-              </ul>
-            </div>
-          </div>
+    <>
+      <div className="centro-container">
+        <div>
+          {!edit ? (
+            <InfoCentro centro={centro.centro} img={img} setEdit={setEdit} />
+          ) : (
+            <InfoCentroForm
+              centro={centro.centro}
+              img={img}
+              setEdit={setEdit}
+            />
+          )}
+        </div>
+        <div className="centro-middle">
+          <LANs lans={centro.centro.rede.lans} />
+          <AvariasDetectadas />
+          <Pool />
+        </div>
+        <div className="centro-right">
+          <Aside centro={centro} />
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

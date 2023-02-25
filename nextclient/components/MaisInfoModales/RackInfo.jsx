@@ -1,13 +1,15 @@
 import React, { useEffect, useState, useContext } from "react";
-import { instance } from "../../services/axios";
-import { apiUrls } from "../../services/urls";
+import CentroContext from "@/context/CentroContext";
+import { instance } from "@/services/axios";
+import { apiUrls } from "@/services/urls";
 import Status from "../utils/Items/Status";
 
-const RackInfo = ({ centro, rack }) => {
+const RackInfo = ({ rack }) => {
+  const { infoCentro } = useContext(CentroContext);
   const [electronicaRack, setElectronicaRack] = useState([]);
   const obterElectronicaRack = async () => {
     const { data } = await instance.post(apiUrls.urlObterElectronicaRack, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       nomeRack: rack.nome,
     });
     setElectronicaRack(data.data);

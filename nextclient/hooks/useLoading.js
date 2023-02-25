@@ -1,11 +1,25 @@
 import React, { useEffect, useState } from "react";
+import LoadingContext from "../context/LoadingContext";
 
-export default function useLoading({ value }) {
+export default function LoadingState({ children }) {
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
+  const handleLoading = (value) => {
     setIsLoading(value);
-  }, [value]);
+  };
 
-  return { isLoading, setIsLoading };
+  useEffect(() => {
+    console.log(isLoading);
+  }, [isLoading]);
+
+  return (
+    <LoadingContext.Provider
+      value={{
+        isLoading: isLoading,
+        handleLoading,
+      }}
+    >
+      {children}
+    </LoadingContext.Provider>
+  );
 }

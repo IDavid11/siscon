@@ -1,9 +1,8 @@
 import React, { useState, useContext } from "react";
 import ModalRack from "../Modales/ModalRack";
-import ContainerWrap from "../utils/ContainerWrap";
 import UserContext from "../../context/UserContext";
 
-const Racks = ({ racks }) => {
+const Racks = ({ racks, setMenuVisible }) => {
   const { grupo } = useContext(UserContext);
   const [showModal, setShowModal] = useState(false);
   const [modalRack, setModalRack] = useState();
@@ -13,13 +12,25 @@ const Racks = ({ racks }) => {
     setModalRack(rack);
   };
   return (
-    <>
-      <ContainerWrap title={"Racks"} img={"/assets/icons/rack.png"}>
+    <div>
+      <div className="flex items-center justify-between">
+        <div>
+          <button
+            onClick={() => setMenuVisible(null)}
+            className="flex items-center justify-center"
+          >
+            <img className="h-6" src="/assets/icons/back.png" alt="" />
+          </button>
+        </div>
+        <div className="text-lg font-medium">Racks</div>
         {grupo === "sistemas" || grupo === "admin" ? (
-          <div className="absolute top-3 right-3 flex items-center gap-x-2">
-            <button onClick={(e) => handleShowModal(undefined)}>
+          <div>
+            <button
+              onClick={(e) => handleShowModal(undefined)}
+              className="flex items-center justify-center"
+            >
               <img
-                className="h-6"
+                className="h-5"
                 src="/assets/icons/add-button-black.png"
                 alt=""
               />
@@ -28,6 +39,8 @@ const Racks = ({ racks }) => {
         ) : (
           <></>
         )}
+      </div>
+      <div className="mt-4">
         <table className="rounded-xl w-full relative">
           <tbody>
             {racks &&
@@ -66,13 +79,13 @@ const Racks = ({ racks }) => {
             )}
           </tbody>
         </table>
-      </ContainerWrap>
-      {showModal ? (
-        <ModalRack handleCloseModal={handleShowModal} rack={modalRack} />
-      ) : (
-        <></>
-      )}
-    </>
+        {showModal ? (
+          <ModalRack handleCloseModal={handleShowModal} rack={modalRack} />
+        ) : (
+          <></>
+        )}
+      </div>
+    </div>
   );
 };
 

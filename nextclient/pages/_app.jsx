@@ -4,12 +4,13 @@ import "../styles/globals.css";
 import UserState from "../hooks/useUser";
 import ToastMessageState from "../hooks/useToastMessage";
 import CentroState from "../hooks/useCentro";
+import LoadingState from "@/hooks/useLoading";
 
 export default function App({ Component, pageProps }) {
   return (
     <>
       <Head>
-        <link rel="icon" href="/assets/siscon_ico.png" />
+        <link rel="icon" href="/favicon.png" />
         <link
           href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap"
           rel="stylesheet"
@@ -22,9 +23,11 @@ export default function App({ Component, pageProps }) {
       </Head>
       <UserState>
         <ToastMessageState>
-          <CentroState>
-            <Component {...pageProps} />
-          </CentroState>
+          <LoadingState>
+            <CentroState>
+              <Component {...pageProps} />
+            </CentroState>
+          </LoadingState>
         </ToastMessageState>
       </UserState>
     </>

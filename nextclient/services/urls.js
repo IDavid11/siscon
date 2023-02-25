@@ -38,6 +38,7 @@ export const apiUrls = {
 
   // AVISOS
   urlObterAvisos: "/avisos/",
+  urlObterAvisosCentro: "/avisos/centro/",
 
   // ESTADISTICAS
   urlGetEstadisticas: "/estadisticas/centros",

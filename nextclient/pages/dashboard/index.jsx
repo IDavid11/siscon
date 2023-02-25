@@ -7,7 +7,7 @@ import ToastMessageContext from "../../context/ToastMessageContext";
 import ResultadosCargando from "../../components/Dashboard/ResultadosCargando";
 import ContainerWrap from "../../components/utils/ContainerWrap";
 import Pool from "../../components/GLPI/Pool2";
-import ModalCentro from "../../components/Modales/MainModales/ModalCentro";
+import ModalCentro from "../../components/Modales/MainModales/ModalCentro/ModalCentro";
 import ModalAuthGLPI from "../../components/Modales/ModalAuthGLPI";
 import CentroContext from "../../context/CentroContext";
 import UserContext from "../../context/UserContext";
@@ -17,7 +17,7 @@ import Layout from "../../layouts/Layout";
 const index = () => {
   const { token, glpi_cookie } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
-  const { seleccionarCentro } = useContext(CentroContext);
+  const { seleccionarCentro, borrarDatos } = useContext(CentroContext);
   const [showModal, setShowModal] = useState(false);
   const [modalCentro, setModalCentro] = useState();
   const [centros, setCentros] = useState([]);
@@ -31,6 +31,10 @@ const index = () => {
   const handleShowModal = (centro) => {
     setShowModal(!showModal);
     setModalCentro(centro);
+    if (showModal) {
+      console.log("borrando datos");
+      borrarDatos();
+    }
   };
 
   const handleSearch = (e) => {
@@ -120,15 +124,17 @@ const index = () => {
     <Layout>
       <div className="dashboard">
         <ContainerWrap>
-          <table className="rounded-xl w-full relative">
+          <table className="rounded-xl w-full relative table-fixed">
             <thead>
               <tr className="dashboard-header h-10 w-full">
-                <th></th>
-                <th className="text-left px-2 font-medium">Concello</th>
+                <th className="w-12"></th>
+                <th className="text-left px-2 font-medium w-[25%]">Concello</th>
                 <th className="text-left px-2 font-medium">Centro</th>
-                <th className="text-left px-2 font-medium">Avarías</th>
-                <th className="text-left px-2 font-medium">Estadísticas</th>
-                <th className="text-left px-2 font-medium">%</th>
+                <th className="text-left px-2 font-medium w-[15%]">Avarías</th>
+                <th className="text-left px-2 font-medium w-[10%]">
+                  Estadísticas
+                </th>
+                <th className="text-left px-2 font-medium w-10">%</th>
               </tr>
             </thead>
             <tbody>
@@ -162,14 +168,14 @@ const index = () => {
                           className="cursor-pointer hover:bg-gray-100"
                         >
                           <td className="py-2.5 px-2">{index + 1}</td>
-                          <td className="py-2.5 px-2">
+                          <td className="py-2.5 px-2 whitespace-nowrap overflow-hidden text-ellipsis">
                             {centro.centro.concello}
                           </td>
-                          <td className="py-2.5 px-2">
+                          <td className="py-2.5 px-2 whitespace-nowrap overflow-hidden text-ellipsis">
                             {centro.centro.centro}
                           </td>
-                          <td className="py-2.5 px-2">
-                            <span className="py-1.5 w-5 whitespace-nowrap	overflow-hidden text-sm bg-gray-200 rounded-full">
+                          <td className="py-2 px-2">
+                            <span className="block py-1.5 px-2 w-full whitespace-nowrap overflow-hidden text-sm bg-gray-200 rounded-full">
                               {centro.monitorizacions.length} avarías detectadas
                             </span>
                           </td>

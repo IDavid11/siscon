@@ -1,10 +1,12 @@
 import React, { useState, useContext } from "react";
-import { instance } from "../../services/axios";
-import { apiUrls } from "../../services/urls";
-import ToastMessageContext from "../../context/ToastMessageContext";
-import UserContext from "../../context/UserContext";
+import { instance } from "@/services/axios";
+import { apiUrls } from "@/services/urls";
+import ToastMessageContext from "@/context/ToastMessageContext";
+import UserContext from "@/context/UserContext";
+import CentroContext from "@/context/CentroContext";
 
-const RackForm = ({ centro, rack, handleCloseModal }) => {
+const RackForm = ({ rack, handleCloseModal }) => {
+  const { infoCentro } = useContext(CentroContext);
   const { grupo } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
   const [updatedRack, setUpdatedRack] = useState({
@@ -25,7 +27,7 @@ const RackForm = ({ centro, rack, handleCloseModal }) => {
   const submitUpdateRack = async (e) => {
     e.preventDefault();
     const { data } = await instance.post(apiUrls.urlActualizarRack, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       rackId: updatedRack._id,
       nome: updatedRack.nome,
       tipo: updatedRack.tipo,
@@ -41,26 +43,26 @@ const RackForm = ({ centro, rack, handleCloseModal }) => {
   const submitEngadirRack = async (e) => {
     e.preventDefault();
     const { data } = await instance.post(apiUrls.urlEngadirRack, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       nome: updatedRack.nome,
       tipo: updatedRack.tipo,
       ubicacion: updatedRack.ubicacion,
     });
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      centro.rede.racks.push(data.data);
+      infoCentro.rede.racks.push(data.data);
       handleCloseModal();
     }
   };
 
   const deleteRack = async () => {
     const { data } = await instance.post(apiUrls.urlEliminarRack, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       rackId: updatedRack._id,
     });
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      centro.rede.racks = data.data;
+      infoCentro.rede.racks = data.data;
       handleCloseModal();
     }
   };

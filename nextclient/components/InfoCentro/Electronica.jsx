@@ -10,7 +10,7 @@ import ToastMessageContext from "../../context/ToastMessageContext";
 import { imgs } from "../../utils/imgs";
 import UserContext from "../../context/UserContext";
 
-const Electronica = ({ electronica, isLoading }) => {
+const Electronica = ({ electronica, setMenuVisible }) => {
   const { grupo } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
   const [showModal, setShowModal] = useState(false);
@@ -21,9 +21,6 @@ const Electronica = ({ electronica, isLoading }) => {
 
   const nav = [
     { k: "Todos", v: "Todos" },
-    { k: "Router", v: "Router" },
-    { k: "SW_abalar", v: "SW_Abalar" },
-    { k: "SW_Siega", v: "SW_Siega" },
     { k: "Switch", v: "Switches" },
     { k: "AP_edu_xunta_gal", v: "APs edu" },
   ];
@@ -57,13 +54,25 @@ const Electronica = ({ electronica, isLoading }) => {
   }, [vista]);
 
   return (
-    <>
-      <ContainerWrap title={"Rede"}>
+    <div style={{ height: "inherit" }}>
+      <div className="flex items-center justify-between">
+        <div>
+          <button
+            onClick={() => setMenuVisible(null)}
+            className="flex items-center justify-center"
+          >
+            <img className="h-6" src="/assets/icons/back.png" alt="" />
+          </button>
+        </div>
+        <div className="text-lg font-medium">Rede</div>
         {grupo === "sistemas" || grupo === "admin" ? (
-          <div className="absolute top-3 right-3 flex items-center gap-x-2">
-            <button onClick={(e) => handleShowModal(undefined)}>
+          <div>
+            <button
+              onClick={(e) => handleShowModal(undefined)}
+              className="flex items-center justify-center"
+            >
               <img
-                className="h-6"
+                className="h-5"
                 src="/assets/icons/add-button-black.png"
                 alt=""
               />
@@ -72,23 +81,10 @@ const Electronica = ({ electronica, isLoading }) => {
         ) : (
           <></>
         )}
-        <div className="h-10 pt-4 fixed bg-white">
-          <Nav>
-            {nav.map((li) => {
-              return (
-                <NavItem
-                  key={li.k}
-                  a={li.k}
-                  focusTag={vista}
-                  span={li.v}
-                  isLoading={false}
-                  handleActivePage={handleActiveVista}
-                />
-              );
-            })}
-          </Nav>
-        </div>
-        <table className="rounded-xl w-full relative">
+      </div>
+
+      <div className="mt-4 overflow-auto remove-scrollbar">
+        <table className="rounded-xl w-full table-fixed mb-6">
           <tbody>
             {electronica &&
               electronica.map((item) => {
@@ -109,19 +105,11 @@ const Electronica = ({ electronica, isLoading }) => {
                             }`}
                           ></span>
                         </td>
-                        <td className="py-2.5 px-2">{item.ip}</td>
+                        <td className="py-2.5 px-2 w-28">{item.ip}</td>
                         <td className="py-2.5 px-2 text-ellipsis whitespace-nowrap overflow-hidden">
                           {item.nome}
                         </td>
-                        <td className="py-2.5 px-2">
-                          <Status
-                            status={isLoading ? "loading" : item.status}
-                          />
-                        </td>
                         <td className="py-2.5 px-2">{item.tipo}</td>
-                        <td className="y-2.5 px-2 w-10">
-                          <img className="w-10" src={imgs[item.tipo]} alt="" />
-                        </td>
                       </tr>
                     ) : (
                       <></>
@@ -131,7 +119,7 @@ const Electronica = ({ electronica, isLoading }) => {
               })}
           </tbody>
         </table>
-      </ContainerWrap>
+      </div>
       {showModal ? (
         <ModalElectronica
           handleCloseModal={handleShowModal}
@@ -142,7 +130,7 @@ const Electronica = ({ electronica, isLoading }) => {
       ) : (
         <></>
       )}
-    </>
+    </div>
   );
 };
 

@@ -1,3 +1,4 @@
+import CentroContext from "@/context/CentroContext";
 import React, { useState, useEffect, useContext } from "react";
 import UserContext from "../../../context/UserContext";
 import { instance } from "../../../services/axios";
@@ -5,16 +6,17 @@ import { apiUrls } from "../../../services/urls";
 import CambiarPlanoForm from "../../Forms/CambiarPlanoForm";
 import Modal from "../../utils/Modal";
 
-const ModalPlanos = ({ centro, planos, handleCloseModal }) => {
+const ModalPlanos = ({ planos, handleCloseModal }) => {
+  const { infoCentro } = useContext(CentroContext);
   const { grupo } = useContext(UserContext);
 
   const [edificioSeleccionado, setEdificioSeleccionado] = useState(
-    centro.planos[0]
+    infoCentro.planos[0]
   );
   const [plantaSeleccionada, setPlantaSeleccionada] = useState(
-    centro.planos[0]?.plantas[0]
+    infoCentro.planos[0]?.plantas[0]
   );
-  const [plantas, setPlantas] = useState(centro.planos[0]?.plantas);
+  const [plantas, setPlantas] = useState(infoCentro.planos[0]?.plantas);
   const [visiblePlano, setVisibilePlano] = useState(
     planos[0]?.plantas[0]?.plano || ""
   );
@@ -59,23 +61,23 @@ const ModalPlanos = ({ centro, planos, handleCloseModal }) => {
   const submitUpdateEdificio = async (e) => {
     e.preventDefault();
     const res = await instance.post(apiUrls.urlActualizarEdificio, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       edificioId: updatedItem.id,
       nome: updatedItem.nome,
     });
 
-    centro.planos = res.data;
+    infoCentro.planos = res.data;
     setIsChangingEdificio(false);
   };
 
   const submitEngadirEdificio = async (e) => {
     e.preventDefault();
     const res = await instance.post(apiUrls.urlEngadirEdificio, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       nome: updatedItem.nome,
     });
 
-    centro.planos.push(res.data);
+    infoCentro.planos.push(res.data);
     setEdificioSeleccionado(res.data);
     setIsAddingEdificio(false);
   };
@@ -83,21 +85,21 @@ const ModalPlanos = ({ centro, planos, handleCloseModal }) => {
   const deleteEdificio = async (e) => {
     e.preventDefault();
     const res = await instance.post(apiUrls.urlEliminarEdificio, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       edificioId: updatedItem.id,
     });
-    centro.planos = res.data;
+    infoCentro.planos = res.data;
     setIsChangingEdificio(false);
   };
 
   const submitEngadirPlanta = async (e) => {
     e.preventDefault();
     const res = await instance.post(apiUrls.urlEngadirPlanta, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       edificioId: edificioSeleccionado._id,
       nome: updatedItem.nome,
     });
-    centro.planos
+    infoCentro.planos
       .find((e) => e._id == edificioSeleccionado._id)
       .plantas?.push(res.data);
 
@@ -107,45 +109,38 @@ const ModalPlanos = ({ centro, planos, handleCloseModal }) => {
   const submitUpdatePlanta = async (e) => {
     e.preventDefault();
     const res = await instance.post(apiUrls.urlActualizarPlanta, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       edificioId: edificioSeleccionado._id,
       plantaId: updatedItem.id,
       nome: updatedItem.nome,
     });
 
-    centro.planos = res.data;
+    infoCentro.planos = res.data;
     setIsChangingPlanta(false);
   };
 
   const deletePlanta = async (e) => {
     e.preventDefault();
     const res = await instance.post(apiUrls.urlEliminarPlanta, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       edificioId: edificioSeleccionado._id,
       plantaId: updatedItem.id,
     });
 
-    centro.planos = res.data;
+    infoCentro.planos = res.data;
     setEdificioSeleccionado(
-      centro.planos.find((e) => e._id === edificioSeleccionado._id)
+      infoCentro.planos.find((e) => e._id === edificioSeleccionado._id)
     );
     setIsChangingPlanta(false);
   };
 
   useEffect(() => {
-    const edfSeleccionado = centro.planos.find(
+    const edfSeleccionado = infoCentro.planos.find(
       (e) => e._id === edificioSeleccionado?._id
     );
     setEdificioSeleccionado(edfSeleccionado);
     setPlantas(edfSeleccionado?.plantas);
-  }, [
-    planos,
-    edificioSeleccionado,
-    plantaSeleccionada,
-    plantas,
-    visiblePlano,
-    tabsInfo,
-  ]);
+  }, [planos, edificioSeleccionado, plantaSeleccionada, plantas, visiblePlano]);
 
   return (
     <Modal title={"Planos"} handleCloseModal={handleCloseModal}>

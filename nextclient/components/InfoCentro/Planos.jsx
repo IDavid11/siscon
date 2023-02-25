@@ -3,7 +3,7 @@ import ModalPlanos from "../Modales/ModalPlanos/ModalPlanos";
 import ContainerWrap from "../utils/ContainerWrap";
 import UserContext from "../../context/UserContext";
 
-const Planos = ({ planos }) => {
+const Planos = ({ planos, setMenuVisible }) => {
   const { grupo } = useContext(UserContext);
 
   const [showModal, setShowModal] = useState(false);
@@ -15,16 +15,25 @@ const Planos = ({ planos }) => {
   useEffect(() => {}, [planos]);
 
   return (
-    <>
-      <ContainerWrap
-        title={"Planos"}
-        img={"/assets/icons/file-upload-black.png"}
-      >
+    <div>
+      <div className="flex items-center justify-between">
+        <div>
+          <button
+            onClick={() => setMenuVisible(null)}
+            className="flex items-center justify-center"
+          >
+            <img className="h-6" src="/assets/icons/back.png" alt="" />
+          </button>
+        </div>
+        <div className="text-lg font-medium">Planos</div>
         {grupo === "sistemas" || grupo === "admin" ? (
-          <div className="absolute top-3 right-3 flex items-center gap-x-2">
-            <button onClick={handleShowModal}>
+          <div>
+            <button
+              onClick={(e) => handleShowModal(undefined)}
+              className="flex items-center justify-center"
+            >
               <img
-                className="h-6"
+                className="h-5"
                 src="/assets/icons/add-button-black.png"
                 alt=""
               />
@@ -33,6 +42,8 @@ const Planos = ({ planos }) => {
         ) : (
           <></>
         )}
+      </div>
+      <div className="mt-4">
         <table className="rounded-xl w-full relative">
           <tbody>
             {planos &&
@@ -66,13 +77,13 @@ const Planos = ({ planos }) => {
             )}
           </tbody>
         </table>
-      </ContainerWrap>
+      </div>
       {showModal ? (
         <ModalPlanos handleCloseModal={handleShowModal} planos={planos} />
       ) : (
         <></>
       )}
-    </>
+    </div>
   );
 };
 

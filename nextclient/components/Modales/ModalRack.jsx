@@ -11,7 +11,7 @@ const ModalRack = ({ rack, handleCloseModal }) => {
     >
       <div>
         <RackForm rack={rack} handleCloseModal={handleCloseModal} />
-        <RackInfo rack={rack} />
+        {rack ? <RackInfo rack={rack} /> : <></>}
       </div>
     </Modal>
   );

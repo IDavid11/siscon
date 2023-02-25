@@ -3,14 +3,15 @@ import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import ToastMessageContext from "../../context/ToastMessageContext";
 import UserContext from "../../context/UserContext";
+import CentroContext from "@/context/CentroContext";
 
 const ElectronicaForm = ({
-  centro,
   dispositivo,
   handleCloseModal,
   tiposDispositivos,
   modelos,
 }) => {
+  const { infoCentro } = useContext(CentroContext);
   const { grupo } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
 
@@ -46,7 +47,7 @@ const ElectronicaForm = ({
   const submitUpdateDispositivo = async (e) => {
     e.preventDefault();
     const { data } = await instance.post(apiUrls.urlActualizarDispositivo, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       dispositivoId: updatedDispositivo._id,
       ip: updatedDispositivo.ip,
       tipo: updatedDispositivo.tipo,
@@ -56,7 +57,7 @@ const ElectronicaForm = ({
     });
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      centro.rede.electronica = data.data;
+      infoCentro.rede.electronica = data.data;
       handleCloseModal();
     }
   };
@@ -64,7 +65,7 @@ const ElectronicaForm = ({
   const submitEngadirDispositivo = async (e) => {
     e.preventDefault();
     const { data } = await instance.post(apiUrls.urlEngadirDispositivo, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       ip: updatedDispositivo.ip,
       tipo: updatedDispositivo.tipo,
       modelo: updatedDispositivo.modelo,
@@ -73,19 +74,19 @@ const ElectronicaForm = ({
     });
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      centro.rede.electronica.push(data.data);
+      infoCentro.rede.electronica.push(data.data);
       handleCloseModal();
     }
   };
 
   const deleteDispostivo = async () => {
     const { data } = await instance.post(apiUrls.urlEliminarDispostivo, {
-      centroId: centro._id,
+      centroId: infoCentro._id,
       dispositivoId: updatedDispositivo._id,
     });
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      centro.rede.electronica = data.data;
+      infoCentro.rede.electronica = data.data;
       handleCloseModal();
     }
   };
@@ -202,8 +203,8 @@ const ElectronicaForm = ({
                   className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
                 >
                   <option value={"Sen localizar"}>Sen localizar</option>
-                  {centro.rede.racks &&
-                    centro.rede.racks.map((rack) => {
+                  {infoCentro.rede.racks &&
+                    infoCentro.rede.racks.map((rack) => {
                       return <option value={rack.nome}>{rack.nome}</option>;
                     })}
                 </select>
@@ -321,8 +322,8 @@ const ElectronicaForm = ({
                   className="border border-solid border-gray-300 rounded-lg h-10 px-4 outline-none"
                 >
                   <option value={"Sen localizar"}>Sen localizar</option>
-                  {centro.rede.racks &&
-                    centro.rede.racks.map((rack) => {
+                  {infoCentro.rede.racks &&
+                    infoCentro.rede.racks.map((rack) => {
                       return <option value={rack.nome}>{rack.nome}</option>;
                     })}
                 </select>

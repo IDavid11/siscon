@@ -9,10 +9,18 @@
   -webkit-box-sizing: border-box;
           box-sizing: border-box;
    margin: 0;
-  font-size: 13px;
+  font-size: 11px;
+}
+
+
+@media (min-width: 1536px) {  
+  * {
+    font-size: 13px;
+  }
 }
 
 input, select, textarea {outline: none;}
+textarea {background: transparent;}
 
 
 /* ADMIN PAGE */
@@ -95,7 +103,7 @@ input, select, textarea {outline: none;}
 }
 
 .modal {
-  position: absolute;
+  position: fixed;
   z-index: 100;
 }
 

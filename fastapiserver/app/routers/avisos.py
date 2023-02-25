@@ -1,3 +1,4 @@
+import datetime
 from bson.objectid import ObjectId
 from fastapi import APIRouter
 from app.db import centros_collection, avisos_collection, tipo_electronica_collection
@@ -67,3 +68,23 @@ async def avisos_electronica(electronicaId):
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": historial})
     except:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo o historial de avisos."})
+
+
+@router.get("/centro/{centroId}")
+async def avisos_electronica(centroId):
+    try:
+        historial = []
+        hoxe = datetime.datetime.utcnow()
+        semana = hoxe - datetime.timedelta(days=7)
+        avisos_mongo = avisos_collection.find(
+            {"centroId": ObjectId(centroId), "data": {"$gte": semana}})
+        centro = centros_collection.find_one({"_id": ObjectId(centroId)})
+        for aviso in avisos_mongo:
+            aviso["electronica"] = next(
+                (item for item in centro["rede"]["electronica"] if item["_id"] == aviso["electronicaId"]), None)
+            aviso = format_aviso_to_json(aviso)
+            historial.append(aviso)
+
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": historial})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo o log da electrónica do centro."})
