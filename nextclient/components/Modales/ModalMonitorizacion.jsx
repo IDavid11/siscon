@@ -3,15 +3,18 @@ import HistorialMonitorizacions from "../Monitorizacions/HistorialMonitorizacion
 import Monitorizacion from "../Monitorizacions/Monitorizacion";
 import Modal from "../utils/Modal";
 
-const ModalMonitorizacion = ({ avaria, handleCloseModal }) => {
+const ModalMonitorizacion = ({ monitorizacion, handleCloseModal }) => {
   return (
     <Modal
-      title={`Historial de avarías detectadas - ${avaria.ip}`}
+      title={`Historial de monitorizacións detectadas - ${monitorizacion.electronica.ip}`}
       handleCloseModal={handleCloseModal}
     >
       <div className="border border-solid border-gray-300 rounded-xl p-10">
-        <Monitorizacion avaria={avaria} handleCloseModal={handleCloseModal} />
-        <HistorialMonitorizacions electronica={avaria} />
+        <Monitorizacion
+          monitorizacion={monitorizacion}
+          handleCloseModal={handleCloseModal}
+        />
+        <HistorialMonitorizacions electronica={monitorizacion.electronica} />
       </div>
     </Modal>
   );

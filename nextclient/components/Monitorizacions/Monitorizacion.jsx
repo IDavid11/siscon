@@ -1,14 +1,18 @@
 import React from "react";
 import { imgs } from "../../utils/imgs";
 
-const Monitorizacion = ({ avaria }) => {
+const Monitorizacion = ({ monitorizacion }) => {
   return (
     <div>
       <div className="flex flex-col items-center gap-y-1">
         <div>
-          <img className="h-16" src={imgs[avaria.tipo]} alt="" />
+          <img
+            className="h-16"
+            src={imgs[monitorizacion.electronica.tipo]}
+            alt=""
+          />
         </div>
-        <div className="font-bold">{avaria.nome}</div>
+        <div className="font-bold">{monitorizacion.nome}</div>
       </div>
       <div className="mt-8">
         <table className="rounded-xl w-full relative">
@@ -19,9 +23,13 @@ const Monitorizacion = ({ avaria }) => {
               <th className="w-64">Ubicación</th>
             </tr>
             <tr>
-              <td className="py-2">{avaria.tipo}</td>
-              <td className="py-2">{avaria.modelo || "Sen determinar"}</td>
-              <td className="py-2">{avaria.ubicacion || "Sen localizar"}</td>
+              <td className="py-2">{monitorizacion.electronica.tipo}</td>
+              <td className="py-2">
+                {monitorizacion.electronica.modelo || "Sen determinar"}
+              </td>
+              <td className="py-2">
+                {monitorizacion.electronica.ubicacion || "Sen localizar"}
+              </td>
             </tr>
           </tbody>
         </table>

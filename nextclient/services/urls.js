@@ -4,6 +4,7 @@ export const apiUrls = {
   // CENTROS
   urlGetCentros: "/centros/",
   urlActualizarCentro: "/centros/actualizar",
+  urlObterInfoSistemas: "/centros/info-sistemas/",
 
   // LANS
   urlObterElectronicaLan: "/lan/electronica",
@@ -69,4 +70,5 @@ export const apiUrls = {
 
   // GLPI
   urlLoginGLPI: "/glpi/login",
+  urlObterIncidenciasCentro: "/glpi/incidencias-centro",
 };

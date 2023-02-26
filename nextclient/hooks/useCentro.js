@@ -10,6 +10,7 @@ import {
   BORRAR_DATOS,
 } from "@/context/CentroTypes";
 import LoadingContext from "@/context/LoadingContext";
+import UserContext from "@/context/UserContext";
 
 export default function CentroState({ children }) {
   const initialState = {
@@ -17,11 +18,15 @@ export default function CentroState({ children }) {
     monitorizacions: null,
     avisos: null,
     avarias: null,
+    incidencias: null,
+    informacionSistemas: null,
     redeComprobada: null,
   };
 
   const [state, dispatch] = useReducer(CentroReducer, initialState);
   const { handleLoading } = useContext(LoadingContext);
+  const { glpi_csrf_token, glpi_cookie, glpi_search_id } =
+    useContext(UserContext);
 
   const doPing = async (centro) => {
     const { data } = await instance.post(apiUrls.urlPing, {
@@ -40,10 +45,40 @@ export default function CentroState({ children }) {
     });
   };
 
+  const obterIncidenciasCentro = async (centro) => {
+    const { data } = await instance.post(apiUrls.urlObterIncidenciasCentro, {
+      csrf_token: glpi_csrf_token,
+      cookie: glpi_cookie,
+      searchform_id: glpi_search_id,
+      centro: centro.centro,
+    });
+
+    return data.data;
+  };
+
+  const obterInformacionSistemas = async (centro) => {
+    const { data } = await instance.get(
+      apiUrls.urlObterInfoSistemas + centro._id
+    );
+    return data.data;
+  };
+
   const seleccionarCentro = async (centro) => {
+    dispatch({
+      type: SELECCIONAR_CENTRO,
+      payload: {
+        infoCentro: centro.centro,
+        monitorizacions: centro.monitorizacions,
+      },
+    });
+  };
+
+  const obterDatosCentro = async (centro) => {
     handleLoading(true);
+    const infoSistemas = await obterInformacionSistemas(centro.centro);
     await doPing(centro.centro);
     await obterElectronicaLan(centro.centro);
+    const incidencias = await obterIncidenciasCentro(centro.centro);
     const { data } = await instance.get(
       apiUrls.urlObterAvisosCentro + `${centro.centro._id}`
     );
@@ -59,6 +94,8 @@ export default function CentroState({ children }) {
         monitorizacions: centro.monitorizacions,
         avisos: data.data,
         avarias: avarias,
+        incidencias: incidencias,
+        informacionSistemas: infoSistemas,
         redeComprobada: true,
       },
     });
@@ -83,8 +120,11 @@ export default function CentroState({ children }) {
         monitorizacions: state.monitorizacions,
         avisos: state.avisos,
         avarias: state.avarias,
+        incidencias: state.incidencias,
+        informacionSistemas: state.informacionSistemas,
         redeComprobada: state.redeComprobada,
         seleccionarCentro,
+        obterDatosCentro,
         actualizarCentro,
         borrarDatos,
       }}

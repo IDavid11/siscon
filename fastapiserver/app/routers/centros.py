@@ -147,3 +147,18 @@ def actualizar_centro(request: Centro):
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": centro_actualizado})
     except:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro actualizando o centro."})
+
+
+@router.get("/info-sistemas/{centroId}")
+def obter_info_sistemas(centroId):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(centroId)})
+        infoSistemas = {
+            "controladora": centro["rede"]["controladora"],
+            "contrasinal_conmutadores": centro["contrasinais"]["siega"]["admin"],
+            "contrasinal_siega": centro["contrasinais"]["siega"]["siega"],
+        }
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": infoSistemas})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo a información de sistemas."})

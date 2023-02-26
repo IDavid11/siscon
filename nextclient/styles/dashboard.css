@@ -13,6 +13,7 @@
     grid-auto-columns: calc(100% - 1.5rem);
     row-gap: 20px;
     max-height: inherit;
+    min-height: 0;
   }
 
   @media (min-width: 1536px) {  

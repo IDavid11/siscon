@@ -3,6 +3,13 @@ from pydantic import BaseModel
 from fastapi import File, UploadFile
 
 
+class GLPI(BaseModel):
+    csrf_token: str
+    cookie: object
+    searchform_id: str
+    centro: str
+
+
 class Lan(BaseModel):
     nome: str
     rango: str

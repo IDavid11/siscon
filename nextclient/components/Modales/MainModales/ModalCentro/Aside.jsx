@@ -1,14 +1,13 @@
 import React, { useState, useContext } from "react";
 import Racks from "@/components/InfoCentro/Racks";
-import ModalPlanos from "../../ModalPlanos/ModalPlanos";
 import CentroContext from "@/context/CentroContext";
 import Planos from "@/components/InfoCentro/Planos";
-import Aviso from "@/components/Avisos/Aviso";
 import Avisos from "@/components/InfoCentro/Avisos";
 import Electronica from "@/components/InfoCentro/Electronica";
+import Monitorizacions from "@/components/InfoCentro/Monitorizacions";
 
 const Aside = () => {
-  const { infoCentro, avisos } = useContext(CentroContext);
+  const { infoCentro, avisos, monitorizacions } = useContext(CentroContext);
   const [menuVisible, setMenuVisible] = useState(null);
   const [showModal, setShowModal] = useState(null);
 
@@ -59,7 +58,29 @@ const Aside = () => {
                         <div className="flex items-center gap-x-2">
                           <span>Log</span>
                           <span className="w-7 h-7 text-sm rounded-full bg-red-200 flex items-center justify-center font-medium">
-                            {avisos?.length}
+                            {avisos ? avisos.length : "0"}
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  </li>
+                  <li>
+                    <button
+                      onClick={() => setMenuVisible("monitorizacions")}
+                      className="p-2 h-14 w-full hover:bg-tab-background rounded-lg"
+                    >
+                      <div className="flex items-center gap-x-4">
+                        <div>
+                          <img
+                            className="h-6"
+                            src="/assets/images/ap.png"
+                            alt=""
+                          />
+                        </div>
+                        <div className="flex items-center gap-x-2">
+                          <span>Monitorizacions</span>
+                          <span className="w-7 h-7 text-sm rounded-full bg-red-200 flex items-center justify-center font-medium">
+                            {monitorizacions ? monitorizacions.length : "0"}
                           </span>
                         </div>
                       </div>
@@ -116,23 +137,6 @@ const Aside = () => {
                       </div>
                     </button>
                   </li>
-                  <li>
-                    <button
-                      onClick={() => setMenuVisible("estadísticas")}
-                      className="p-2 h-14 w-full hover:bg-tab-background rounded-lg"
-                    >
-                      <div className="flex items-center gap-x-4">
-                        <div>
-                          <img
-                            className="h-6"
-                            src="/assets/images/ap.png"
-                            alt=""
-                          />
-                        </div>
-                        <div>Monitorización</div>
-                      </div>
-                    </button>
-                  </li>
                 </ul>
               </div>
             </>
@@ -166,6 +170,11 @@ const Aside = () => {
               planos={infoCentro.planos}
               setMenuVisible={setMenuVisible}
             />
+          ) : (
+            <></>
+          )}
+          {menuVisible === "monitorizacions" ? (
+            <Monitorizacions setMenuVisible={setMenuVisible} />
           ) : (
             <></>
           )}

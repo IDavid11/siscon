@@ -5,6 +5,7 @@ from fastapi import status
 from bs4 import BeautifulSoup
 from urllib.request import Request, urlopen
 import re
+from app.models.Centro import GLPI
 from app.models.Usuario import Login
 from app.config import GLPI_HEADERS_LOGIN, GLPI_HEADERS_REQUESTS
 
@@ -70,6 +71,18 @@ def get_pool_sistemas(search_info):
     return {"pool": response.text, "searchform_id": search_info['searchform_id']}
 
 
+def get_incidencias_conexion_centro(request):
+    print(request)
+    centro = request.centro.split(" - ")[0]
+    #centro = " ".join(centro)
+    url = f"https://glpi.edu.xunta.gal/uac/helpdesk/ajax/search.php?action=display_results&searchform_id={request.searchform_id}&itemtype=Ticket&glpilist_limit=1000&sort%5B%5D=19&order%5B%5D=DESC%3Ferror%3D3&is_deleted=0&as_map=0&browse=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=80&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D={centro}&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bfield%5D=7&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=conexi%C3%B3n&start=0&_glpi_csrf_token={request.csrf_token}"
+
+    response = requests.request(
+        "GET", url, headers=GLPI_HEADERS_REQUESTS, cookies=request.cookie)
+
+    return {"pool": response.text, "searchform_id": request.searchform_id}
+
+
 def format_pool_to_json(pool_info):
     soup = BeautifulSoup(pool_info["pool"], 'html.parser')
     table = soup.find("table", id=pool_info["searchform_id"])
@@ -77,14 +90,6 @@ def format_pool_to_json(pool_info):
 
     for index, tr in enumerate(table.tbody.contents):
         if index % 2 != 0:
-            # pool.append({
-            #    "titulo": tr.contents[5].a.string,
-            #    "entidade": tr.contents[7].find_all("span")[4],
-            #    "estado": tr.contents[9].span.text,
-            #    "prioridade": tr.contents[11].div.text,
-            #    "categoria": tr.contents[15].string,
-            #    "tecnico_asignado": tr.contents[19].string
-            # })
             pool.append({
                 "titulo": tr.contents[5].a.string,
                 "entidade": "00000000" if tr.contents[7].find_all("span")[2].text == "00000000" else tr.contents[7].find_all("span")[4].text,
@@ -117,3 +122,14 @@ def login(request: Login):
     }
     return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": data})
     # return "ok"
+
+
+@router.post("/incidencias-centro")
+def get_incidencias_centro(request: GLPI):
+    try:
+        incidencias = format_pool_to_json(
+            get_incidencias_conexion_centro(request))
+        print(incidencias)
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": incidencias})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as incidencias do centro"})

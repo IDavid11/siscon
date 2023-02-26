@@ -4,7 +4,7 @@ import { apiUrls } from "../../services/urls";
 
 const HistorialMonitorizacions = ({ electronica }) => {
   const [historial, setHistorial] = useState([]);
-  const obterHistorialElectronica = async () => {
+  const obterHistorialMonitorizacion = async () => {
     const { data } = await instance.get(
       apiUrls.urlObterMonitorizacions + `${electronica._id}`
     );
@@ -12,7 +12,7 @@ const HistorialMonitorizacions = ({ electronica }) => {
   };
 
   useEffect(() => {
-    obterHistorialElectronica();
+    obterHistorialMonitorizacion();
   }, []);
 
   return (

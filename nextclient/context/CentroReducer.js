@@ -14,6 +14,8 @@ export default (state, action) => {
         monitorizacions: payload.monitorizacions,
         avisos: payload.avisos,
         avarias: payload.avarias,
+        incidencias: payload.incidencias,
+        informacionSistemas: payload.informacionSistemas,
         redeComprobada: payload.redeComprobada,
       };
     case ACTUALIZAR_CENTRO:
@@ -27,6 +29,8 @@ export default (state, action) => {
         monitorizacions: payload.monitorizacions,
         avisos: payload.avisos,
         avarias: payload.avarias,
+        informacionSistemas: payload.informacionSistemas,
+        incidencias: payload.incidencias,
         redeComprobada: payload.redeComprobada,
       };
     default:

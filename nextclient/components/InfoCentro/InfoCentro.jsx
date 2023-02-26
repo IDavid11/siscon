@@ -1,9 +1,11 @@
 import React, { useContext } from "react";
 import ContainerWrap from "../utils/ContainerWrap";
 import UserContext from "../../context/UserContext";
+import CentroContext from "@/context/CentroContext";
 
 const InfoCentro = ({ centro, setEdit, img }) => {
   const { grupo } = useContext(UserContext);
+  const { informacionSistemas } = useContext(CentroContext);
 
   return (
     <ContainerWrap>
@@ -79,7 +81,31 @@ const InfoCentro = ({ centro, setEdit, img }) => {
                 <div className="w-24 font-medium whitespace-nowrap">
                   Información sistemas
                 </div>
-                <div className="mt-2"></div>
+                <div className="mt-2">
+                  <div className="flex">
+                    <div className="w-24 font-medium">Controladora</div>
+                    <div className="ml-5">
+                      {informacionSistemas?.controladora}
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="w-24 font-medium">Contrasinais</div>
+                    <div className="mt-2">
+                      <div className="flex">
+                        <div className="w-24 font-medium">Conmutadores</div>
+                        <div className="ml-5">
+                          {informacionSistemas?.contrasinal_conmutadores}
+                        </div>
+                      </div>
+                      <div className="flex">
+                        <div className="w-24 font-medium">Siega</div>
+                        <div className="ml-5">
+                          {informacionSistemas?.contrasinal_siega}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             ) : (
               <></>
