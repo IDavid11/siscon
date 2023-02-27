@@ -1,3 +1,4 @@
+import LoadingContext from "@/context/LoadingContext";
 import React, { useContext } from "react";
 import ToastMessageContext from "../../context/ToastMessageContext";
 import UserContext from "../../context/UserContext";
@@ -6,23 +7,19 @@ import { apiUrls } from "../../services/urls";
 
 const ModalAuthGLPI = () => {
   const { login, iniciarSesionGLPI } = useContext(UserContext);
-  const { createToastMessage } = useContext(ToastMessageContext);
+  const { error, createToastMessage } = useContext(ToastMessageContext);
+  const { isLoading, handleLoading } = useContext(LoadingContext);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log({
-      username: login,
-      password: document.getElementById("contrasinal").value,
-    });
-
+    handleLoading(true);
     const { data } = await instance.post(apiUrls.urlLoginGLPI, {
       username: login,
       password: document.getElementById("contrasinal").value,
     });
-    console.log(data);
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else iniciarSesionGLPI(data.data);
+    handleLoading(false);
   };
 
   return (
@@ -35,11 +32,19 @@ const ModalAuthGLPI = () => {
           <div className="mt-4">
             <div>
               <div className="flex justify-center">
-                <img
-                  className="h-24"
-                  src="/assets/icons/profilecircle.png"
-                  alt=""
-                />
+                {!isLoading ? (
+                  <img
+                    className="h-24"
+                    src="/assets/icons/profilecircle.png"
+                    alt=""
+                  />
+                ) : (
+                  <img
+                    className="h-24"
+                    src="/assets/icons/verificado.gif"
+                    alt=""
+                  />
+                )}
               </div>
               <div className="font-bold text-lg text-center">{login}</div>
             </div>

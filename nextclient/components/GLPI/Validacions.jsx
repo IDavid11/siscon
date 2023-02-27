@@ -1,37 +1,11 @@
-import React, { useContext } from "react";
-import ContainerWrap from "../utils/ContainerWrap";
-import CentroContext from "@/context/CentroContext";
+import React from "react";
+import { estados, prioridades } from "@/utils/glpi";
 
-const Pool = () => {
-  const { incidencias } = useContext(CentroContext);
-
-  const prioridades2 = [
-    { k: "Moi urxente", v: "moi-urxente" },
-    { k: "Urxente", v: "urxente" },
-    { k: "Mediana", v: "mediana" },
-    { k: "Baixa", v: "baixa" },
-    { k: "Moi baixa", v: "moi-baixa" },
-  ];
-
-  const prioridades = {
-    "Moi urxente": "moi-urxente",
-    Urxente: "urxente",
-    Mediana: "mediana",
-    Baixa: "baixa",
-    "Moi baixa": "moi-baixa",
-  };
-
-  const estados = {
-    "En curso (asignada)": "en-curso",
-    "En espera": "en-espera",
-    Rematado: "rematado",
-    Pechado: "pechado",
-  };
-
+const Validacions = ({ incidencias }) => {
   return (
-    <ContainerWrap title={"GLPI"}>
+    <div>
       {incidencias && incidencias.length > 0 ? (
-        <table className="rounded-xl w-full relative table-fixed">
+        <table className="rounded-xl w-full relative">
           <tbody>
             {incidencias &&
               incidencias.map((incidencia) => {
@@ -62,10 +36,10 @@ const Pool = () => {
           </tbody>
         </table>
       ) : (
-        <></>
+        <div>Non ten incidencias pendentes de validación</div>
       )}
-    </ContainerWrap>
+    </div>
   );
 };
 
-export default Pool;
+export default Validacions;

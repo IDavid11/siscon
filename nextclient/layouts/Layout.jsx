@@ -13,15 +13,13 @@ const Layout = ({ children }) => {
   useEffect(() => {
     const sessionToken = sessionStorage.getItem("token");
     if (!sessionToken) router.push("auth");
-    console.log(token);
-    console.log(glpi_cookie);
-  }, [error]);
+  }, [error, token]);
 
   return (
     <div className="w-screen h-screen overflow-hidden bg-tab-background">
       <Header />
       <div className="layout-container p-6">{children}</div>
-      {!glpi_cookie ? <ModalAuthGLPI /> : <></>}
+      {!glpi_cookie && token ? <ModalAuthGLPI /> : <></>}
       {error ? (
         <div className="toast-message-container">
           <div

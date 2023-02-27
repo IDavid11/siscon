@@ -72,11 +72,34 @@ def get_pool_sistemas(search_info):
 
 
 def get_incidencias_conexion_centro(request):
-    print(request)
     centro = request.centro.split(" - ")[0]
     #centro = " ".join(centro)
     url = f"https://glpi.edu.xunta.gal/uac/helpdesk/ajax/search.php?action=display_results&searchform_id={request.searchform_id}&itemtype=Ticket&glpilist_limit=1000&sort%5B%5D=19&order%5B%5D=DESC%3Ferror%3D3&is_deleted=0&as_map=0&browse=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=80&criteria%5B0%5D%5Bsearchtype%5D=contains&criteria%5B0%5D%5Bvalue%5D={centro}&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bfield%5D=7&criteria%5B1%5D%5Bsearchtype%5D=contains&criteria%5B1%5D%5Bvalue%5D=conexi%C3%B3n&start=0&_glpi_csrf_token={request.csrf_token}"
 
+    response = requests.request(
+        "GET", url, headers=GLPI_HEADERS_REQUESTS, cookies=request.cookie)
+
+    return {"pool": response.text, "searchform_id": request.searchform_id}
+
+
+def get_incidencias_asignadas(request):
+    url = f"https://glpi.edu.xunta.gal/uac/helpdesk/ajax/search.php?action=display_results&searchform_id={request.searchform_id}&itemtype=Ticket&glpilist_limit=1000&sort%5B%5D=19&order%5B%5D=DESC&is_deleted=0&as_map=0&browse=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=8&criteria%5B0%5D%5Bsearchtype%5D=equals&criteria%5B0%5D%5Bvalue%5D=mygroups&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bfield%5D=12&criteria%5B1%5D%5Bsearchtype%5D=equals&criteria%5B1%5D%5Bvalue%5D=notold&criteria%5B2%5D%5Blink%5D=AND&criteria%5B2%5D%5Bfield%5D=5&criteria%5B2%5D%5Bsearchtype%5D=equals&criteria%5B2%5D%5Bvalue%5D=myself&start=0&_glpi_csrf_token={request.csrf_token}"
+    response = requests.request(
+        "GET", url, headers=GLPI_HEADERS_REQUESTS, cookies=request.cookie)
+
+    return {"pool": response.text, "searchform_id": request.searchform_id}
+
+
+def get_incidencias_grupo(request):
+    url = f"https://glpi.edu.xunta.gal/uac/helpdesk/ajax/search.php?action=display_results&searchform_id={request.searchform_id}&itemtype=Ticket&glpilist_limit=1000&sort%5B%5D=19&order%5B%5D=DESC&is_deleted=0&as_map=0&browse=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=8&criteria%5B0%5D%5Bsearchtype%5D=equals&criteria%5B0%5D%5Bvalue%5D=mygroups&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bfield%5D=12&criteria%5B1%5D%5Bsearchtype%5D=equals&criteria%5B1%5D%5Bvalue%5D=notold&criteria%5B2%5D%5Blink%5D=AND&criteria%5B2%5D%5Bfield%5D=5&criteria%5B2%5D%5Bsearchtype%5D=equals&criteria%5B2%5D%5Bvalue%5D=22506&start=0&_glpi_csrf_token={request.csrf_token}"
+    response = requests.request(
+        "GET", url, headers=GLPI_HEADERS_REQUESTS, cookies=request.cookie)
+
+    return {"pool": response.text, "searchform_id": request.searchform_id}
+
+
+def get_validacions(request):
+    url = f"https://glpi.edu.xunta.gal/uac/helpdesk/ajax/search.php?action=display_results&searchform_id={request.searchform_id}&itemtype=Ticket&glpilist_limit=1000&sort%5B%5D=19&order%5B%5D=DESC&is_deleted=0&as_map=0&browse=0&criteria%5B0%5D%5Blink%5D=AND&criteria%5B0%5D%5Bfield%5D=55&criteria%5B0%5D%5Bsearchtype%5D=equals&criteria%5B0%5D%5Bvalue%5D=2&criteria%5B1%5D%5Blink%5D=AND&criteria%5B1%5D%5Bfield%5D=59&criteria%5B1%5D%5Bsearchtype%5D=equals&criteria%5B1%5D%5Bvalue%5D=myself&criteria%5B2%5D%5Blink%5D=AND%20NOT&criteria%5B2%5D%5Bfield%5D=12&criteria%5B2%5D%5Bsearchtype%5D=equals&criteria%5B2%5D%5Bvalue%5D=5&start=0&_glpi_csrf_token={request.csrf_token}"
     response = requests.request(
         "GET", url, headers=GLPI_HEADERS_REQUESTS, cookies=request.cookie)
 
@@ -129,7 +152,50 @@ def get_incidencias_centro(request: GLPI):
     try:
         incidencias = format_pool_to_json(
             get_incidencias_conexion_centro(request))
-        print(incidencias)
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": incidencias})
     except:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as incidencias do centro"})
+
+
+@router.post("/incidencias-asignadas")
+def get_incidencias_asignadas(request: GLPI):
+    try:
+        incidencias = format_pool_to_json(
+            get_incidencias_asignadas(request))
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": incidencias})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as incidencias asignadas"})
+
+
+@router.post("/incidencias-grupo")
+def get_incidencias_grupo(request: GLPI):
+    try:
+        incidencias = format_pool_to_json(
+            get_incidencias_grupo(request))
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": incidencias})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as incidencias do grupo"})
+
+
+@router.post("/validacions")
+def get_validacions(request: GLPI):
+    try:
+        incidencias = format_pool_to_json(
+            get_validacions(request))
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": incidencias})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as validacións"})
+
+
+@router.post("/")
+def get_validacions(request: GLPI):
+    try:
+        asignadas = format_pool_to_json(
+            get_incidencias_asignadas(request))
+        grupo = format_pool_to_json(
+            get_incidencias_grupo(request))
+        validacions = format_pool_to_json(
+            get_validacions(request))
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": {asignadas: asignadas, grupo: grupo, validacions: validacions}})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as validacións"})

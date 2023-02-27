@@ -6,27 +6,26 @@ import Estadisticas from "../../components/Dashboard/Estadisticas";
 import ToastMessageContext from "../../context/ToastMessageContext";
 import ResultadosCargando from "../../components/Dashboard/ResultadosCargando";
 import ContainerWrap from "../../components/utils/ContainerWrap";
-import Pool from "../../components/GLPI/Pool2";
+import GLPI from "../../components/GLPI/GLPI";
 import ModalCentro from "../../components/Modales/MainModales/ModalCentro/ModalCentro";
-import ModalAuthGLPI from "../../components/Modales/ModalAuthGLPI";
 import CentroContext from "../../context/CentroContext";
 import UserContext from "../../context/UserContext";
-import { useRouter } from "next/router";
 import Layout from "../../layouts/Layout";
 
 const index = () => {
-  const { token, glpi_cookie } = useContext(UserContext);
+  const { token, glpi_cookie, obterIncidenciasGLPI } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
-  const { seleccionarCentro, borrarDatos } = useContext(CentroContext);
+  const { infoCentro, seleccionarCentro, borrarDatos } =
+    useContext(CentroContext);
   const [showModal, setShowModal] = useState(false);
   const [modalCentro, setModalCentro] = useState();
+
   const [centros, setCentros] = useState([]);
   const [avisos, setAvisos] = useState([]);
   const [monitorizacions, setMonitorizacions] = useState([]);
   const [estadisticas, setEstadisticas] = useState([]);
 
   const [search, setSearch] = useState([]);
-  const router = useRouter();
 
   const handleShowModal = (centro) => {
     setShowModal(!showModal);
@@ -35,44 +34,6 @@ const index = () => {
       console.log("borrando datos");
       borrarDatos();
     }
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    var centrosFiltrados = [];
-    const filtros = {
-      concello: document.getElementById("concello").value.toUpperCase(),
-      centro: document.getElementById("centro").value.toUpperCase(),
-    };
-
-    if (filtros.concello != "" && filtros.centro != "") {
-      centrosFiltrados = centros.filter(
-        (obj) =>
-          obj.centro.centro.includes(filtros.centro) &&
-          obj.centro.concello.includes(filtros.concello)
-      );
-
-      if (centrosFiltrados?.length < 1) setSearch(null);
-      else setSearch(centrosFiltrados);
-    }
-
-    if (filtros.concello == "" && filtros.centro != "") {
-      centrosFiltrados = centros.filter((c) =>
-        c.centro.centro.includes(filtros.centro)
-      );
-      if (centrosFiltrados?.length < 1) setSearch(null);
-      else setSearch(centrosFiltrados);
-    }
-
-    if (filtros.concello != "" && filtros.centro == "") {
-      centrosFiltrados = centros.filter((c) =>
-        c.centro.concello.includes(filtros.concello)
-      );
-      if (centrosFiltrados?.length < 1) setSearch(null);
-      else setSearch(centrosFiltrados);
-    }
-
-    if (filtros.concello == "" && filtros.centro == "") setSearch(centros);
   };
 
   const getFullDashboard = async () => {
@@ -116,6 +77,7 @@ const index = () => {
     if (search?.length < 1) getFullDashboard();
     const interval = setInterval(() => {
       getFullDashboard();
+      obterIncidenciasGLPI();
     }, 20000);
     return () => clearInterval(interval);
   }, []);
@@ -223,15 +185,11 @@ const index = () => {
         </ContainerWrap>
         <div className="dashboard-right">
           <Estadisticas estadisticas={estadisticas} />
-          <Pool />
+          <GLPI />
           <ElectronicaDown monitorizacions={monitorizacions} />
         </div>
       </div>
-      {showModal ? (
-        <ModalCentro handleCloseModal={handleShowModal} centro={modalCentro} />
-      ) : (
-        <></>
-      )}
+      {infoCentro ? <ModalCentro handleCloseModal={handleShowModal} /> : <></>}
     </Layout>
   );
 };

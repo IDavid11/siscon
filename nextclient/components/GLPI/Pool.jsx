@@ -1,4 +1,5 @@
 import React from "react";
+import { estados, prioridades } from "@/utils/glpi";
 
 const Pool = ({ incidencias }) => {
   return (
@@ -7,24 +8,28 @@ const Pool = ({ incidencias }) => {
         <table className="rounded-xl w-full relative">
           <tbody>
             {incidencias &&
-              incidencias.map((ticket) => {
+              incidencias.map((incidencia) => {
                 return (
-                  <tr key={ticket._id} className="flex items-center">
-                    <td className="px-2 w-2">
-                      <span className="block h-6 w-1 rounded-full bg-green-400 bg-red-500"></span>
+                  <tr className="flex items-center hover:bg-gray-200 cursor-pointer">
+                    <td className="px-2 py-2 w-2">
+                      <span
+                        className={`prioridade-span ${
+                          prioridades[incidencia.prioridade]
+                        }`}
+                      ></span>
                     </td>
-                    <td className="px-2 whitespace-nowrap overflow-hidden text-ellipsis text-sm 2xl:text-base">
-                      {ticket.titulo}
+                    <td className="px-2 py-2 whitespace-nowrap overflow-hidden text-ellipsis 2xl:text-base w-[60%]">
+                      {incidencia.titulo}
                     </td>
-                    <td className="px-2 w-2">
-                      <span className="block h-2.5 w-2.5 rounded-full bg-green-400"></span>
+                    <td className="px-2 py-2 w-2">
+                      <span
+                        className={`estado-span  ${estados[incidencia.estado]}`}
+                      ></span>
                     </td>
-                    <td className="px-2 text-sm w-[30%] whitespace-nowrap overflow-hidden text-ellipsis">
-                      {ticket.entidade}
+                    <td className="px-2 py-2 text-sm w-[30%] whitespace-nowrap overflow-hidden text-ellipsis">
+                      {incidencia.entidade}
                     </td>
-                    <td className="px-2 font-bold w-14">
-                      {ticket.hora_acordada}
-                    </td>
+                    <td className="px-2 py-2 font-bold w-14">12:30</td>
                   </tr>
                 );
               })}

@@ -29,6 +29,7 @@ export default function CentroState({ children }) {
     useContext(UserContext);
 
   const doPing = async (centro) => {
+    console.log(centro);
     const { data } = await instance.post(apiUrls.urlPing, {
       index: centro._id,
     });
@@ -74,6 +75,7 @@ export default function CentroState({ children }) {
   };
 
   const obterDatosCentro = async (centro) => {
+    console.log(centro);
     handleLoading(true);
     const infoSistemas = await obterInformacionSistemas(centro.centro);
     await doPing(centro.centro);

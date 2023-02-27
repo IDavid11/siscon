@@ -7,10 +7,11 @@ import { randomImg } from "../../utils/randomImg";
 import UserContext from "../../context/UserContext";
 import Aside from "@/components/Modales/MainModales/ModalCentro/Aside";
 import CentroContext from "@/context/CentroContext";
-import Pool from "@/components/GLPI/Pool2";
+import Pool from "@/components/GLPI/Pool";
 
-const Centro = ({ centro }) => {
-  const { obterDatosCentro, avarias } = useContext(CentroContext);
+const Centro = () => {
+  const { infoCentro, obterDatosCentro, avarias, monitorizacions } =
+    useContext(CentroContext);
   const { grupo } = useContext(UserContext);
 
   const [edit, setEdit] = useState(false);
@@ -19,7 +20,10 @@ const Centro = ({ centro }) => {
 
   useEffect(() => {
     console.log("refresing centro");
-    obterDatosCentro(centro);
+    obterDatosCentro({
+      centro: infoCentro,
+      monitorizacions: monitorizacions,
+    });
   }, []);
 
   return (
@@ -27,22 +31,18 @@ const Centro = ({ centro }) => {
       <div className="centro-container">
         <div>
           {!edit ? (
-            <InfoCentro centro={centro.centro} img={img} setEdit={setEdit} />
+            <InfoCentro centro={infoCentro} img={img} setEdit={setEdit} />
           ) : (
-            <InfoCentroForm
-              centro={centro.centro}
-              img={img}
-              setEdit={setEdit}
-            />
+            <InfoCentroForm centro={infoCentro} img={img} setEdit={setEdit} />
           )}
         </div>
         <div className="centro-middle">
-          <LANs lans={centro.centro.rede.lans} />
+          <LANs lans={infoCentro.rede.lans} />
           <AvariasDetectadas />
           <Pool />
         </div>
         <div className="centro-right">
-          <Aside centro={centro} />
+          <Aside />
         </div>
       </div>
     </>

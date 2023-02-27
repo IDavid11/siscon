@@ -26,6 +26,14 @@ class BuscarCentro(BaseModel):
     index: str
 
 
+class PredecirCentro(BaseModel):
+    centro: str
+
+
+class EscollerCentro(BaseModel):
+    centroId: str
+
+
 class Centro(BaseModel):
     centroId: Optional[str]
     centro: str

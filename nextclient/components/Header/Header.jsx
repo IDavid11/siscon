@@ -1,8 +1,35 @@
-import React, { useState } from "react";
+import { instance } from "@/services/axios";
+import { apiUrls } from "@/services/urls";
+import React, { useContext, useEffect, useState } from "react";
 import MenuUsuario from "./MenuUsuario";
+import { randomImg } from "@/utils/randomImg";
+import CentroContext from "@/context/CentroContext";
 
 const Header = () => {
+  const { seleccionarCentro } = useContext(CentroContext);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [search, setSearch] = useState("");
+  const [predictions, setPredictions] = useState([]);
+  const img = randomImg();
+
+  const handleSearch = async () => {
+    if (search.trim() != "") {
+      const { data } = await instance.post(apiUrls.urlObterPrediccions, {
+        centro: search,
+      });
+      setPredictions(data.data);
+    } else setPredictions([]);
+  };
+
+  const escollerCentro = async (centroId) => {
+    const { data } = await instance.get(apiUrls.urlGetCentros + centroId);
+    seleccionarCentro(data.data);
+  };
+
+  useEffect(() => {
+    handleSearch();
+  }, [search]);
+
   return (
     <>
       <header className="bg-primary-color">
@@ -10,22 +37,72 @@ const Header = () => {
           <div>
             <img className="h-12 2xl:h-14" src="siscon2.png" alt="" />
           </div>
-          <div>
+          <div className="flex flex-col relative">
             <div className="relative flex items-center">
               <input
                 type="text"
+                id="centro"
                 placeholder="Buscar"
+                value={search}
+                autoComplete="off"
+                onChange={(e) => setSearch(e.target.value)}
                 className="bg-white rounded-full w-80 h-10 2xl:h-12 2xl:w-96 border border-solid border-gray-300 pl-4"
               />
               <div className="absolute right-2">
-                <button
-                  onClick={(e) => console.log("click")}
-                  className="h-8 w-8 2xl:h-10 2xl:w-10 rounded-full bg-primary-color flex items-center justify-center"
-                >
-                  <img className="h-3.5" src="/assets/icons/loupe.svg" alt="" />
-                </button>
+                {search.trim() === "" ? (
+                  <button className="h-8 w-8 2xl:h-10 2xl:w-10 rounded-full bg-primary-color flex items-center justify-center">
+                    <img
+                      className="h-3.5"
+                      src="/assets/icons/loupe.svg"
+                      alt=""
+                    />
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setSearch("")}
+                    className="h-8 w-8 2xl:h-10 2xl:w-10 rounded-full flex items-center justify-center"
+                  >
+                    <img
+                      className="h-3"
+                      src="/assets/icons/close-black.png"
+                      alt=""
+                    />
+                  </button>
+                )}
               </div>
             </div>
+            {predictions && predictions.length > 0 ? (
+              <div className="absolute top-14 left-0 z-50 bg-white rounded-xl shadow-xl overflow-hidden">
+                {predictions &&
+                  predictions.map((prediction) => {
+                    return (
+                      <div
+                        key={prediction._id}
+                        onClick={() => escollerCentro(prediction._id)}
+                        className="p-4 flex gap-x-4 cursor-pointer hover:bg-gray-200"
+                      >
+                        <div className="w-24 h-16">
+                          <img
+                            className="w-full h-full rounded-xl"
+                            src={prediction.imaxe || img}
+                            alt=""
+                          />
+                        </div>
+                        <div className="w-full">
+                          <div className="font-medium whitespace-nowrap">
+                            {prediction.centro}
+                          </div>
+                          <div className="text-sm font-medium text-slate-600">
+                            {prediction.concello}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
           <div>
             <nav>
@@ -45,11 +122,6 @@ const Header = () => {
                 <li>
                   <a href="" target="_blank">
                     GLPI
-                  </a>
-                </li>
-                <li>
-                  <a href="" target="_blank">
-                    Estadísticas
                   </a>
                 </li>
                 <li>

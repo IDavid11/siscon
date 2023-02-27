@@ -4,11 +4,12 @@ from urllib.request import Request
 from bson.objectid import ObjectId
 from bson import json_util
 from fastapi import APIRouter, Request
-from app.db import centros_collection, monitorizacion_collection, tipo_electronica_collection
-from ..models.Centro import BuscarCentro, Centro, CrearCentro, ActualizarLAN, EngadirLAN
+from app.db import centros_collection, monitorizacion_collection, tipo_electronica_collection, avisos_collection
+from ..models.Centro import BuscarCentro, Centro, CrearCentro, ActualizarLAN, EngadirLAN, PredecirCentro, EscollerCentro
 from starlette.responses import JSONResponse
 from fastapi import HTTPException, status
 from pymongo.collection import ReturnDocument
+from app.utils.format_to_json import format_aviso_to_json, format_centro_to_json, format_monitorizacion_to_json
 
 router = APIRouter(
     prefix="/centros",
@@ -162,3 +163,40 @@ def obter_info_sistemas(centroId):
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": infoSistemas})
     except:
         return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo a información de sistemas."})
+
+
+@router.post("/busqueda")
+def pick(request: PredecirCentro):
+    try:
+        prediccions = []
+        resultados = centros_collection.find(
+            {"centro": {"$regex": request.centro.upper()}})
+        for centro in resultados.limit(5):
+            centro = format_centro_to_json(centro)
+            prediccions.append(centro)
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": prediccions})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro realizando a búsqueda."})
+
+
+@router.get("/{centroId}")
+def pick(centroId):
+    try:
+        centro = centros_collection.find_one(
+            {"_id": ObjectId(centroId)})
+
+        monitorizacions_mongo = monitorizacion_collection.find(
+            {"centroId": centro["_id"], "status": "open"})
+        monitorizacions_centro = []
+        for monitorizacion in monitorizacions_mongo:
+            monitorizacion["electronica"] = next(
+                (item for item in centro["rede"]["electronica"] if item["_id"] == monitorizacion["electronicaId"]), None)
+            monitorizacion = format_monitorizacion_to_json(monitorizacion)
+            monitorizacions_centro.append(monitorizacion)
+
+        centro = format_centro_to_json(centro)
+        data = {"centro": centro, "monitorizacions": monitorizacions_centro}
+
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": data})
+    except:
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro realizando a búsqueda."})

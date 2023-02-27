@@ -5,6 +5,7 @@ export const apiUrls = {
   urlGetCentros: "/centros/",
   urlActualizarCentro: "/centros/actualizar",
   urlObterInfoSistemas: "/centros/info-sistemas/",
+  urlObterPrediccions: "/centros/busqueda",
 
   // LANS
   urlObterElectronicaLan: "/lan/electronica",
@@ -70,5 +71,9 @@ export const apiUrls = {
 
   // GLPI
   urlLoginGLPI: "/glpi/login",
+  urlObterIncidenciasParaUsuarioGLPI: "/glpi/",
   urlObterIncidenciasCentro: "/glpi/incidencias-centro",
+  urlObterIncidenciasAsignadas: "/glpi/incidencias-asignadas",
+  urlObterIncidenciasGrupo: "/glpi/incidencias-grupo",
+  urlObterValidacions: "/glpi/validacions",
 };

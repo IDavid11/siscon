@@ -1,45 +1,19 @@
-import React, { useEffect, useReducer, useContext } from "react";
+import React, { useEffect, useReducer } from "react";
+import { instance } from "@/services/axios";
+import { apiUrls } from "@/services/urls";
 import UserContext from "../context/UserContext";
-
-function reducer(state, action) {
-  const { payload, type } = action;
-
-  switch (type) {
-    case "iniciarSesion":
-      return {
-        login: payload.login,
-        grupo: payload.grupo,
-        token: payload.token,
-      };
-    case "iniciarSesionGLPI":
-      return {
-        glpi_csrf_token: payload.glpi_csrf_token,
-        glpi_cookie: payload.glpi_cookie,
-        glpi_search_id: payload.glpi_search_id,
-      };
-    case "recuperarSesion":
-      return {
-        login: payload.login,
-        grupo: payload.grupo,
-        token: payload.token,
-        glpi_csrf_token: payload.glpi_csrf_token,
-        glpi_cookie: payload.glpi_cookie,
-        glpi_search_id: payload.glpi_search_id,
-      };
-    case "finalizarSesion":
-      return {
-        login: null,
-        grupo: null,
-        token: null,
-      };
-    default:
-      return state;
-  }
-}
+import UserReducer from "@/context/UserReducer";
+import {
+  INICIAR_SESION,
+  FINALIZAR_SESION,
+  RECUPERAR_SESION,
+  INICIAR_SESION_GLPI,
+} from "@/context/UserTypes";
 
 export default function UserState({ children }) {
   const initialState = {
     login: null,
+    nome: null,
     grupo: null,
     token: null,
     glpi_csrf_token: null,
@@ -47,26 +21,50 @@ export default function UserState({ children }) {
     glpi_search_id: null,
   };
 
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(UserReducer, initialState);
+
+  const obterIncidenciasGLPI = async () => {
+    recuperarSesion();
+    console.log({
+      csrf_token: state.glpi_csrf_token,
+      cookie: state.glpi_cookie,
+      searchform_id: state.glpi_search_id,
+    });
+    const { data } = await instance.post(
+      apiUrls.urlObterIncidenciasParaUsuarioGLPI,
+      {
+        csrf_token: state.glpi_csrf_token,
+        cookie: state.glpi_cookie,
+        searchform_id: state.glpi_search_id,
+      }
+    );
+    return data.data;
+  };
 
   const iniciarSesion = (sesion) => {
     dispatch({
-      type: "iniciarSesion",
+      type: INICIAR_SESION,
       payload: {
         login: sesion.login,
+        nome: sesion.nome,
         grupo: sesion.grupo,
         token: sesion.token,
       },
     });
     sessionStorage.setItem("login", sesion.login);
+    sessionStorage.setItem("nome", sesion.nome);
     sessionStorage.setItem("grupo", sesion.grupo);
     sessionStorage.setItem("token", sesion.token);
   };
 
   const iniciarSesionGLPI = (sesion) => {
     dispatch({
-      type: "iniciarSesionGLPI",
+      type: INICIAR_SESION_GLPI,
       payload: {
+        login: state.login,
+        nome: state.nome,
+        grupo: state.grupo,
+        token: state.token,
         glpi_csrf_token: sesion.glpi_csrf_token,
         glpi_cookie: sesion.glpi_cookie,
         glpi_search_id: sesion.glpi_search_id,
@@ -78,16 +76,18 @@ export default function UserState({ children }) {
   };
 
   const finalizarSesion = () => {
-    sessionStorage.removeItem("login");
-    sessionStorage.removeItem("grupo");
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("login");
+    sessionStorage.removeItem("nome");
+    sessionStorage.removeItem("grupo");
     sessionStorage.removeItem("glpi_csrf_token");
     sessionStorage.removeItem("glpi_cookie");
     sessionStorage.removeItem("glpi_search_id");
     dispatch({
-      type: "finalizarSesion",
+      type: FINALIZAR_SESION,
       payload: {
         login: null,
+        nome: null,
         grupo: null,
         token: null,
       },
@@ -99,9 +99,10 @@ export default function UserState({ children }) {
     const glpiCookieJSON = JSON.parse(glpiCookie);
 
     dispatch({
-      type: "recuperarSesion",
+      type: RECUPERAR_SESION,
       payload: {
         login: sessionStorage.getItem("login"),
+        nome: sessionStorage.getItem("nome"),
         grupo: sessionStorage.getItem("grupo"),
         token: sessionStorage.getItem("token"),
         glpi_csrf_token: sessionStorage.getItem("glpi_csrf_token"),
@@ -113,12 +114,14 @@ export default function UserState({ children }) {
 
   useEffect(() => {
     recuperarSesion();
+    console.log(state);
   }, []);
 
   return (
     <UserContext.Provider
       value={{
         login: state.login,
+        nome: state.nome,
         grupo: state.grupo,
         token: state.token,
         glpi_csrf_token: state.glpi_csrf_token,
@@ -128,6 +131,7 @@ export default function UserState({ children }) {
         iniciarSesionGLPI,
         finalizarSesion,
         recuperarSesion,
+        obterIncidenciasGLPI,
       }}
     >
       {children}

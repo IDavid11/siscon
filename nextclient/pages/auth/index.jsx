@@ -54,6 +54,7 @@ const Auth = () => {
       if (access_token) {
         iniciarSesion({
           login: login,
+          nome: usuario.nome,
           grupo: usuario.grupo,
           token: access_token,
         });
@@ -81,6 +82,7 @@ const Auth = () => {
     if (access_token) {
       iniciarSesion({
         login: login,
+        nome: usuario.nome,
         grupo: usuario.grupo,
         token: access_token,
       });
