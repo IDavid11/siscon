@@ -7,7 +7,7 @@ class GLPI(BaseModel):
     csrf_token: str
     cookie: object
     searchform_id: str
-    centro: str
+    centro: Optional[str]
 
 
 class Lan(BaseModel):

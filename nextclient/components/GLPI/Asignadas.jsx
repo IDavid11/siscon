@@ -36,7 +36,7 @@ const Asignadas = ({ incidencias }) => {
           </tbody>
         </table>
       ) : (
-        <div>Non ten incidencias asignadas</div>
+        <div className="text-center">Non ten incidencias asignadas</div>
       )}
     </div>
   );

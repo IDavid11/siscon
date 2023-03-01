@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ContainerWrap from "../utils/ContainerWrap";
 import Nav from "../utils/Nav/Nav";
 import NavItem from "../utils/Nav/NavItem";
+import TableContainer from "../utils/TableContainer";
 
 const ElectronicaDown = ({ monitorizacions }) => {
   const nav = [
@@ -30,7 +31,7 @@ const ElectronicaDown = ({ monitorizacions }) => {
 
   return (
     <ContainerWrap title={"Electrónica DOWN"} maxHeight={250}>
-      <div className="h-10 pt-4 fixed bg-white max-w-[462px]">
+      <div className="bg-white">
         <Nav>
           {nav.map((li) => {
             return (
@@ -46,46 +47,48 @@ const ElectronicaDown = ({ monitorizacions }) => {
           })}
         </Nav>
       </div>
-      <table className="rounded-xl w-full relative">
-        <tbody>
-          {monitorizacions &&
-            monitorizacions.map((item) => {
-              return (
-                <>
-                  {item.monitorizacions.map((monitorizacion) => {
-                    return (
-                      <>
-                        {monitorizacion.electronica.tipo == vista ||
-                        vista == "Todos" ? (
-                          <tr key={monitorizacion._id} className="h-10 mt-8">
-                            <td className="py-2.5 px-2 w-2">
-                              <span className="p-px bg-red-400 rounded-full"></span>
-                            </td>
-                            <td className="py-2.5 px-2 w-2/3 text-ellipsis whitespace-nowrap overflow-hidden">
-                              {item.centro.centro}
-                            </td>
-                            <td className="py-2.5 px-2 w-1/3 text-ellipsis whitespace-nowrap overflow-hidden">
-                              {monitorizacion.electronica.tipo}
-                            </td>
-                            <td className="y-2.5 px-2 w-10">
-                              <img
-                                className="w-10"
-                                src={imgs[monitorizacion.electronica.tipo]}
-                                alt=""
-                              />
-                            </td>
-                          </tr>
-                        ) : (
-                          <></>
-                        )}
-                      </>
-                    );
-                  })}
-                </>
-              );
-            })}
-        </tbody>
-      </table>
+      <TableContainer>
+        <table className="rounded-xl w-full relative">
+          <tbody>
+            {monitorizacions &&
+              monitorizacions.map((item) => {
+                return (
+                  <>
+                    {item.monitorizacions.map((monitorizacion) => {
+                      return (
+                        <>
+                          {monitorizacion.electronica.tipo == vista ||
+                          vista == "Todos" ? (
+                            <tr key={monitorizacion._id} className="h-10 mt-8">
+                              <td className="py-2.5 px-2 w-2">
+                                <span className="p-px bg-red-400 rounded-full"></span>
+                              </td>
+                              <td className="py-2.5 px-2 w-2/3 text-ellipsis whitespace-nowrap overflow-hidden">
+                                {item.centro.centro}
+                              </td>
+                              <td className="py-2.5 px-2 w-1/3 text-ellipsis whitespace-nowrap overflow-hidden">
+                                {monitorizacion.electronica.tipo}
+                              </td>
+                              <td className="y-2.5 px-2 w-10">
+                                <img
+                                  className="w-10"
+                                  src={imgs[monitorizacion.electronica.tipo]}
+                                  alt=""
+                                />
+                              </td>
+                            </tr>
+                          ) : (
+                            <></>
+                          )}
+                        </>
+                      );
+                    })}
+                  </>
+                );
+              })}
+          </tbody>
+        </table>
+      </TableContainer>
     </ContainerWrap>
   );
 };

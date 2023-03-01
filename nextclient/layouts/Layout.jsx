@@ -4,9 +4,11 @@ import ToastMessageContext from "../context/ToastMessageContext";
 import { useRouter } from "next/router";
 import UserContext from "../context/UserContext";
 import ModalAuthGLPI from "../components/Modales/ModalAuthGLPI";
+import GLPIContext from "@/context/GLPIContext";
 
 const Layout = ({ children }) => {
-  const { token, glpi_cookie, recuperarSesion } = useContext(UserContext);
+  const { token, recuperarSesion } = useContext(UserContext);
+  const { glpi_cookie } = useContext(GLPIContext);
   const { error, tipo, message } = useContext(ToastMessageContext);
   const router = useRouter();
 

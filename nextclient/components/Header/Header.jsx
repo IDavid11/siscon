@@ -120,14 +120,10 @@ const Header = () => {
                   </a>
                 </li>
                 <li>
-                  <a href="" target="_blank">
-                    GLPI
-                  </a>
+                  <a href="glpi">GLPI</a>
                 </li>
                 <li>
-                  <a href="" target="_blank">
-                    Hardware
-                  </a>
+                  <a href="hardware">Hardware</a>
                 </li>
               </ul>
             </nav>

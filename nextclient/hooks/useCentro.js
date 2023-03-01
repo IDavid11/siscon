@@ -11,6 +11,7 @@ import {
 } from "@/context/CentroTypes";
 import LoadingContext from "@/context/LoadingContext";
 import UserContext from "@/context/UserContext";
+import GLPIContext from "@/context/GLPIContext";
 
 export default function CentroState({ children }) {
   const initialState = {
@@ -26,7 +27,7 @@ export default function CentroState({ children }) {
   const [state, dispatch] = useReducer(CentroReducer, initialState);
   const { handleLoading } = useContext(LoadingContext);
   const { glpi_csrf_token, glpi_cookie, glpi_search_id } =
-    useContext(UserContext);
+    useContext(GLPIContext);
 
   const doPing = async (centro) => {
     console.log(centro);

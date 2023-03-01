@@ -110,16 +110,20 @@ def format_pool_to_json(pool_info):
     table = soup.find("table", id=pool_info["searchform_id"])
     pool = []
 
-    for index, tr in enumerate(table.tbody.contents):
-        if index % 2 != 0:
-            pool.append({
-                "titulo": tr.contents[5].a.string,
-                "entidade": "00000000" if tr.contents[7].find_all("span")[2].text == "00000000" else tr.contents[7].find_all("span")[4].text,
-                "estado": format_pool_strings(tr.contents[9].span.text),
-                "prioridade": format_pool_strings(tr.contents[11].div.text),
-                "categoria": tr.contents[15].string,
-                "tecnico_asignado": tr.contents[19].string
-            })
+    erro = soup.find(
+        "div", class_="alert alert-info mb-0 rounded-0 border-top-0 border-bottom-0 border-right-0")
+    if not erro:
+        for index, tr in enumerate(table.tbody.contents):
+            if index % 2 != 0:
+                pool.append({
+                    "titulo": tr.contents[5].a.string,
+                    "entidade": "00000000" if tr.contents[7].find_all("span")[2].text == "00000000" else tr.contents[7].find_all("span")[4].text,
+                    "estado": format_pool_strings(tr.contents[9].span.text),
+                    "prioridade": format_pool_strings(tr.contents[11].div.text),
+                    "categoria": tr.contents[15].string,
+                    "tecnico_asignado": tr.contents[19].string
+                })
+
     return pool
 
 
@@ -147,7 +151,7 @@ def login(request: Login):
 
 
 @router.post("/incidencias-centro")
-def get_incidencias_centro(request: GLPI):
+def get_incidencias_centro_route(request: GLPI):
     try:
         incidencias = format_pool_to_json(
             get_incidencias_conexion_centro(request))
@@ -157,7 +161,7 @@ def get_incidencias_centro(request: GLPI):
 
 
 @router.post("/incidencias-asignadas")
-def get_incidencias_asignadas(request: GLPI):
+def get_incidencias_asignadas_route(request: GLPI):
     try:
         incidencias = format_pool_to_json(
             get_incidencias_asignadas(request))
@@ -167,7 +171,7 @@ def get_incidencias_asignadas(request: GLPI):
 
 
 @router.post("/incidencias-grupo")
-def get_incidencias_grupo(request: GLPI):
+def get_incidencias_grupo_route(request: GLPI):
     try:
         incidencias = format_pool_to_json(
             get_incidencias_grupo(request))
@@ -177,7 +181,7 @@ def get_incidencias_grupo(request: GLPI):
 
 
 @router.post("/validacions")
-def get_validacions(request: GLPI):
+def get_validacions_route(request: GLPI):
     try:
         incidencias = format_pool_to_json(
             get_validacions(request))
@@ -187,7 +191,7 @@ def get_validacions(request: GLPI):
 
 
 @router.post("/")
-def get_validacions(request: GLPI):
+def get_glpi(request: GLPI):
     try:
         asignadas = format_pool_to_json(
             get_incidencias_asignadas(request))
@@ -195,6 +199,6 @@ def get_validacions(request: GLPI):
             get_incidencias_grupo(request))
         validacions = format_pool_to_json(
             get_validacions(request))
-        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": {asignadas: asignadas, grupo: grupo, validacions: validacions}})
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": False, "message": "ok", "data": {"asignadas": asignadas, "grupo": grupo, "validacions": validacions}})
     except:
-        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as validacións"})
+        return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Erro obtendo as incidencias"})

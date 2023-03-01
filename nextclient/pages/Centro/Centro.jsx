@@ -8,10 +8,16 @@ import UserContext from "../../context/UserContext";
 import Aside from "@/components/Modales/MainModales/ModalCentro/Aside";
 import CentroContext from "@/context/CentroContext";
 import Pool from "@/components/GLPI/Pool";
+import IncidenciasCentro from "@/components/GLPI/IncidenciasCentro";
 
 const Centro = () => {
-  const { infoCentro, obterDatosCentro, avarias, monitorizacions } =
-    useContext(CentroContext);
+  const {
+    infoCentro,
+    obterDatosCentro,
+    avarias,
+    monitorizacions,
+    incidencias,
+  } = useContext(CentroContext);
   const { grupo } = useContext(UserContext);
 
   const [edit, setEdit] = useState(false);
@@ -39,7 +45,7 @@ const Centro = () => {
         <div className="centro-middle">
           <LANs lans={infoCentro.rede.lans} />
           <AvariasDetectadas />
-          <Pool />
+          <IncidenciasCentro incidencias={incidencias} />
         </div>
         <div className="centro-right">
           <Aside />

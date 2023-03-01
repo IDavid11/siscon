@@ -1,3 +1,4 @@
+import GLPIContext from "@/context/GLPIContext";
 import LoadingContext from "@/context/LoadingContext";
 import React, { useContext } from "react";
 import ToastMessageContext from "../../context/ToastMessageContext";
@@ -6,7 +7,8 @@ import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 
 const ModalAuthGLPI = () => {
-  const { login, iniciarSesionGLPI } = useContext(UserContext);
+  const { login } = useContext(UserContext);
+  const { iniciarSesionGLPI } = useContext(GLPIContext);
   const { error, createToastMessage } = useContext(ToastMessageContext);
   const { isLoading, handleLoading } = useContext(LoadingContext);
 

@@ -36,7 +36,9 @@ const Validacions = ({ incidencias }) => {
           </tbody>
         </table>
       ) : (
-        <div>Non ten incidencias pendentes de validación</div>
+        <div className="text-center">
+          Non ten incidencias pendentes de validación
+        </div>
       )}
     </div>
   );

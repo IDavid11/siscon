@@ -5,6 +5,7 @@ import UserState from "../hooks/useUser";
 import ToastMessageState from "../hooks/useToastMessage";
 import CentroState from "../hooks/useCentro";
 import LoadingState from "@/hooks/useLoading";
+import GLPIState from "@/hooks/useGLPI";
 
 export default function App({ Component, pageProps }) {
   return (
@@ -22,13 +23,15 @@ export default function App({ Component, pageProps }) {
         <title>SISCON | UAC</title>
       </Head>
       <UserState>
-        <ToastMessageState>
-          <LoadingState>
-            <CentroState>
-              <Component {...pageProps} />
-            </CentroState>
-          </LoadingState>
-        </ToastMessageState>
+        <GLPIState>
+          <ToastMessageState>
+            <LoadingState>
+              <CentroState>
+                <Component {...pageProps} />
+              </CentroState>
+            </LoadingState>
+          </ToastMessageState>
+        </GLPIState>
       </UserState>
     </>
   );

@@ -1,7 +1,7 @@
 import React from "react";
 import { estados, prioridades } from "@/utils/glpi";
 
-const Pool = ({ incidencias }) => {
+const Grupo = ({ incidencias }) => {
   return (
     <div>
       {incidencias && incidencias.length > 0 ? (
@@ -36,10 +36,10 @@ const Pool = ({ incidencias }) => {
           </tbody>
         </table>
       ) : (
-        <div>Non hai incidencias rexistradas</div>
+        <div className="text-center">Non hai incidencias rexistradas</div>
       )}
     </div>
   );
 };
 
-export default Pool;
+export default Grupo;
