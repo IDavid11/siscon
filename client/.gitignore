@@ -2,11 +2,11 @@
 
 # dependencies
 /node_modules
+/.next
 /.pnp
 .pnp.js
 
 # key
-/public/index.html
 
 # testing
 /coverage

@@ -23,19 +23,13 @@ export default function UserState({ children }) {
 
   const [state, dispatch] = useReducer(UserReducer, initialState);
 
-  const obterIncidenciasGLPI = async () => {
-    recuperarSesion();
-    console.log({
-      csrf_token: state.glpi_csrf_token,
-      cookie: state.glpi_cookie,
-      searchform_id: state.glpi_search_id,
-    });
+  const obterIncidenciasGLPI = async (sesion) => {
     const { data } = await instance.post(
       apiUrls.urlObterIncidenciasParaUsuarioGLPI,
       {
-        csrf_token: state.glpi_csrf_token,
-        cookie: state.glpi_cookie,
-        searchform_id: state.glpi_search_id,
+        csrf_token: sesion.glpi_csrf_token,
+        cookie: sesion.glpi_cookie,
+        searchform_id: sesion.glpi_search_id,
       }
     );
     return data.data;
@@ -114,7 +108,6 @@ export default function UserState({ children }) {
 
   useEffect(() => {
     recuperarSesion();
-    console.log(state);
   }, []);
 
   return (

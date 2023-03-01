@@ -13,7 +13,13 @@ import UserContext from "../../context/UserContext";
 import Layout from "../../layouts/Layout";
 
 const index = () => {
-  const { token, glpi_cookie, obterIncidenciasGLPI } = useContext(UserContext);
+  const {
+    token,
+    glpi_cookie,
+    glpi_csrf_token,
+    glpi_search_id,
+    obterIncidenciasGLPI,
+  } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
   const { infoCentro, seleccionarCentro, borrarDatos } =
     useContext(CentroContext);
@@ -77,7 +83,7 @@ const index = () => {
     if (search?.length < 1) getFullDashboard();
     const interval = setInterval(() => {
       getFullDashboard();
-      obterIncidenciasGLPI();
+      obterIncidenciasGLPI({ glpi_search_id, glpi_cookie, glpi_csrf_token });
     }, 20000);
     return () => clearInterval(interval);
   }, []);

@@ -42,7 +42,6 @@ def glpi_login(index_info, request):
     response = requests.request(
         "POST", url, headers=GLPI_HEADERS_LOGIN, data=payload, cookies=index_info["cookie"])
     soup = BeautifulSoup(response.text, 'html.parser')
-    print(soup)
     return "ok"
 
 
