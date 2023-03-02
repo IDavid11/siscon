@@ -61,9 +61,7 @@ const Monitorizacions = ({ setMenuVisible }) => {
                         {monitorizacion.electronica.ip}
                       </td>
                       <td className="py-2.5 px-2 w-[40%]">
-                        <span className="bg-red-400 rounded-full py-1 px-3">
-                          {monitorizacion.electronica.tipo}
-                        </span>
+                        {monitorizacion.electronica.tipo}
                       </td>
                     </tr>
                   );

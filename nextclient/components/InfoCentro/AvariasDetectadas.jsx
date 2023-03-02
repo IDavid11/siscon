@@ -1,10 +1,10 @@
 import React, { useContext, useState } from "react";
 import ContainerWrap from "../utils/ContainerWrap";
-import ModalMonitorizacion from "../Modales/ModalMonitorizacion";
 import CentroContext from "@/context/CentroContext";
 import LoadingContext from "@/context/LoadingContext";
 import Loading from "../utils/Loading";
 import TableContainer from "../utils/TableContainer";
+import ModalAvariaDetectada from "../Modales/ModalAvariaDetectada";
 
 const AvariasDetectadas = () => {
   const { isLoading } = useContext(LoadingContext);
@@ -67,9 +67,9 @@ const AvariasDetectadas = () => {
         </TableContainer>
       </ContainerWrap>
       {showModal ? (
-        <ModalMonitorizacion
+        <ModalAvariaDetectada
           handleCloseModal={handleShowModal}
-          avaria={modalMonitorizacion}
+          dispositivo={modalMonitorizacion}
         />
       ) : (
         <></>

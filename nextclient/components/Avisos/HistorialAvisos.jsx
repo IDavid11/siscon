@@ -40,9 +40,7 @@ const HistorialAvisos = ({ electronica }) => {
                         ></span>
                       </td>
                       <td className="py-2.5">{aviso.data.split(".")[0]}</td>
-                      <td className="py-2.5">
-                        <Status status={aviso.status} />
-                      </td>
+                      <td className="py-2.5 text-center">{aviso.status}</td>
                     </tr>
                   );
                 })}

@@ -7,23 +7,27 @@
 
 * {
   -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-   margin: 0;
+  box-sizing: border-box;
+  margin: 0;
   font-size: 11px;
 }
 
-
-@media (min-width: 1536px) {  
+@media (min-width: 1536px) {
   * {
-    font-size: 13px;
+    font-size: 12px;
   }
 }
 
-input, select, textarea {outline: none;}
-textarea {background: transparent;}
+input,
+select,
+textarea {
+  outline: none;
+}
+textarea {
+  background: transparent;
+}
 
-.estado-span
-{
+.estado-span {
   display: block;
   height: 0.625rem;
   width: 0.625rem;
@@ -47,8 +51,7 @@ textarea {background: transparent;}
   background-color: black;
 }
 
-.prioridade-span
-{
+.prioridade-span {
   display: block;
   height: 1.5rem;
   width: 0.25rem;
@@ -70,7 +73,6 @@ textarea {background: transparent;}
 .prioridade-span.moi-baixa {
   background-color: pink;
 }
-
 
 /* ADMIN PAGE */
 
@@ -99,7 +101,7 @@ textarea {background: transparent;}
 }
 /* FIN ADMIN PAGE */
 .dashboard-header {
-  transition: height .5s;
+  transition: height 0.5s;
 }
 
 .toast-message-container {
@@ -212,8 +214,8 @@ th {
 }
 
 .disabled.svg {
-    cursor: wait !important;
-    opacity: 0.6 !important;
+  cursor: wait !important;
+  opacity: 0.6 !important;
 }
 
 .not-allowed {
@@ -225,7 +227,7 @@ th {
 }
 
 .selected.svg {
-    opacity: 1 !important;
+  opacity: 1 !important;
 }
 
 .remove-scrollbar {
@@ -276,14 +278,27 @@ th {
 }
 
 /* clears the ‘X’ from Internet Explorer */
-input[type=search]::-ms-clear { display: none; width : 0; height: 0; }
-input[type=search]::-ms-reveal { display: none; width : 0; height: 0; }
+input[type="search"]::-ms-clear {
+  display: none;
+  width: 0;
+  height: 0;
+}
+input[type="search"]::-ms-reveal {
+  display: none;
+  width: 0;
+  height: 0;
+}
 /* clears the ‘X’ from Chrome */
 input[type="search"]::-webkit-search-decoration,
 input[type="search"]::-webkit-search-cancel-button,
 input[type="search"]::-webkit-search-results-button,
-input[type="search"]::-webkit-search-results-decoration { display: none; }
+input[type="search"]::-webkit-search-results-decoration {
+  display: none;
+}
 
-input:disabled, select:disabled {background-color: #eee;}
+input:disabled,
+select:disabled {
+  background-color: #eee;
+}
 
 /* ARRIBA VARIABLES USADAS*/

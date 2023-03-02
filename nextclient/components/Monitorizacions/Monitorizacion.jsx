@@ -1,18 +1,15 @@
 import React from "react";
 import { imgs } from "../../utils/imgs";
 
-const Monitorizacion = ({ monitorizacion }) => {
+const Monitorizacion = ({ electronica }) => {
+  console.log(electronica);
   return (
     <div>
       <div className="flex flex-col items-center gap-y-1">
         <div>
-          <img
-            className="h-16"
-            src={imgs[monitorizacion.electronica.tipo]}
-            alt=""
-          />
+          <img className="h-16" src={imgs[electronica.tipo]} alt="" />
         </div>
-        <div className="font-bold">{monitorizacion.nome}</div>
+        <div className="font-bold">{electronica.nome}</div>
       </div>
       <div className="mt-8">
         <table className="rounded-xl w-full relative">
@@ -23,12 +20,10 @@ const Monitorizacion = ({ monitorizacion }) => {
               <th className="w-64">Ubicación</th>
             </tr>
             <tr>
-              <td className="py-2">{monitorizacion.electronica.tipo}</td>
+              <td className="py-2">{electronica.tipo}</td>
+              <td className="py-2">{electronica.modelo || "Sen determinar"}</td>
               <td className="py-2">
-                {monitorizacion.electronica.modelo || "Sen determinar"}
-              </td>
-              <td className="py-2">
-                {monitorizacion.electronica.ubicacion || "Sen localizar"}
+                {electronica.ubicacion || "Sen localizar"}
               </td>
             </tr>
           </tbody>

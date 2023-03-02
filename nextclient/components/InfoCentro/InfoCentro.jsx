@@ -30,7 +30,9 @@ const InfoCentro = ({ centro, setEdit, img }) => {
           <div>
             <div className="flex">
               <div className="w-24 font-medium">Centro</div>
-              <div className="ml-5">{centro.centro}</div>
+              <div className="ml-5 whitespace-nowrap overflow-hidden text-ellipsis">
+                {centro.centro}
+              </div>
             </div>
             <div className="mt-4 flex">
               <div className="w-24 font-medium">ID</div>
@@ -38,7 +40,9 @@ const InfoCentro = ({ centro, setEdit, img }) => {
             </div>
             <div className="mt-4 flex">
               <div className="w-24 font-medium">Concello</div>
-              <div className="ml-5">{centro.concello}</div>
+              <div className="ml-5 whitespace-nowrap overflow-hidden text-ellipsis">
+                {centro.concello}
+              </div>
             </div>
             <div className="mt-4 flex">
               <div className="w-24 font-medium">Proxecto</div>
@@ -60,11 +64,9 @@ const InfoCentro = ({ centro, setEdit, img }) => {
                 {centro.comentario !== "" ? (
                   <>
                     <textarea
-                      className="outline-none p-2 resize-none"
+                      className="outline-none p-2 resize-none w-full"
                       name="comentario"
                       id="comentario"
-                      cols="43"
-                      rows="5"
                       disabled
                       value={centro.comentario}
                     ></textarea>

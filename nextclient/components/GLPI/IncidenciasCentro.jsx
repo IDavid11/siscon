@@ -5,7 +5,7 @@ import TableContainer from "../utils/TableContainer";
 
 const IncidenciasCentro = ({ incidencias }) => {
   return (
-    <ContainerWrap title={"GLPI"}>
+    <ContainerWrap title={"Incidencias de conexión"}>
       <TableContainer>
         {incidencias && incidencias.length > 0 ? (
           <table className="rounded-xl w-full relative table-fixed">

@@ -11,7 +11,7 @@ const ModalMonitorizacion = ({ monitorizacion, handleCloseModal }) => {
     >
       <div className="border border-solid border-gray-300 rounded-xl p-10">
         <Monitorizacion
-          monitorizacion={monitorizacion}
+          electronica={monitorizacion.electronica}
           handleCloseModal={handleCloseModal}
         />
         <HistorialMonitorizacions electronica={monitorizacion.electronica} />

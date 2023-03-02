@@ -148,7 +148,7 @@ const index = () => {
                               {centro.centro.centro}
                             </td>
                             <td className="py-2 px-2">
-                              <span className="block py-1.5 px-2 w-full whitespace-nowrap overflow-hidden text-sm bg-gray-200 rounded-full">
+                              <span className="block py-1.5 px-2 w-full 2xl:w-40 2xl:text-center whitespace-nowrap overflow-hidden text-sm bg-gray-200 rounded-full">
                                 {centro.monitorizacions.length} avarías
                                 detectadas
                               </span>
