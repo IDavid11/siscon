@@ -27,9 +27,9 @@ export default function GLPIState({ children }) {
     const { data } = await instance.post(
       apiUrls.urlObterIncidenciasParaUsuarioGLPI,
       {
-        csrf_token: state.glpi_csrf_token,
-        cookie: state.glpi_cookie,
-        searchform_id: state.glpi_search_id,
+        csrf_token: sesion ? sesion.glpi_csrf_token : state.glpi_csrf_token,
+        cookie: sesion ? sesion.glpi_cookie : state.glpi_cookie,
+        searchform_id: sesion ? sesion.glpi_search_id : state.glpi_search_id,
       }
     );
     console.log(data);

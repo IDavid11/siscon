@@ -64,11 +64,6 @@ const Racks = ({ racks, setMenuVisible }) => {
                     </td>
                     <td className="py-2.5 px-2">{rack.nome}</td>
                     <td className="py-2.5 px-2">{rack.ubicacion}</td>
-                    <td className="py-2.5 px-2">
-                      <span className="py-1.5 px-4 text-sm bg-gray-200 rounded-full">
-                        dispositivos
-                      </span>
-                    </td>
                   </tr>
                 );
               })}

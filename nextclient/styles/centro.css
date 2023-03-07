@@ -18,6 +18,7 @@
   height: inherit;
   min-height: 0;
   overflow: hidden;
+  max-height: 600px;
 }
 
 @media (min-width: 1536px) {

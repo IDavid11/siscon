@@ -16,7 +16,7 @@ const Monitorizacions = ({ setMenuVisible }) => {
   };
 
   return (
-    <div>
+    <>
       <div className="flex items-center justify-between">
         <div>
           <button
@@ -30,9 +30,9 @@ const Monitorizacions = ({ setMenuVisible }) => {
           Monitorizacións abertas
         </div>
       </div>
-      <div className="mt-4 max-h-[260px]">
+      <div className="mt-4 overflow-auto remove-scrollbar">
         {monitorizacions && monitorizacions.length > 0 ? (
-          <table className="rounded-xl w-full relative">
+          <table className="rounded-xl w-full relative mb-10">
             <tbody>
               {monitorizacions &&
                 monitorizacions.map((monitorizacion) => {
@@ -83,7 +83,7 @@ const Monitorizacions = ({ setMenuVisible }) => {
       ) : (
         <></>
       )}
-    </div>
+    </>
   );
 };
 

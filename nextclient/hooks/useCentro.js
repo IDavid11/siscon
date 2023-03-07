@@ -10,7 +10,6 @@ import {
   BORRAR_DATOS,
 } from "@/context/CentroTypes";
 import LoadingContext from "@/context/LoadingContext";
-import UserContext from "@/context/UserContext";
 import GLPIContext from "@/context/GLPIContext";
 
 export default function CentroState({ children }) {
@@ -30,7 +29,6 @@ export default function CentroState({ children }) {
     useContext(GLPIContext);
 
   const doPing = async (centro) => {
-    console.log(centro);
     const { data } = await instance.post(apiUrls.urlPing, {
       index: centro._id,
     });
@@ -38,6 +36,7 @@ export default function CentroState({ children }) {
   };
 
   const obterElectronicaLan = async (centro) => {
+    console.log("obtendo electronica lan");
     centro.rede.lans.map(async (lan, index) => {
       const { data } = await instance.post(apiUrls.urlObterElectronicaLan, {
         centroId: centro._id,
@@ -76,7 +75,6 @@ export default function CentroState({ children }) {
   };
 
   const obterDatosCentro = async (centro) => {
-    console.log(centro);
     handleLoading(true);
     const infoSistemas = await obterInformacionSistemas(centro.centro);
     await doPing(centro.centro);
@@ -129,6 +127,7 @@ export default function CentroState({ children }) {
         seleccionarCentro,
         obterDatosCentro,
         actualizarCentro,
+        obterElectronicaLan,
         borrarDatos,
       }}
     >

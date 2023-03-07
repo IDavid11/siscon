@@ -3,19 +3,26 @@ import ContainerWrap from "../utils/ContainerWrap";
 import { instance } from "../../services/axios";
 import { apiUrls } from "../../services/urls";
 import ToastMessageContext from "../../context/ToastMessageContext";
+import CentroContext from "@/context/CentroContext";
 
-const InfoCentroForm = ({ centro, img, setEdit }) => {
+const InfoCentroForm = ({ img, setEdit }) => {
+  const { infoCentro, actualizarCentro } = useContext(CentroContext);
   const { createToastMessage } = useContext(ToastMessageContext);
 
   const [updatedCentro, setUpdatedCentro] = useState({
-    _id: centro?._id || "",
-    centro: centro?.centro || "",
-    sf: centro?.sf || "",
-    concello: centro?.concello || "",
-    proxecto: centro?.proxecto || "Estándar",
-    tap: centro?.rede.tap || "",
-    tar: centro?.rede.tar || "",
-    comentario: centro?.comentario || "",
+    _id: infoCentro?._id || "",
+    centro: infoCentro?.centro || "",
+    sf: infoCentro?.sf || "",
+    concello: infoCentro?.concello || "",
+    proxecto: infoCentro?.proxecto || "Estándar",
+    tap: infoCentro?.rede.tap || "",
+    tar: infoCentro?.rede.tar || "",
+    comentario: infoCentro?.comentario || "",
+    imaxe: infoCentro?.imaxe || "",
+    porcentaxe: infoCentro?.porcentaxe || "",
+    rede: infoCentro?.rede || "",
+    ubicacion: infoCentro?.ubicacion || "",
+    planos: infoCentro?.planos || [],
   });
 
   const handleInputChange = (e) => {
@@ -44,7 +51,8 @@ const InfoCentroForm = ({ centro, img, setEdit }) => {
     );
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      centro = data.data;
+      console.log(infoCentro);
+      actualizarCentro(updatedCentro);
       setEdit(false);
     }
   };
@@ -61,7 +69,7 @@ const InfoCentroForm = ({ centro, img, setEdit }) => {
           <div className="h-64">
             <img
               className="h-full w-full rounded-xl"
-              src={centro?.imaxe || img}
+              src={infoCentro?.imaxe || img}
               alt=""
             />
           </div>

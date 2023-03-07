@@ -11,7 +11,7 @@ const ModalLAN = ({ lan, handleCloseModal }) => {
     >
       <div>
         <LanForm lan={lan} handleCloseModal={handleCloseModal} />
-        <LanInfo lan={lan} />
+        {lan ? <LanInfo lan={lan} /> : <></>}
       </div>
     </Modal>
   );

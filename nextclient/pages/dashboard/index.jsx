@@ -7,7 +7,6 @@ import ToastMessageContext from "../../context/ToastMessageContext";
 import ResultadosCargando from "../../components/Dashboard/ResultadosCargando";
 import ContainerWrap from "../../components/utils/ContainerWrap";
 import GLPI from "../../components/GLPI/GLPI";
-import ModalCentro from "../../components/Modales/MainModales/ModalCentro/ModalCentro";
 import CentroContext from "../../context/CentroContext";
 import UserContext from "../../context/UserContext";
 import Layout from "../../layouts/Layout";
@@ -22,7 +21,6 @@ const index = () => {
   const { infoCentro, seleccionarCentro, borrarDatos } =
     useContext(CentroContext);
   const [showModal, setShowModal] = useState(false);
-  const [modalCentro, setModalCentro] = useState();
 
   const [centros, setCentros] = useState([]);
   const [avisos, setAvisos] = useState([]);
@@ -30,15 +28,6 @@ const index = () => {
   const [estadisticas, setEstadisticas] = useState([]);
 
   const [search, setSearch] = useState([]);
-
-  const handleShowModal = (centro) => {
-    setShowModal(!showModal);
-    setModalCentro(centro);
-    if (showModal) {
-      console.log("borrando datos");
-      borrarDatos();
-    }
-  };
 
   const getFullDashboard = async () => {
     const { data } = await instance.get(apiUrls.urlGetFullDashboard);
@@ -136,7 +125,6 @@ const index = () => {
                             key={centro.centro._id}
                             onClick={() => {
                               seleccionarCentro(centro);
-                              handleShowModal(centro);
                             }}
                             className="cursor-pointer hover:bg-gray-100"
                           >
@@ -202,7 +190,6 @@ const index = () => {
           <ElectronicaDown monitorizacions={monitorizacions} />
         </div>
       </div>
-      {infoCentro ? <ModalCentro handleCloseModal={handleShowModal} /> : <></>}
     </Layout>
   );
 };

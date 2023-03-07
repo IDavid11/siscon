@@ -24,6 +24,12 @@ const Header = () => {
   const escollerCentro = async (centroId) => {
     const { data } = await instance.get(apiUrls.urlGetCentros + centroId);
     seleccionarCentro(data.data);
+    setSearch("");
+  };
+
+  const handleSubmitSearch = (e) => {
+    e.preventDefault();
+    if (predictions.length > 0) escollerCentro(predictions[0]._id);
   };
 
   useEffect(() => {
@@ -39,15 +45,17 @@ const Header = () => {
           </div>
           <div className="flex flex-col relative">
             <div className="relative flex items-center">
-              <input
-                type="text"
-                id="centro"
-                placeholder="Buscar"
-                value={search}
-                autoComplete="off"
-                onChange={(e) => setSearch(e.target.value)}
-                className="bg-white rounded-full w-80 h-10 2xl:h-12 2xl:w-96 border border-solid border-gray-300 pl-4"
-              />
+              <form onSubmit={handleSubmitSearch}>
+                <input
+                  type="text"
+                  id="centro"
+                  placeholder="Buscar"
+                  value={search}
+                  autoComplete="off"
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="bg-white rounded-full w-80 h-10 2xl:h-12 2xl:w-96 border border-solid border-gray-300 pl-4"
+                />
+              </form>
               <div className="absolute right-2">
                 {search.trim() === "" ? (
                   <button className="h-8 w-8 2xl:h-10 2xl:w-10 rounded-full bg-primary-color flex items-center justify-center">

@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import Centro from "../../../../pages/Centro/Centro";
 import Modal from "../../../utils/Modal";
 
-const ModalAviso = ({ handleCloseModal }) => {
+const ModalCentro = ({ handleCloseModal }) => {
   const { infoCentro } = useContext(CentroContext);
 
   return (
@@ -15,4 +15,4 @@ const ModalAviso = ({ handleCloseModal }) => {
   );
 };
 
-export default ModalAviso;
+export default ModalCentro;

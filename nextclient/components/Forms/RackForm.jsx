@@ -6,7 +6,7 @@ import UserContext from "@/context/UserContext";
 import CentroContext from "@/context/CentroContext";
 
 const RackForm = ({ rack, handleCloseModal }) => {
-  const { infoCentro } = useContext(CentroContext);
+  const { infoCentro, actualizarCentro } = useContext(CentroContext);
   const { grupo } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
   const [updatedRack, setUpdatedRack] = useState({
@@ -35,7 +35,9 @@ const RackForm = ({ rack, handleCloseModal }) => {
     });
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      rede.racks = data.data;
+      var infoCentroVar = infoCentro;
+      infoCentroVar.rede.racks = data.data;
+      actualizarCentro(infoCentroVar);
       handleCloseModal();
     }
   };
@@ -50,7 +52,9 @@ const RackForm = ({ rack, handleCloseModal }) => {
     });
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      infoCentro.rede.racks.push(data.data);
+      var infoCentroVar = infoCentro;
+      infoCentroVar.rede.racks.push(data.data);
+      actualizarCentro(infoCentroVar);
       handleCloseModal();
     }
   };
@@ -62,7 +66,9 @@ const RackForm = ({ rack, handleCloseModal }) => {
     });
     if (data.error) createToastMessage({ tipo: 1, message: data.message });
     else {
-      infoCentro.rede.racks = data.data;
+      var infoCentroVar = infoCentro;
+      infoCentroVar.rede.racks = data.data;
+      actualizarCentro(infoCentroVar);
       handleCloseModal();
     }
   };

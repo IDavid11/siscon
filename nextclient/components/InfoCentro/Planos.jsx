@@ -7,9 +7,11 @@ const Planos = ({ planos, setMenuVisible }) => {
   const { grupo } = useContext(UserContext);
 
   const [showModal, setShowModal] = useState(false);
+  const [edificioSeleccionado, setEdificioSeleccionado] = useState();
 
-  const handleShowModal = () => {
+  const handleShowModal = (plano) => {
     setShowModal(!showModal);
+    setEdificioSeleccionado(plano);
   };
 
   useEffect(() => {}, [planos]);
@@ -44,13 +46,13 @@ const Planos = ({ planos, setMenuVisible }) => {
         )}
       </div>
       <div className="mt-4">
-        <table className="rounded-xl w-full relative">
+        <table className="rounded-xl w-full relative table-fixed">
           <tbody>
             {planos &&
               planos.map((plano) => {
                 return (
                   <tr
-                    onClick={handleShowModal}
+                    onClick={() => handleShowModal(plano)}
                     key={plano._id}
                     className="font-medium hover:bg-gray-200 cursor-pointer"
                   >
@@ -61,8 +63,10 @@ const Planos = ({ planos, setMenuVisible }) => {
                         alt=""
                       />
                     </td>
-                    <td className="py-2.5 px-2">{plano.nome_edificio}</td>
-                    <td className="py-2.5 px-2">
+                    <td className="py-2.5 px-2 overflow-hidden whitespace-nowrap text-ellipsis">
+                      {plano.nome_edificio}
+                    </td>
+                    <td className="py-2.5 px-2 w-28">
                       <span className="py-1.5 px-4 text-sm bg-gray-200 rounded-full">
                         {plano.plantas.length} plantas
                       </span>
@@ -79,7 +83,12 @@ const Planos = ({ planos, setMenuVisible }) => {
         </table>
       </div>
       {showModal ? (
-        <ModalPlanos handleCloseModal={handleShowModal} planos={planos} />
+        <ModalPlanos
+          handleCloseModal={handleShowModal}
+          planos={planos}
+          edificioSeleccionado={edificioSeleccionado}
+          setEdificioSeleccionado={setEdificioSeleccionado}
+        />
       ) : (
         <></>
       )}

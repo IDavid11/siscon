@@ -62,7 +62,7 @@ const Resultados = ({ data, showAll, handleShowModal, grupo }) => {
                           className="font-medium hover:bg-gray-200 cursor-pointer"
                         >
                           <td className="py-1.5 px-2">
-                            {dispositivo.garantia}
+                            {dispositivo.garantia ? "Si" : "Non"}
                           </td>
                           <td className="py-1.5 px-2">
                             {dispositivo.marca} {dispositivo.modelo}

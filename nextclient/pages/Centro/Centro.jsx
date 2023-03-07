@@ -21,7 +21,6 @@ const Centro = () => {
   const { grupo } = useContext(UserContext);
 
   const [edit, setEdit] = useState(false);
-  console.log("refreshing centro 2");
   const img = randomImg();
 
   useEffect(() => {
@@ -30,16 +29,16 @@ const Centro = () => {
       centro: infoCentro,
       monitorizacions: monitorizacions,
     });
-  }, []);
+  }, [infoCentro]);
 
   return (
     <>
       <div className="centro-container">
         <div>
           {!edit ? (
-            <InfoCentro centro={infoCentro} img={img} setEdit={setEdit} />
+            <InfoCentro img={img} setEdit={setEdit} />
           ) : (
-            <InfoCentroForm centro={infoCentro} img={img} setEdit={setEdit} />
+            <InfoCentroForm img={img} setEdit={setEdit} />
           )}
         </div>
         <div className="centro-middle">

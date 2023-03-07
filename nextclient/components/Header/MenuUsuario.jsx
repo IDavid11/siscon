@@ -1,8 +1,10 @@
+import GLPIContext from "@/context/GLPIContext";
 import UserContext from "@/context/UserContext";
 import React, { useContext } from "react";
 
 const MenuUsuario = () => {
   const { nome, grupo, finalizarSesion } = useContext(UserContext);
+  const { finalizarSesionGLPI } = useContext(GLPIContext);
 
   return (
     <div className="absolute top-24 2xl:top-24 right-0 z-50 px-6">
@@ -39,6 +41,7 @@ const MenuUsuario = () => {
                     onClick={(e) => {
                       e.preventDefault();
                       finalizarSesion();
+                      finalizarSesionGLPI();
                     }}
                   >
                     <span>

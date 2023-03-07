@@ -3,9 +3,9 @@ import ContainerWrap from "../utils/ContainerWrap";
 import UserContext from "../../context/UserContext";
 import CentroContext from "@/context/CentroContext";
 
-const InfoCentro = ({ centro, setEdit, img }) => {
+const InfoCentro = ({ setEdit, img }) => {
   const { grupo } = useContext(UserContext);
-  const { informacionSistemas } = useContext(CentroContext);
+  const { infoCentro, informacionSistemas } = useContext(CentroContext);
 
   return (
     <ContainerWrap>
@@ -22,7 +22,7 @@ const InfoCentro = ({ centro, setEdit, img }) => {
         <div className="h-64">
           <img
             className="h-full w-full rounded-xl"
-            src={centro.imaxe || img}
+            src={infoCentro.imaxe || img}
             alt=""
           />
         </div>
@@ -31,44 +31,44 @@ const InfoCentro = ({ centro, setEdit, img }) => {
             <div className="flex">
               <div className="w-24 font-medium">Centro</div>
               <div className="ml-5 whitespace-nowrap overflow-hidden text-ellipsis">
-                {centro.centro}
+                {infoCentro.centro}
               </div>
             </div>
             <div className="mt-4 flex">
               <div className="w-24 font-medium">ID</div>
-              <div className="ml-5">{centro.sf}</div>
+              <div className="ml-5">{infoCentro.sf}</div>
             </div>
             <div className="mt-4 flex">
               <div className="w-24 font-medium">Concello</div>
               <div className="ml-5 whitespace-nowrap overflow-hidden text-ellipsis">
-                {centro.concello}
+                {infoCentro.concello}
               </div>
             </div>
             <div className="mt-4 flex">
               <div className="w-24 font-medium">Proxecto</div>
-              <div className="ml-5">{centro.proxecto}</div>
+              <div className="ml-5">{infoCentro.proxecto}</div>
             </div>
             <div className="mt-4 flex">
               <div className="w-24 font-medium">TAP</div>
-              <div className="ml-5">{centro.rede.tap}</div>
+              <div className="ml-5">{infoCentro.rede.tap}</div>
             </div>
             <div className="mt-4 flex">
               <div className="w-24 font-medium">TAR</div>
-              <div className="ml-5">{centro.rede.tar}</div>
+              <div className="ml-5">{infoCentro.rede.tar}</div>
             </div>
             <div className="mt-8">
               <div className="w-24 font-medium whitespace-nowrap">
                 Información adicional
               </div>
               <div className="mt-2">
-                {centro.comentario !== "" ? (
+                {infoCentro.comentario !== "" ? (
                   <>
                     <textarea
                       className="outline-none p-2 resize-none w-full"
                       name="comentario"
                       id="comentario"
                       disabled
-                      value={centro.comentario}
+                      value={infoCentro.comentario}
                     ></textarea>
                   </>
                 ) : (

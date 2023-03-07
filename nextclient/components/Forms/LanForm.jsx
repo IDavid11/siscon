@@ -5,8 +5,9 @@ import ToastMessageContext from "../../context/ToastMessageContext";
 import UserContext from "../../context/UserContext";
 import CentroContext from "@/context/CentroContext";
 
-const LanForm = ({ centro, lan, handleCloseModal }) => {
-  const { infoCentro, actualizarCentro } = useContext(CentroContext);
+const LanForm = ({ lan, handleCloseModal }) => {
+  const { infoCentro, actualizarCentro, obterElectronicaLan } =
+    useContext(CentroContext);
   const { grupo } = useContext(UserContext);
   const { createToastMessage } = useContext(ToastMessageContext);
   const [updatedLan, setUpdatedLan] = useState({
@@ -38,6 +39,7 @@ const LanForm = ({ centro, lan, handleCloseModal }) => {
       var infoCentroVar = infoCentro;
       infoCentroVar.rede.lans = data.data;
       actualizarCentro(infoCentroVar);
+      obterElectronicaLan(infoCentroVar);
       handleCloseModal();
     }
   };
@@ -55,6 +57,7 @@ const LanForm = ({ centro, lan, handleCloseModal }) => {
       var infoCentroVar = infoCentro;
       infoCentroVar.rede.lans.push(data.data);
       actualizarCentro(infoCentroVar);
+      obterElectronicaLan(infoCentroVar);
       handleCloseModal();
     }
   };

@@ -6,19 +6,21 @@ import { apiUrls } from "../../../services/urls";
 import CambiarPlanoForm from "../../Forms/CambiarPlanoForm";
 import Modal from "../../utils/Modal";
 
-const ModalPlanos = ({ planos, handleCloseModal }) => {
+const ModalPlanos = ({
+  edificioSeleccionado,
+  setEdificioSeleccionado,
+  planos,
+  handleCloseModal,
+}) => {
   const { infoCentro } = useContext(CentroContext);
   const { grupo } = useContext(UserContext);
 
-  const [edificioSeleccionado, setEdificioSeleccionado] = useState(
-    infoCentro.planos[0]
-  );
   const [plantaSeleccionada, setPlantaSeleccionada] = useState(
-    infoCentro.planos[0]?.plantas[0]
+    edificioSeleccionado.plantas[0]
   );
-  const [plantas, setPlantas] = useState(infoCentro.planos[0]?.plantas);
+  const [plantas, setPlantas] = useState(edificioSeleccionado.plantas);
   const [visiblePlano, setVisibilePlano] = useState(
-    planos[0]?.plantas[0]?.plano || ""
+    edificioSeleccionado.plantas[0]?.plano || ""
   );
 
   const [updatedItem, setUpdatedItem] = useState();
@@ -200,9 +202,12 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                                 />
                               </button>
                             </div>
-                            <form onSubmit={submitUpdateEdificio}>
+                            <form
+                              className="w-[80%]"
+                              onSubmit={submitUpdateEdificio}
+                            >
                               <input
-                                className="outline-none bg-transparent ml-2 w-full"
+                                className="outline-none bg-transparent ml-2 w-full pr-4"
                                 type="text"
                                 name="nome"
                                 value={updatedItem.nome}
@@ -210,7 +215,7 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                                 onChange={handleInputChange}
                               />
                             </form>
-                            <div className="mr-4">
+                            <div>
                               <button
                                 onClick={(e) => setIsChangingEdificio(false)}
                               >
@@ -231,7 +236,9 @@ const ModalPlanos = ({ planos, handleCloseModal }) => {
                                 alt=""
                               />
                             </div>
-                            <div className="ml-4">{edificio.nome_edificio}</div>
+                            <div className="ml-4 w-[80%] overflow-hidden whitespace-nowrap text-ellipsis">
+                              {edificio.nome_edificio}
+                            </div>
                             {isMouseOverItem &&
                             hoverEdificio?._id === edificio._id ? (
                               <div className="ml-auto pr-4 pt-1">
