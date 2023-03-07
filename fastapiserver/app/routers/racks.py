@@ -42,6 +42,11 @@ def engadir_rack(request: Rack):
             return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "O centro non existe."})
 
         racks = centro["rede"]["racks"]
+
+        for rack in racks:
+            if rack["nome"] == request.nome:
+                return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Xa existe un rack con ese nome."})
+
         rack = {
             "_id": ObjectId(),
             "nome": request.nome,
@@ -71,6 +76,9 @@ def actualizar_rack(request: Rack):
 
         racks = centro["rede"]["racks"]
         for rack in racks:
+            if rack["nome"] == request.nome and str(rack["_id"]) != request.rackId:
+                return JSONResponse(status_code=status.HTTP_200_OK, content={"error": True, "message": "Xa existe un rack con ese nome."})
+
             if str(rack["_id"]) == request.rackId:
                 rack["nome"] = request.nome
                 rack["tipo"] = request.tipo

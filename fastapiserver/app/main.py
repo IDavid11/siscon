@@ -6,6 +6,7 @@ from .config import origins
 from .routers import centros, monitorizacions, estadisticas, conexion, listados, usuarios, save_data, switches, dashboard, avisos, lans, tipos, electronica, racks, planos, glpi
 from .monitorizacion import monitorizacion
 from app.routers.usuarios import get_current_user
+from app.db import hardware_collection
 
 ###### IMPORTANTE ######
 #thread = Thread(target=monitorizacion)
